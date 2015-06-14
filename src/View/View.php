@@ -4,7 +4,6 @@ namespace tourze\View;
 
 use Exception;
 use tourze\Base\Exception\BaseException;
-use tourze\Base\Base;
 use tourze\View\Exception\ViewException;
 
 /**
@@ -19,12 +18,30 @@ use tourze\View\Exception\ViewException;
 class View
 {
 
-    // Array of global variables
+    public static $ext = '.php';
+
+    /**
+     * @var array 存放视图文件的目录列表
+     */
+    protected static $_viewPaths = [];
+
+    /**
+     * @var array 全局变量
+     */
     protected static $_globalData = [];
+
+    /**
+     * @param string $path 视图加载目录
+     */
+    public static function addPath($path)
+    {
+        self::$_viewPaths[] = $path;
+    }
 
     /**
      * Returns a new View object. If you do not define the "file" parameter,
      * you must call [View::setFilename].
+     *
      *     $view = View::factory($file);
      *
      * @param   string $file view filename
@@ -257,15 +274,23 @@ class View
      */
     public function setFilename($file)
     {
-        if (false === ($path = Base::findFile('views', $file)))
+        $found = false;
+        foreach (self::$_viewPaths as $path)
+        {
+            if ( ! $found && is_file($path . $file . self::$ext))
+            {
+                $found = $path . $file . self::$ext;
+            }
+        }
+
+        if ( ! $found)
         {
             throw new ViewException('The requested view :file could not be found', [
                 ':file' => $file,
             ]);
         }
 
-        // Store the file path locally
-        $this->_file = $path;
+        $this->_file = $found;
 
         return $this;
     }

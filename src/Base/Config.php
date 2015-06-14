@@ -15,16 +15,16 @@ class Config extends VendorConfig
     /**
      * @var array 允许从其中加载配置文件
      */
-    public static $configDirectories = [];
+    public static $configPaths = [];
 
     /**
      * 增加配置加载目录
      *
      * @param $path
      */
-    public static function addDirectory($path)
+    public static function addPath($path)
     {
-        self::$configDirectories[] = $path;
+        self::$configPaths[] = $path;
     }
 
     /**
@@ -43,7 +43,7 @@ class Config extends VendorConfig
         $finalPath = [];
         foreach ($path as $_path)
         {
-            foreach (self::$configDirectories as $includePath)
+            foreach (self::$configPaths as $includePath)
             {
                 $files = [
                     $includePath . $_path . '.php',
