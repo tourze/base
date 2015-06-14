@@ -1,0 +1,35 @@
+{
+  "name": "tourze/core",
+  "description": "Tourze Core",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "YwiSax",
+      "email": "25803471@qq.com"
+    }
+  ],
+  "require": {
+    "filp/whoops": "^1.1",
+    "doctrine/dbal": "~2.5",
+    "symfony/config": "~2.6",
+    "monolog/monolog": "~1.13",
+    "hoa/mime": "dev-master",
+    "doctrine/inflector": "dev-master",
+    "hassankhan/config": "0.8.*",
+    "symfony/yaml": "~2.6",
+    "predis/predis": "^1.1@dev"
+  },
+  "autoload": {
+    "psr-0": {
+      "tourze\\": "src/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "http://php.composer.org/repo/packagist/"
+    },
+    {"packagist": false}
+  ]
+}
