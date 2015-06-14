@@ -2,7 +2,6 @@
 
 namespace tourze\Http\Request\Client;
 
-use Exception;
 use ReflectionClass;
 use tourze\Base\Exception\BaseException;
 use tourze\Http\Exception\HttpException;

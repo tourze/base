@@ -8,7 +8,7 @@ use ReflectionMethod;
 use tourze\Base\Exception\BaseException;
 use tourze\Base\Helper\Arr;
 use tourze\Base\Object;
-use tourze\Base\Base;
+use tourze\Base\Message;
 
 /**
  * Array and variable validation.
@@ -479,7 +479,7 @@ class Validation extends Object implements ArrayAccess
      *     // Get errors from messages/forms/authorize.php
      *     $errors = $Validation->errors('forms/login');
      *
-     * @uses    Base::message
+     * @uses    Message::load
      * @param   string $file      file to load error messages from
      * @param   mixed  $translate translate the message
      * @return  array
@@ -571,20 +571,20 @@ class Validation extends Object implements ArrayAccess
                 }
             }
 
-            $message = Base::message($file, "{$field}.{$error}");
+            $message = Message::load($file, "{$field}.{$error}");
             if ($message && is_string($message))
             {
                 // Found a message for this field and error
             }
-            elseif ($message = Base::message($file, "{$field}.default") && is_string($message))
+            elseif ($message = Message::load($file, "{$field}.default") && is_string($message))
             {
                 // Found a default message for this field
             }
-            elseif ($message = Base::message($file, $error) && is_string($message))
+            elseif ($message = Message::load($file, $error) && is_string($message))
             {
                 // Found a default message for this error
             }
-            elseif ($message = Base::message('validation', $error) && is_string($message))
+            elseif ($message = Message::load('validation', $error) && is_string($message))
             {
                 // Found a default message for this error
             }

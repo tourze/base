@@ -27,3 +27,8 @@ if ( ! function_exists('__'))
         return empty($values) ? $string : strtr($string, $values);
     }
 }
+
+if ( ! defined('IN_SAE'))
+{
+    define('IN_SAE', function_exists('sae_debug'));
+}

@@ -5,7 +5,6 @@ namespace tourze\Base;
 use ErrorException;
 use Exception;
 use tourze\Base\Exception\BaseException;
-use tourze\Base\Helper\Arr;
 
 /**
  * sdk基础类，包含一些最基础和常用的操作：
@@ -138,11 +137,6 @@ class Base extends Object
     public static $cacheLife = 60;
 
     /**
-     * @var  boolean  是否缓存[self::findFile]的搜索结果
-     */
-    public static $cacheActive = false;
-
-    /**
      * @var string
      */
     public static $cacheKey = 'Base::findFile()';
@@ -156,39 +150,6 @@ class Base extends Object
      * @var  boolean  自定义X-Powered-By
      */
     public static $expose = false;
-
-    /**
-     * @var  array   用户查找文件的路径
-     */
-    public static $paths = [];
-
-    /**
-     * @var  array   当前激活的第三方模块
-     */
-    protected static $_modules = [];
-
-    /**
-     * @var array  下面这些目录的文件需要完整查找
-     */
-    protected static $_returnArrayDirectory = [
-        'i18n',
-        'message',
-    ];
-
-    /**
-     * @var  array   缓存已经查找过的文件路径
-     */
-    protected static $_files = [];
-
-    /**
-     * @var  boolean  文件缓存已经有了变更
-     */
-    protected static $_filesChanged = false;
-
-    /**
-     * @var  object  SAE缓存
-     */
-    protected static $_saeMemcache = null;
 
     /**
      * @var array SDK工作流分层
@@ -270,11 +231,6 @@ class Base extends Object
         $_GET = self::sanitize($_GET);
         $_POST = self::sanitize($_POST);
         $_COOKIE = self::sanitize($_COOKIE);
-
-        if (self::$cacheActive)
-        {
-            self::$_files = self::cache(self::$cacheKey);
-        }
     }
 
     /**
@@ -346,182 +302,6 @@ class Base extends Object
     }
 
     /**
-     * 返回当前激活的加载路径列表，包括应用、模块、系统目录的路径
-     *
-     * @return  array
-     */
-    public static function includePaths()
-    {
-        return self::$paths;
-    }
-
-    /**
-     * 使用级联文件系统来查找文件
-     * 如果搜索的是`config`、`messages`、`i18n`目录，那么系统会查找所有路径并合并
-     *
-     *     // 返回views/template.php的绝对路径
-     *     Base::findFile('views', 'template');
-     *
-     *     // 返回media/css/style.css的绝对路径
-     *     Base::findFile('media', 'css/style', 'css');
-     *
-     *     // 返回合并后的数组
-     *     Base::findFile('config', 'main');
-     *
-     * @param   string  $dir         目录名
-     * @param   string  $file        文件名
-     * @param   string  $ext         扩展名
-     * @param   boolean $returnArray 是否返回数组
-     *
-     * @return  array   包含了若干个文件路径的数组
-     * @return  string  文件路径
-     */
-    public static function findFile($dir, $file, $ext = null, $returnArray = false)
-    {
-        if (null === $ext)
-        {
-            $ext = EXT;
-        }
-        elseif ($ext)
-        {
-            $ext = ".{$ext}";
-        }
-        else
-        {
-            $ext = '';
-        }
-
-        // 未完整的路径
-        $path = $dir . DIRECTORY_SEPARATOR . $file . $ext;
-        $cachePrefix = $returnArray ? 'array:' : 'path:';
-
-        if (self::$cacheActive && isset(self::$_files[$cachePrefix.$path]))
-        {
-            // 返回缓存结果
-            return self::$_files[$cachePrefix.$path];
-        }
-
-        if ($returnArray || in_array($dir, self::$_returnArrayDirectory))
-        {
-            // 从底部开始查起来
-            $paths = array_reverse(self::$paths);
-            $found = [];
-            foreach ($paths as $dir)
-            {
-                if (is_file($dir . $path))
-                {
-                    $found[] = $dir . $path;
-                }
-            }
-        }
-        else
-        {
-            $found = false;
-            foreach (self::$paths as $dir)
-            {
-                if (is_file($dir . $path))
-                {
-                    // A path has been found
-                    $found = $dir . $path;
-                    break;
-                }
-            }
-        }
-
-        if (true === self::$cacheActive)
-        {
-            // Add the path to the cache
-            self::$_files[$cachePrefix.$path] = $found;
-            // Files have been changed
-            self::$_filesChanged = true;
-        }
-
-        return $found;
-    }
-
-    /**
-     * 列出指定目录的所有文件
-     *
-     *     // 查找所有视图文件
-     *     $views = self::listFiles('views');
-     *
-     * @param   string $directory 目录名
-     * @param   array  $paths     要搜索的路径
-     *
-     * @return  array
-     */
-    public static function listFiles($directory = null, array $paths = null)
-    {
-        if (null !== $directory)
-        {
-            $directory .= DIRECTORY_SEPARATOR;
-        }
-
-        if (null === $paths)
-        {
-            // Use the default paths
-            $paths = self::$paths;
-        }
-
-        // Create an array for the files
-        $found = [];
-
-        foreach ($paths as $path)
-        {
-            if (is_dir($path . $directory))
-            {
-                // Create a new directory iterator
-                $dir = new \DirectoryIterator($path . $directory);
-
-                foreach ($dir as $file)
-                {
-                    // Get the file name
-                    $filename = $file->getFilename();
-
-                    if ('.' === $filename[0] or '~' === $filename[strlen($filename) - 1])
-                    {
-                        // Skip all hidden files and UNIX backup files
-                        continue;
-                    }
-
-                    // Relative filename is the array key
-                    $key = $directory . $filename;
-
-                    if ($file->isDir())
-                    {
-                        if ($subDir = self::listFiles($key, $paths))
-                        {
-                            if (isset($found[$key]))
-                            {
-                                // Append the sub-directory list
-                                $found[$key] += $subDir;
-                            }
-                            else
-                            {
-                                // Create a new sub-directory list
-                                $found[$key] = $subDir;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if ( ! isset($found[$key]))
-                        {
-                            // Add new files to the list
-                            $found[$key] = realpath($file->getPathName());
-                        }
-                    }
-                }
-            }
-        }
-
-        // Sort the results alphabetically
-        ksort($found);
-
-        return $found;
-    }
-
-    /**
      * Loads a file within a totally empty scope and returns the output:
      *     $foo = self::load('foo.php');
      *
@@ -557,11 +337,6 @@ class Base extends Object
      */
     public static function cache($name, $data = null, $lifetime = null)
     {
-        if (IN_SAE)
-        {
-            return self::_saeCache($name, $data, $lifetime);
-        }
-
         // Cache file is a hash of the name
         $file = sha1($name) . '.txt';
 
@@ -628,106 +403,6 @@ class Base extends Object
         {
             // Failed to write cache
             return false;
-        }
-    }
-
-    /**
-     * 为SAE设置的内置缓存，使用Memcache来实现
-     *
-     * @param      $name
-     * @param null $data
-     * @param null $lifetime
-     *
-     * @return  mixed
-     */
-    protected static function _saeCache($name, $data = null, $lifetime = null)
-    {
-        if ( ! self::$_saeMemcache)
-        {
-            // 虽说不怎么可能，但还是做下判断
-            if ( ! function_exists('memcache_init'))
-            {
-                function memcache_init()
-                {
-                    return '';
-                }
-            }
-            self::$_saeMemcache = memcache_init();
-        }
-
-        // data为空，就是在获取获取数据咯
-        if (null === $data)
-        {
-            if ( ! function_exists('memcache_get'))
-            {
-                function memcache_get()
-                {
-                    return '';
-                }
-            }
-            try
-            {
-                return memcache_get(self::$_saeMemcache, $name);
-            }
-            catch (Exception $e)
-            {
-                return null;
-            }
-        }
-        else
-        {
-            if ( ! function_exists('memcache_set'))
-            {
-                function memcache_set()
-                {
-                    return null;
-                }
-            }
-            // 获取生命周期
-            $lifetime = (null === $lifetime) ? self::$cacheLife : (int) $lifetime;
-
-            return (bool) memcache_set(self::$_saeMemcache, $name, $data, 0, $lifetime);
-        }
-    }
-
-    /**
-     * 读取消息文本
-     *
-     *     // Get "username" from messages/text.php
-     *     $username = self::message('text', 'username');
-     *
-     * @param   string $file    文件名
-     * @param   string $path    键名
-     * @param   mixed  $default 键名不存在时返回默认值
-     *
-     * @return  string  message string for the given path
-     * @return  array   complete message list, when no path is specified
-     */
-    public static function message($file, $path = null, $default = null)
-    {
-        static $messages;
-
-        if ( ! isset($messages[$file]))
-        {
-            $messages[$file] = [];
-            if ($files = self::findFile('message', $file))
-            {
-                foreach ($files as $f)
-                {
-                    $messages[$file] = Arr::merge($messages[$file], self::load($f));
-                }
-            }
-        }
-
-        if (null === $path)
-        {
-            // 返回完整的数组
-            return $messages[$file];
-        }
-        else
-        {
-            // 返回指定的键名
-            return Arr::path($messages[$file], $path, $default);
         }
     }
 

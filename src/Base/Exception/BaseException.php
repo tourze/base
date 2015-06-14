@@ -3,7 +3,6 @@
 namespace tourze\Base\Exception;
 
 use Exception;
-use tourze\Base\Debug;
 use tourze\Base\Log;
 
 /**

@@ -17,6 +17,13 @@ namespace tourze\Base;
 class I18n
 {
 
+    public static $ext = '.php';
+
+    /**
+     * @var array 文件路径
+     */
+    protected static $_i18nPaths = [];
+
     /**
      * @var  string   目标语言：en-us, es-es, zh-cn
      */
@@ -34,6 +41,16 @@ class I18n
 
     protected static $_langNormalizeSearch  = [' ', '_'];
     protected static $_langNormalizeReplace = '-';
+
+    /**
+     * 增加语言文件加载路径
+     *
+     * @param $path
+     */
+    public static function addPath($path)
+    {
+        self::$_i18nPaths[] = $path;
+    }
 
     /**
      * 获取当前的目标语言
@@ -97,7 +114,16 @@ class I18n
         {
             $path = implode(DIRECTORY_SEPARATOR, $parts);
 
-            if ($files = Base::findFile('i18n', $path, null, true))
+            $files = [];
+            foreach (self::$_i18nPaths as $includePath)
+            {
+                if (is_file($includePath . $path . self::$ext))
+                {
+                    $files[] = $includePath . $path . self::$ext;
+                }
+            }
+
+            if ( ! empty($files))
             {
                 $t = [];
                 foreach ($files as $file)
