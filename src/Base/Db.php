@@ -6,10 +6,8 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 
 /**
- * 数据库连接类
+ * 数据库连接类，基于doctrine/dbal来实现
  *
- * @property   string  identifier
- * @property   mixed   lastQuery
  * @package    Base/Database
  * @category   Base
  */

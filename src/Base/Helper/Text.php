@@ -2,6 +2,9 @@
 
 namespace tourze\Base\Helper;
 
+use RandomLib\Factory as RandomFactory;
+use SecurityLib\Strength as RandomStrength;
+
 /**
  * 文本助手类
  *
@@ -164,112 +167,18 @@ class Text
     }
 
     /**
-     * Generates a random string of a given type and length.
-     *     $str = self::random(); // 8 character random string
-     * The following types are supported:
-     * alnum
-     * :  Upper and lower case a-z, 0-9 (default)
-     * alpha
-     * :  Upper and lower case a-z
-     * hexdec
-     * :  Hexadecimal characters a-f, 0-9
-     * distinct
-     * :  Uppercase characters and numbers that cannot be confused
-     * You can also create a custom type by providing the "pool" of characters
-     * as the type.
+     * 生成随机字符串
      *
-     * @param   string  $type   a type of pool, or a string of characters to use as the pool
-     * @param   integer $length length of string to return
-     *
-     * @return  string
-     * @uses    UTF8::split
+     * @param integer $length
+     * @param string  $pool
+     * @return string
      */
-    public static function random($type = null, $length = 8)
+    public static function random($length = 20, $pool = '')
     {
-        if (null === $type)
-        {
-            $type = 'alnum';
-        }
+        $factory = new RandomFactory;
+        $generator = $factory->getGenerator(new RandomStrength(RandomStrength::MEDIUM));
 
-        switch ($type)
-        {
-            case 'any':
-                $pool = array_merge(
-                    range(0, 9),
-                    range('a', 'z'),
-                    range('A', 'Z'),
-                    ['!', '@', '#', '$', '%', '&', '*']
-                );
-                break;
-            case 'alnum':
-                $pool = array_merge(
-                    range(0, 9),
-                    range('a', 'z'),
-                    range('A', 'Z')
-                );
-                break;
-            case 'alpha':
-                $pool = array_merge(
-                    range('a', 'z'),
-                    range('A', 'Z')
-                );
-                break;
-            case 'hexdec':
-                $pool = array_merge(
-                    range(0, 9),
-                    range('a', 'f')
-                );
-                break;
-            case 'numeric':
-                $pool = range(0, 9);
-                break;
-            case 'nozero':
-                $pool = range(1, 9);
-                break;
-            case 'distinct':
-                $pool = [
-                    2, 3, 4, 5, 6, 7, 9,
-                    'A', 'C', 'D', 'E', 'F', 'H', 'J', 'K', 'L', 'M', 'N',
-                    'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-                ];
-                break;
-            default:
-                if ( ! is_array($type))
-                {
-                    $pool = str_split($type, 1);
-                }
-                else
-                {
-                    $pool = $type;
-                }
-        }
-
-        // Largest pool key
-        $max = count($pool) - 1;
-
-        $str = '';
-        for ($i = 0; $i < $length; $i++)
-        {
-            // Select a random character from the pool and add it to the string
-            $str .= $pool[mt_rand(0, $max)];
-        }
-
-        // Make sure alnum strings contain at least one letter and one digit
-        if ($type === 'alnum' && $length > 1)
-        {
-            if (ctype_alpha($str))
-            {
-                // Add a random digit
-                $str[mt_rand(0, $length - 1)] = chr(mt_rand(48, 57));
-            }
-            elseif (ctype_digit($str))
-            {
-                // Add a random letter
-                $str[mt_rand(0, $length - 1)] = chr(mt_rand(65, 90));
-            }
-        }
-
-        return $str;
+        return $generator->generateString($length, $pool);
     }
 
     /**

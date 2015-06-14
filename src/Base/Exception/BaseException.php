@@ -82,7 +82,7 @@ class BaseException extends Exception implements ExceptionInterface
     public static function text(Exception $e)
     {
         return sprintf('%s [ %s ]: %s ~ %s [ %d ]',
-            get_class($e), $e->getCode(), strip_tags($e->getMessage()), Debug::path($e->getFile()), $e->getLine());
+            get_class($e), $e->getCode(), strip_tags($e->getMessage()), $e->getFile(), $e->getLine());
     }
 
     /**

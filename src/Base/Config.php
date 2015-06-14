@@ -45,17 +45,23 @@ class Config extends VendorConfig
         {
             foreach (self::$configDirectories as $includePath)
             {
-                $file = $includePath . $_path;
-                if (strpos($file, '*') === false)
+                $files = [
+                    $includePath . $_path . '.php',
+                    $includePath . $_path . '-local.php',
+                ];
+                foreach ($files as $file)
                 {
-                    if (is_file($file))
+                    if (strpos($file, '*') === false)
+                    {
+                        if (is_file($file))
+                        {
+                            $finalPath[] = $file;
+                        }
+                    }
+                    else
                     {
                         $finalPath[] = $file;
                     }
-                }
-                else
-                {
-                    $finalPath[] = $file;
                 }
             }
         }
