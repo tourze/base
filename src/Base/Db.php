@@ -14,6 +14,8 @@ use Doctrine\DBAL\DriverManager;
 class Db
 {
 
+    public static $configFile = 'database';
+
     /**
      * @const  int  SELECT查询
      */
@@ -77,7 +79,7 @@ class Db
             // 读取配置
             if (null === $config)
             {
-                $config = (array) Config::load('database.php')->get($name);
+                $config = (array) Config::load(self::$configFile)->get($name);
             }
 
             $conn = DriverManager::getConnection($config);

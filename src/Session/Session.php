@@ -19,6 +19,8 @@ use tourze\Session\Exception\SessionException;
 abstract class Session
 {
 
+    public static $configFile = 'session';
+
     /**
      * @var  string  default session adapter
      */
@@ -50,7 +52,7 @@ abstract class Session
 
         if ( ! isset(Session::$instances[$type]))
         {
-            $config = Config::load('session.php')->get($type);
+            $config = Config::load(self::$configFile)->get($type);
             $class = 'tourze\Session\Adapter\\' . ucfirst($type) . 'Adapter';
 
             Session::$instances[$type] = $session = new $class($config, $id);
