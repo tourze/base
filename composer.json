@@ -34,7 +34,7 @@
   },
   "autoload": {
     "psr-4": {
-      "tourze\\": "src/tourze/"
+      "tourze\\": "src/"
     },
     "files": [
       "function.php"
