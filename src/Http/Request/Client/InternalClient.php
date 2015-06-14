@@ -97,11 +97,6 @@ class InternalClient extends RequestClient
             // Get the response via the Exception
             $response = $e->getResponse();
         }
-        catch (Exception $e)
-        {
-            // Generate an appropriate Response object
-            $response = BaseException::_handler($e);
-        }
 
         // Restore the previous request
         HttpRequest::$current = $previous;
