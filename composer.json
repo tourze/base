@@ -33,8 +33,8 @@
     "egulias/email-validator": "^1.2"
   },
   "autoload": {
-    "psr-0": {
-      "tourze\\": "src/"
+    "psr-4": {
+      "tourze\\": "src/tourze/"
     },
     "files": [
       "function.php"

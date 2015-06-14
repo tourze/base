@@ -158,17 +158,14 @@ class Base extends Object
     public static $expose = false;
 
     /**
+     * @var  array   用户查找文件的路径
+     */
+    public static $paths = [];
+
+    /**
      * @var  array   当前激活的第三方模块
      */
     protected static $_modules = [];
-
-    /**
-     * @var  array   用户查找文件的路径
-     */
-    protected static $_paths = [
-        APPPATH,
-        SYSPATH
-    ];
 
     /**
      * @var array  下面这些目录的文件需要完整查找
@@ -355,7 +352,7 @@ class Base extends Object
      */
     public static function includePaths()
     {
-        return self::$_paths;
+        return self::$paths;
     }
 
     /**
@@ -407,7 +404,7 @@ class Base extends Object
         if ($returnArray || in_array($dir, self::$_returnArrayDirectory))
         {
             // 从底部开始查起来
-            $paths = array_reverse(self::$_paths);
+            $paths = array_reverse(self::$paths);
             $found = [];
             foreach ($paths as $dir)
             {
@@ -420,7 +417,7 @@ class Base extends Object
         else
         {
             $found = false;
-            foreach (self::$_paths as $dir)
+            foreach (self::$paths as $dir)
             {
                 if (is_file($dir . $path))
                 {
@@ -463,7 +460,7 @@ class Base extends Object
         if (null === $paths)
         {
             // Use the default paths
-            $paths = self::$_paths;
+            $paths = self::$paths;
         }
 
         // Create an array for the files
