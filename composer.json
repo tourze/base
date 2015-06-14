@@ -15,7 +15,7 @@
     "symfony/config": "~2.6",
     "monolog/monolog": "~1.13",
     "hoa/mime": "~2.0",
-    "doctrine/inflector": "dev-master",
+    "doctrine/inflector": "~1.0",
     "hassankhan/config": "0.8.*",
     "symfony/yaml": "~2.6",
     "predis/predis": "^1.1@dev"
