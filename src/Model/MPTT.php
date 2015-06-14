@@ -406,11 +406,16 @@ class MPTT extends Model
 
         try
         {
-            DB::delete($this->_table_name)
+            $models = (new self)
                 ->where($this->leftColumn, ' >=', $this->left())
                 ->where($this->rightColumn, ' <= ', $this->right())
                 ->where($this->scopeColumn, ' = ', $this->scope())
-                ->execute($this->_db);
+                ->findAll();
+            /** @var static $model */
+            foreach ($models as $model)
+            {
+                $model->delete();
+            }
 
             $this->deleteSpace($this->left(), $this->size());
         }
