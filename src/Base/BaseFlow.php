@@ -2,6 +2,7 @@
 
 namespace tourze\Base;
 
+use tourze\Base\Exception\RouteNotFoundException;
 use tourze\Base\Flow\FlowHandlerInterface;
 use tourze\Base\Flow\FlowLayer;
 use tourze\Base\Helper\Url;
@@ -25,11 +26,18 @@ class BaseFlow extends FlowLayer implements FlowHandlerInterface
 
         Route::$lowerUri = true;
 
-        Route::set('default', '(<controller>(/<action>(/<id>)))')
-            ->defaults([
-                'controller' => 'Site',
-                'action'     => 'index',
-            ]);
+        try
+        {
+            Route::get('default');
+        }
+        catch (RouteNotFoundException $e)
+        {
+            Route::set('default', '(<controller>(/<action>(/<id>)))')
+                ->defaults([
+                    'controller' => 'Site',
+                    'action'     => 'index',
+                ]);
+        }
 
         $this->flow->contexts['uri'] = Url::detectUri();
     }

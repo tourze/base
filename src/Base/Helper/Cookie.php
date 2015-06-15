@@ -5,7 +5,7 @@ namespace tourze\Base\Helper;
 use tourze\Base\Exception\HelperException;
 
 /**
- * CookieHelper helper.
+ * Cookie助手类
  *
  * @package    Base
  * @category   Helpers
@@ -15,22 +15,22 @@ class Cookie
 {
 
     /**
-     * @var  string  Magic salt to add to the cookie
+     * @var  string  用于混淆cookie的字符串
      */
     public static $salt = null;
 
     /**
-     * @var  integer  NumberHelper of seconds before the cookie expires
+     * @var  integer  默认过期时间
      */
     public static $expiration = 0;
 
     /**
-     * @var  string  Restrict the path that the cookie is available to
+     * @var  string  默认作用路径
      */
     public static $path = '/';
 
     /**
-     * @var  string  Restrict the domain that the cookie is available to
+     * @var  string  默认作用域
      */
     public static $domain = null;
 
@@ -45,15 +45,10 @@ class Cookie
     public static $httpOnly = false;
 
     /**
-     * Gets the value of a signed cookie. Cookies without signatures will not
-     * be returned. If the cookie signature is present, but invalid, the cookie
-     * will be deleted.
+     * 获取指定key的cookie值，否则返回默认值
      *
-     *     // Get the "theme" cookie, or use "blue" if the cookie does not exist
-     *     $theme = CookieHelper::get('theme', 'blue');
-     *
-     * @param   string $key     cookie name
-     * @param   mixed  $default default value to return
+     * @param   string $key     cookie名
+     * @param   mixed  $default 默认值
      * @return  string
      */
     public static function get($key, $default = null)

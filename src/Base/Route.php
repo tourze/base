@@ -3,6 +3,7 @@
 namespace tourze\Base;
 
 use tourze\Base\Exception\BaseException;
+use tourze\Base\Exception\RouteNotFoundException;
 use tourze\Base\Helper\Arr;
 use tourze\Base\Helper\Url;
 
@@ -105,8 +106,9 @@ class Route extends Object
     {
         if ( ! isset(Route::$_routes[$name]))
         {
-            throw new BaseException('The requested route does not exist: :route',
-                [':route' => $name]);
+            throw new RouteNotFoundException('The requested route does not exist: :route', [
+                ':route' => $name
+            ]);
         }
 
         return Route::$_routes[$name];

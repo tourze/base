@@ -26,9 +26,6 @@ class HttpFlow extends FlowLayer implements FlowHandlerInterface
         // 上下文
         $this->flow->contexts['request'] = $request;
 
-        //var_dump($request->isInitial());
-        //echo "httpFlow: " . spl_object_hash($request) . "<br>\n";
-
         // 处理HTTP相关，例如过滤变量，初始化相关设置
         $flow = Flow::instance('sdk-http');
         $flow->contexts =& $this->flow->contexts;

@@ -2,7 +2,6 @@
 
 namespace tourze\Base;
 
-use ErrorException;
 use Exception;
 use tourze\Base\Exception\BaseException;
 
