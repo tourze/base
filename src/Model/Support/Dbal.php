@@ -36,7 +36,7 @@ trait Dbal
             $column = $this->_objectName . '.' . $column;
         }
 
-        $variable = 'v'.md5($column);
+        $variable = 'v'.md5($column . md5(serialize($value)));
 
         $this->_dbPending[] = [
             'name' => 'where',
@@ -67,9 +67,15 @@ trait Dbal
             $column = $this->_objectName . '.' . $column;
         }
 
+        $variable = 'v'.md5($column . md5(serialize($value)));
+
         $this->_dbPending[] = [
             'name' => 'andWhere',
-            'args' => ["$column $op $value"],
+            'args' => ["$column $op :$variable"],
+        ];
+        $this->_dbPending[] = [
+            'name' => 'setParameter',
+            'args' => [$variable, $value],
         ];
 
         return $this;
@@ -95,16 +101,25 @@ trait Dbal
         if ($op === null)
         {
             $where = $column;
+
+            $this->_dbPending[] = [
+                'name' => 'orWhere',
+                'args' => [$where],
+            ];
         }
         else
         {
-            $where = "$column $op $value";
-        }
+            $variable = 'v'.md5($column . md5(serialize($value)));
 
-        $this->_dbPending[] = [
-            'name' => 'orWhere',
-            'args' => [$where],
-        ];
+            $this->_dbPending[] = [
+                'name' => 'orWhere',
+                'args' => ["$column $op :$variable"],
+            ];
+            $this->_dbPending[] = [
+                'name' => 'setParameter',
+                'args' => [$variable, $value],
+            ];
+        }
 
         return $this;
     }
@@ -541,20 +556,12 @@ trait Dbal
      *
      * @param   string $param parameter key to replace
      * @param   mixed  $value value to use
-     *
-     * @return  $this
+     * @param null     $type
+     * @return $this
      */
-    public function param($param, $value)
+    public function param($param, $value, $type = null)
     {
-        $this->_dbPending[] = [
-            'name' => 'param',
-            'args' => [
-                $param,
-                $value
-            ],
-        ];
-
-        return $this;
+        return $this->setParameter($param, $value, $type);
     }
 
     /**
