@@ -1,9 +1,9 @@
 <?php
 
-use Slim\View;
 use tourze\Base\Config;
 use tourze\Base\I18n;
 use tourze\Base\Message;
+use tourze\View\View;
 
 if ( ! function_exists('__'))
 {
