@@ -27,34 +27,9 @@ class Base extends Object
     const VERSION = 'beta';
 
     /**
-     * @const  string  环境配置常量：线上正式
-     */
-    const PRODUCTION = 10;
-
-    /**
-     * @const  string  环境配置常量：预览版本
-     */
-    const STAGING = 20;
-
-    /**
-     * @const  string  环境配置常量：测试版本
-     */
-    const TESTING = 30;
-
-    /**
-     * @const  string  环境配置常量：开发版本
-     */
-    const DEVELOPMENT = 40;
-
-    /**
      * @const  string  文件缓存的格式
      */
     const FILE_CACHE = ":header \n\n// :name\n\n:data\n";
-
-    /**
-     * @var  string  当前的环境配置
-     */
-    public static $environment = self::DEVELOPMENT;
 
     /**
      * @var string
@@ -137,16 +112,6 @@ class Base extends Object
     public static $cacheLife = 60;
 
     /**
-     * @var string
-     */
-    public static $cacheKey = 'Base::findFile()';
-
-    /**
-     * @var  boolean  是否显示错误信息
-     */
-    public static $errors = true;
-
-    /**
      * @var  boolean  自定义X-Powered-By
      */
     public static $expose = false;
@@ -188,16 +153,6 @@ class Base extends Object
          * @link http://www.php.net/manual/function.mb-substitute-character.php
          */
         mb_substitute_character('none');
-
-        /**
-         * 当前的应用环境
-         */
-        if (isset($_SERVER['SDK_ENV']))
-        {
-            Base::$environment = constant('Base::' . strtoupper($_SERVER['SDK_ENV']));
-        }
-        // 运行环境配置
-        Base::$environment = Base::DEVELOPMENT;
 
         // Start an output buffer
         ob_start();
@@ -302,7 +257,8 @@ class Base extends Object
     }
 
     /**
-     * Loads a file within a totally empty scope and returns the output:
+     * 加载指定文件并返回内容
+     *
      *     $foo = self::load('foo.php');
      *
      * @param   string $file
@@ -315,23 +271,17 @@ class Base extends Object
     }
 
     /**
-     * Provides simple file-based caching for strings and arrays:
+     * 一个简单的内置缓存类
+     *
      *     // Set the "foo" cache
      *     self::cache('foo', 'hello, world');
      *     // Get the "foo" cache
      *     $foo = self::cache('foo');
-     * All caches are stored as PHP code, generated with [var_export][ref-var].
-     * Caching objects may not work as expected. Storing references or an
-     * object or array that has recursion will cause an E_FATAL.
-     * The cache directory and default cache lifetime is set by [self::init]
-     * [ref-var]: http://php.net/var_export
      *
      * @throws  BaseException
-     *
      * @param   string  $name     name of the cache
      * @param   mixed   $data     data to cache
      * @param   integer $lifetime number of seconds the cache is valid for
-     *
      * @return  mixed    for getting
      * @return  boolean  for setting
      */
@@ -407,39 +357,13 @@ class Base extends Object
     }
 
     /**
-     * PHP error handler, converts all errors into ErrorExceptions. This handler
-     * respects error_reporting settings.
-     *
-     * @param      $code
-     * @param      $error
-     * @param null $file
-     * @param null $line
-     *
-     * @throws ErrorException
-     * @return  true
-     */
-    public static function errorHandler($code, $error, $file = null, $line = null)
-    {
-        if (error_reporting() & $code)
-        {
-            // This error is not suppressed by current error reporting settings
-            // Convert the error into an ErrorException
-            throw new ErrorException($error, $code, 0, $file, $line);
-        }
-
-        // Do not execute the PHP error handler
-        return true;
-    }
-
-    /**
      * 版本号字符串
      *
      * @return string
      */
     public static function version()
     {
-        // 伪装成Yaf
-        return 'Yaf ' . self::VERSION;
+        return 'Tourze ' . self::VERSION;
     }
 
 }

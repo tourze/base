@@ -221,17 +221,14 @@ class Route extends Object
     protected $_routeRegex;
 
     /**
-     * Creates a new route. Sets the URI and regular expressions for keys.
-     * Routes should always be created with [Route::set] or they will not
-     * be properly stored.
+     * 创建一条新的路由记录
+     *
      *     $route = new Route($uri, $regex);
      * The $uri parameter should be a string for basic regex matching.
      *
-     * @param   string $uri   route URI pattern
-     * @param   array  $regex key patterns
-     * @param null     $identify
-     *
-     * @uses    Route::_compile
+     * @param   string $uri   URI
+     * @param   array  $regex 规则描述
+     * @param  string  $identify 路由名称
      */
     public function __construct($uri = null, $regex = null, $identify = null)
     {
@@ -253,7 +250,7 @@ class Route extends Object
         {
             $this->identify = $identify;
         }
-        // Store the compiled regex locally
+
         $this->_routeRegex = self::compile($uri, $regex);
     }
 
@@ -344,9 +341,7 @@ class Route extends Object
     }
 
     /**
-     * Tests if the route matches a given Request. A successful match will return
-     * all of the routed parameters as an array. A failed match will return
-     * boolean false.
+     * 检测路由是否与路由表中的记录有匹配
      *
      * @param   string $uri
      * @param null     $method
@@ -417,8 +412,7 @@ class Route extends Object
     }
 
     /**
-     * Returns whether this route is an external route
-     * to a remote controller.
+     * 是否是外部链接
      *
      * @return  boolean
      */
@@ -429,6 +423,7 @@ class Route extends Object
 
     /**
      * Generates a URI for the current route based on the parameters given.
+     *
      *     // Using the "default" route: "users/profile/10"
      *     $route->uri([
      *         'controller' => 'users',
@@ -437,11 +432,8 @@ class Route extends Object
      *     ]);
      *
      * @param   array $params URI parameters
-     *
      * @return  string
      * @throws  BaseException
-     * @uses    Route::REGEX_GROUP
-     * @uses    Route::REGEX_KEY
      */
     public function uri(array $params = null)
     {

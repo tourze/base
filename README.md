@@ -1,1 +1,3 @@
-#com.tourze.php.core
+# Tourze Framework
+
+Tourze Framework is a framework that inspired much from Kohana.
