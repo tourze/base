@@ -5,7 +5,7 @@ namespace tourze\Base\Helper;
 class Flash
 {
 
-    public static $flashKey = 'sdk_flash';
+    public static $flashKey = 'tourze_flash';
 
     /**
      * @param $key

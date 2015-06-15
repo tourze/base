@@ -6,7 +6,7 @@ use Exception;
 use tourze\Base\Exception\BaseException;
 
 /**
- * sdk基础类，包含一些最基础和常用的操作：
+ * 基础类，包含一些最基础和常用的操作：
  *
  * - 环境初始化
  * - 类的自动加载

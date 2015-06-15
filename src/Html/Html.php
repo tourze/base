@@ -6,7 +6,7 @@ use tourze\Base\Object;
 /**
  * HTML助手基础
  *
- * @package sdk
+ * @package tourze\Html
  */
 class Html extends Object
 {

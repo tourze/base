@@ -27,7 +27,7 @@ class HttpFlow extends FlowLayer implements FlowHandlerInterface
         $this->flow->contexts['request'] = $request;
 
         // 处理HTTP相关，例如过滤变量，初始化相关设置
-        $flow = Flow::instance('sdk-http');
+        $flow = Flow::instance('tourze-http');
         $flow->contexts =& $this->flow->contexts;
         $flow->layers = [
             'tourze\Http\Flow\HttpInit', // HTTP初始化
