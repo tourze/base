@@ -13,7 +13,6 @@ use tourze\Base\Exception\UnknownPropertyException;
  *
  * @package    tourze\Base
  * @category   Base
- * @access     public
  * @author     lzp <25803471@qq.com>
  */
 class Object
