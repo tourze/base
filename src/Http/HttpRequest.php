@@ -13,7 +13,7 @@ use tourze\Http\Request\Client\ExternalClient;
 use tourze\Http\Request\Client\InternalClient;
 use tourze\Http\Request\Exception\RequestException;
 use tourze\Http\Request\RequestClient;
-use tourze\Base\Route;
+use tourze\Route\Route;
 use tourze\Base\Security\Valid;
 
 /**
