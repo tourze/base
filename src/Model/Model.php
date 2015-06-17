@@ -75,7 +75,7 @@ class Model extends Object implements serializable, Finder
     protected function _validation()
     {
         // 绑定一些必要的变量
-        $this->_validation = Validation::factory($this->_object)
+        $this->_validation = Validation::factory($this->_fullObjectData())
             ->bind(':model', $this)
             ->bind(':originalValues', $this->_originalValues)
             ->bind(':changed', $this->_changed);
@@ -97,6 +97,22 @@ class Model extends Object implements serializable, Finder
         {
             $this->_validation->label($field, $label);
         }
+    }
+
+    protected function _fullObjectData()
+    {
+        $object = $this->_object;
+
+        $properties = get_object_vars($this);
+        foreach ($properties as $k => $v)
+        {
+            if ($k{0} != '_')
+            {
+                $object[$k] = $v;
+            }
+        }
+
+        return $object;
     }
 
     /**
@@ -697,6 +713,15 @@ class Model extends Object implements serializable, Finder
      */
     public function values(array $values, array $expected = null)
     {
+        $properties = get_object_vars($this);
+        foreach ($values as $k => $v)
+        {
+            if ($k{0} != '_' && isset($properties[$k]))
+            {
+                $this->$k = $v;
+            }
+        }
+
         // 默认只导入跟模型相关字段
         if (null === $expected)
         {
