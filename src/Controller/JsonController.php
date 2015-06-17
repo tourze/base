@@ -2,6 +2,11 @@
 
 namespace tourze\Controller;
 
+/**
+ * JSON控制器
+ *
+ * @package tourze\Controller
+ */
 abstract class JsonController extends Controller
 {
 
