@@ -1107,11 +1107,18 @@ class Model extends Object implements serializable, Finder
             }
         }
 
+        if (method_exists('\\tourze\\Model\\Feature\\Filter', $filter))
+        {
+            $filter = '\\tourze\\Model\\Feature\\Filter::' . $filter;
+        }
+
+        // 如果filter是数组，那么直接执行
         if (is_array($filter) || ! is_string($filter))
         {
             // This is either a callback as an array or a lambda
             $value = call_user_func_array($filter, $params);
         }
+        // 不带::，即为普通函数
         elseif (false === strpos($filter, '::'))
         {
             // Use a function call

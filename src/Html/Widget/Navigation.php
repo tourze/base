@@ -5,7 +5,7 @@ namespace tourze\Html\Widget;
 use tourze\Html\Widget;
 use tourze\Html\Widget\Navigation\Menu;
 
-class Navigation extends Widget
+class Navigation extends Widget implements WidgetInterface
 {
 
     static private $_menus = [];
