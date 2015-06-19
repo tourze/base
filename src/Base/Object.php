@@ -30,6 +30,8 @@ class Object
      */
     public static function instance($args = null)
     {
+        $class = self::className();
+
         if (is_array($args))
         {
             $instanceKey = md5(json_encode($args));
@@ -42,10 +44,10 @@ class Object
         {
             $instanceKey = (string) $args;
         }
+        $instanceKey = $class . ':' . $instanceKey;
 
         if ( ! isset(self::$_instances[$instanceKey]))
         {
-            $class = self::className();
             self::$_instances[$instanceKey] = is_array($args) ? new $class($args) : new $class;
         }
         return self::$_instances[$instanceKey];

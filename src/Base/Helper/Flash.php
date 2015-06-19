@@ -87,6 +87,9 @@ class Flash extends Object implements ArrayAccess, IteratorAggregate, Countable
             'next' => [], //flash messages for next request
             'now'  => [] //flash messages for current request
         ];
+
+        // 加载会话消息
+        $this->loadMessages();
     }
 
     /**
