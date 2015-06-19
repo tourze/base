@@ -49,7 +49,7 @@ class Flash extends Object implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Keep flash messages from previous request for subsequent request
      */
-    public function flashKeep()
+    public static function flashKeep()
     {
         self::instance()->keep();
     }
@@ -57,7 +57,7 @@ class Flash extends Object implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Get all flash messages
      */
-    public function flashData()
+    public static function flashData()
     {
         return self::instance()->getMessages();
     }
