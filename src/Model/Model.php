@@ -716,7 +716,7 @@ class Model extends Object implements serializable, Finder
         $properties = get_object_vars($this);
         foreach ($values as $k => $v)
         {
-            if ($k{0} != '_' && isset($properties[$k]))
+            if ($k{0} != '_' && array_key_exists($k, $properties))
             {
                 $this->$k = $v;
             }
