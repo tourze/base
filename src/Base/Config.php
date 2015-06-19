@@ -31,7 +31,7 @@ class Config extends VendorConfig
      * 继承原来的load方法，实现级联系统的配置文件自动加载
      *
      * @param array|string $path
-     * @return \Noodlehaus\Config
+     * @return static
      */
     public static function load($path)
     {
