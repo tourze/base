@@ -40,8 +40,12 @@
     ]
   },
   "scripts": {
-    "post-install-cmd": "tourze\\Composer\\Composer::postInstall",
-    "post-update-cmd": "tourze\\Composer\\Composer::postUpdate"
+    "post-install-cmd": [
+      "tourze\\Composer\\Composer::postInstall"
+    ],
+    "post-update-cmd": [
+      "tourze\\Composer\\Composer::postUpdate"
+    ]
   },
   "repositories": [
     {

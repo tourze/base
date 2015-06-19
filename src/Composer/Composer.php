@@ -31,6 +31,7 @@ class Composer
 
         $gitDir = $composer->getConfig()->get('vendor-dir') . '/' . self::$packageDir . '/.git';
 
+        echo "checking $gitDir\n";
         if (is_dir($gitDir))
         {
             echo "removing $gitDir\n";
