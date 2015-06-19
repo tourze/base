@@ -3,6 +3,7 @@
 namespace tourze\View;
 
 use Exception;
+use tourze\Base\Debug;
 use tourze\Base\Exception\BaseException;
 use tourze\View\Exception\ViewException;
 
@@ -253,13 +254,7 @@ class View
         }
         catch (Exception $e)
         {
-            /**
-             * Display the exception message.
-             * We use this method here because it's impossible to throw an
-             * exception from __toString().
-             */
-            $errorResponse = BaseException::_handler($e);
-            return $errorResponse->body;
+            return $errorResponse = Debug::debugger()->handleException($e);
         }
     }
 

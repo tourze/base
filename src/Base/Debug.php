@@ -14,6 +14,11 @@ class Debug
 {
 
     /**
+     * @var Run
+     */
+    protected static $_debugger = null;
+
+    /**
      * @var bool 是否激活了内置的调试和错误处理方法
      */
     public static $enabled = false;
@@ -26,6 +31,14 @@ class Debug
         E_ERROR,
         E_USER_ERROR
     ];
+
+    /**
+     * @return \Whoops\Run
+     */
+    public static function debugger()
+    {
+        return self::$_debugger;
+    }
 
     /**
      * 激活调试器
