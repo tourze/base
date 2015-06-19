@@ -26,10 +26,10 @@
     "overtrue/pinyin": "^2.5",
     "ramsey/uuid": "^2.8",
     "respect/validation": "^0.9.3",
-    "league/oauth2-client": "^0.11.0",
     "euantor/simple-gravatar": "^1.0",
     "riimu/kit-csrf": "^2.3",
-    "egulias/email-validator": "^1.2"
+    "egulias/email-validator": "^1.2",
+    "symfony/filesystem": "^2.7"
   },
   "autoload": {
     "psr-4": {
@@ -38,6 +38,10 @@
     "files": [
       "init.php"
     ]
+  },
+  "scripts": {
+    "post-install-cmd": "tourze\\Composer\\Composer::postInstall",
+    "post-update-cmd": "tourze\\Composer\\Composer::postUpdate"
   },
   "repositories": [
     {
