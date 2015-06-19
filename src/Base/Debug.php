@@ -50,9 +50,9 @@ class Debug
             return;
         }
 
-        $whoops = new Run;
-        $whoops->pushHandler(new PrettyPageHandler);
-        $whoops->register();
+        self::$_debugger = new Run;
+        self::$_debugger->pushHandler(new PrettyPageHandler);
+        self::$_debugger->register();
 
         self::$enabled = true;
     }
