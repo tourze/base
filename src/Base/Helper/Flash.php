@@ -33,6 +33,7 @@ class Flash extends Object implements ArrayAccess, IteratorAggregate, Countable
     public static function flash($key, $value)
     {
         self::instance()->set($key, $value);
+        self::instance()->save();
     }
 
     /**
@@ -59,7 +60,11 @@ class Flash extends Object implements ArrayAccess, IteratorAggregate, Countable
      */
     public static function flashData()
     {
-        return self::instance()->getMessages();
+        $result = self::instance()->getMessages();
+
+        self::instance()->save();
+
+        return $result;
     }
 
     /**
