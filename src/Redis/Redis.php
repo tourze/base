@@ -30,6 +30,8 @@ class Redis extends Object
      */
     public static function instance($key = 'default')
     {
+        $key = self::instanceKey($key);
+
         if ( ! isset(self::$_instances[$key]))
         {
             $config = Config::load('redis')->get($key);

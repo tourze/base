@@ -21,14 +21,12 @@ class Object
     protected static $_instances = [];
 
     /**
-     * 返回指定实例
+     * 根据参数生成instance key
      *
-     * @static
-     * @access public
-     * @param  mixed  $args 实例传参，直接传给构造方法
-     * @return $this
+     * @param null $args
+     * @return string
      */
-    public static function instance($args = null)
+    protected static function instanceKey($args = null)
     {
         $class = self::className();
 
@@ -45,6 +43,22 @@ class Object
             $instanceKey = (string) $args;
         }
         $instanceKey = $class . ':' . $instanceKey;
+
+        return $instanceKey;
+    }
+
+    /**
+     * 返回指定实例
+     *
+     * @static
+     * @access public
+     * @param  mixed  $args 实例传参，直接传给构造方法
+     * @return $this
+     */
+    public static function instance($args = null)
+    {
+        $class = self::className();
+        $instanceKey = self::instanceKey($args);
 
         if ( ! isset(self::$_instances[$instanceKey]))
         {

@@ -34,6 +34,66 @@ trait EventHandlers
     }
 
     /**
+     * 图像的加载被中断。
+     *
+     * @return null|string|array
+     */
+    public function getOnAbort()
+    {
+        return $this->getAttribute('onAbort');
+    }
+
+    /**
+     * 图像的加载被中断。
+     *
+     * @param $onAbort
+     */
+    public function setOnAbort($onAbort)
+    {
+        $this->setAttribute('onAbort', $onAbort);
+    }
+
+    /**
+     * 元素失去焦点
+     *
+     * @return null|string|array
+     */
+    public function getOnBlur()
+    {
+        return $this->getAttribute('onBlur');
+    }
+
+    /**
+     * 元素失去焦点
+     *
+     * @param $onBlur
+     */
+    public function setOnBlur($onBlur)
+    {
+        $this->setAttribute('onBlur', $onBlur);
+    }
+
+    /**
+     * 域的内容被改变
+     *
+     * @return null|string|array
+     */
+    public function getOnChange()
+    {
+        return $this->getAttribute('onChange');
+    }
+
+    /**
+     * 域的内容被改变
+     *
+     * @param $onChange
+     */
+    public function setOnChange($onChange)
+    {
+        $this->setAttribute('onChange', $onChange);
+    }
+
+    /**
      * 当用户点击某个对象时调用的事件句柄
      *
      * @return null|string|array
