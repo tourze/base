@@ -1,12 +1,13 @@
 <?php
 
 namespace tourze\Html;
+
+use tourze\Html\Feature\Base;
 use tourze\Html\Feature\Common;
 use tourze\Html\Feature\EventHandlers;
 use tourze\Html\Feature\InternetExplorerAttributes;
 use tourze\Html\Feature\KeyboardMouseAttributes;
 use tourze\Html\Feature\StandardEventAttributes;
-use tourze\Html\Feature\StandardEventMethods;
 
 /**
  * HTML标签基础类
@@ -27,6 +28,9 @@ use tourze\Html\Feature\StandardEventMethods;
  * @property mixed   tabIndex         规定元素的 tab 键次序。
  * @property mixed   title            规定有关元素的额外信息。
  * @property mixed   translate        规定是否应该翻译元素内容。
+ * @method   mixed   combineAttributes()
+ * @method   void    setAttribute($name, $value)
+ * @method   null|string|array getAttribute($name)
  * @package tourze\Html
  */
 class Tag extends Html
@@ -46,61 +50,6 @@ class Tag extends Html
      * @var bool 是否成对标签
      */
     protected $_tagClosed = true;
-
-    /**
-     * @var  array  默认标签的排序方式
-     */
-    public static $attributeOrder = [
-        'action',
-        'method',
-        'type',
-        'id',
-        'name',
-        'value',
-        'href',
-        'src',
-        'width',
-        'height',
-        'cols',
-        'rows',
-        'size',
-        'maxLength',
-        'rel',
-        'media',
-        'accept-charset',
-        'accept',
-        'tabIndex',
-        'accessKey',
-        'alt',
-        'title',
-        'class',
-        'style',
-        'selected',
-        'checked',
-        'readonly',
-        'disabled',
-        'body',
-    ];
-
-    /**
-     * Convert special characters to HTML entities. All untrusted content
-     * should be passed through this method to prevent XSS injections.
-     *     echo self::chars($username);
-     *
-     * @param   string  $value        string to convert
-     * @param   boolean $doubleEncode encode existing entities
-     *
-     * @return  string
-     */
-    public static function chars($value, $doubleEncode = true)
-    {
-        return htmlspecialchars((string) $value, ENT_QUOTES, 'utf-8', $doubleEncode);
-    }
-
-    /**
-     * @var array 当前标签的属性值
-     */
-    protected $_attributes = [];
 
     /**
      * 构造方法
@@ -142,78 +91,29 @@ class Tag extends Html
     }
 
     use
+        Base,
         Common,
         EventHandlers,
         InternetExplorerAttributes,
         KeyboardMouseAttributes,
-        StandardEventAttributes {
-
-    };
-
-    /**
-     * 读取指定属性值
-     *
-     * @param $name
-     *
-     * @return null|string|array
-     */
-    protected function getAttribute($name)
+        StandardEventAttributes
     {
-        return isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
-    }
 
-    /**
-     * 设置属性值
-     *
-     * @param $name
-     * @param $value
-     */
-    protected function setAttribute($name, $value)
-    {
-        $this->_attributes[$name] = $value;
-    }
+        Base::getAttribute insteadof Common;
+        Base::getAttribute insteadof EventHandlers;
+        Base::getAttribute insteadof InternetExplorerAttributes;
+        Base::getAttribute insteadof KeyboardMouseAttributes;
+        Base::getAttribute insteadof StandardEventAttributes;
 
-    /**
-     * 合并属性值
-     *
-     * @return string
-     */
-    protected function combineAttributes()
-    {
-        $attributes = $this->_attributes;
+        Base::setAttribute insteadof Common;
+        Base::setAttribute insteadof EventHandlers;
+        Base::setAttribute insteadof InternetExplorerAttributes;
+        Base::setAttribute insteadof KeyboardMouseAttributes;
+        Base::setAttribute insteadof StandardEventAttributes;
 
-        // 对属性进行排序
-        $sorted = [];
-        foreach (self::$attributeOrder as $key)
-        {
-            if (isset($attributes[$key]))
-            {
-                $sorted[$key] = $attributes[$key];
-            }
-        }
-        // 再合并
-        $attributes = $sorted + $attributes;
-
-        $compiled = '';
-        foreach ($attributes as $key => $value)
-        {
-            if (null === $value)
-            {
-                // Skip attributes that have null values
-                continue;
-            }
-
-            // Add the attribute key
-            $compiled .= ' ' . strtolower($key);
-
-            if ($value)
-            {
-                // Add the attribute value
-                $compiled .= '="' . self::chars($value) . '"';
-            }
-        }
-
-        return $compiled;
+        //Base::combineAttributes as combineAttributes;
+        //Base::getAttribute as getAttribute;
+        //Base::setAttribute as setAttribute;
     }
 
     /**

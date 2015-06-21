@@ -32,4 +32,24 @@ trait EventHandlers
     protected function setAttribute($name, $value)
     {
     }
+
+    /**
+     * 当用户点击某个对象时调用的事件句柄
+     *
+     * @return null|string|array
+     */
+    public function getOnClick()
+    {
+        return $this->getAttribute('onClick');
+    }
+
+    /**
+     * 当用户点击某个对象时调用的事件句柄
+     *
+     * @param $onClick
+     */
+    public function setOnClick($onClick)
+    {
+        $this->setAttribute('onClick', $onClick);
+    }
 }
