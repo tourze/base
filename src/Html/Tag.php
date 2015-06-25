@@ -66,6 +66,15 @@ class Tag extends Html
             $body = implode('', $requestArgs);
         }
 
+        foreach ($args as $k => $v)
+        {
+            if (strpos($k, 'data-'))
+            {
+                $this->setAttribute($k, $v);
+                unset($args[$k]);
+            }
+        }
+
         parent::__construct($args);
         $this->_innerBody = $body;
     }
