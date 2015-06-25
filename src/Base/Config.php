@@ -13,6 +13,11 @@ class Config extends VendorConfig
 {
 
     /**
+     * @var array
+     */
+    protected static $_pathCache = [];
+
+    /**
      * @var array 允许从其中加载配置文件
      */
     public static $configPaths = [];
@@ -30,14 +35,21 @@ class Config extends VendorConfig
     /**
      * 继承原来的load方法，实现级联系统的配置文件自动加载
      *
-     * @param array|string $path
+     * @param array|string $path 缓存文件路径，同时也是缓存的key
+     * @param bool         $reload
      * @return static
      */
-    public static function load($path)
+    public static function load($path, $reload = false)
     {
         if ( ! is_array($path))
         {
             $path = [$path];
+        }
+
+        $cacheKey = md5(json_encode($path));
+        if ( ! $reload && isset(self::$_pathCache[$cacheKey]))
+        {
+            return self::$_pathCache[$cacheKey];
         }
 
         $finalPath = [];
@@ -66,7 +78,7 @@ class Config extends VendorConfig
             }
         }
 
-        return parent::load($finalPath);
+        return self::$_pathCache[$cacheKey] = parent::load($finalPath);
     }
 
     /**
