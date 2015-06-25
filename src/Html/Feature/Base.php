@@ -62,10 +62,13 @@ trait Base
      *
      * @param $name
      * @param $value
+     * @return $this
      */
-    protected function setAttribute($name, $value)
+    public function setAttribute($name, $value)
     {
         $this->_attributes[$name] = $value;
+
+        return $this;
     }
 
     /**
