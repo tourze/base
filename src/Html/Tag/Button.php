@@ -25,6 +25,12 @@ class Button extends Tag implements InlineElement
 
     protected $_tagName = 'button';
 
+    public function init()
+    {
+        // 默认的type
+        $this->type = 'button';
+    }
+
     /**
      * @return null|string|array
      */
