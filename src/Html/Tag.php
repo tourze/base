@@ -29,7 +29,7 @@ use tourze\Html\Feature\StandardEventAttributes;
  * @property mixed   title            规定有关元素的额外信息。
  * @property mixed   translate        规定是否应该翻译元素内容。
  * @method   mixed   combineAttributes()
- * @method   void    setAttribute($name, $value)
+ * @method   $this    setAttribute($name, $value)
  * @method   null|string|array getAttribute($name)
  * @package tourze\Html
  */
