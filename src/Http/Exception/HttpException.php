@@ -70,9 +70,13 @@ abstract class HttpException extends BaseException
      */
     public function getResponse()
     {
-        return BaseException::response($this);
+        BaseException::response($this);
     }
 
+    /**
+     * @param null $uri
+     * @return $this
+     */
     public function location($uri = null)
     {
         return $this;

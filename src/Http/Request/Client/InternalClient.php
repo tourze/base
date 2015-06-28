@@ -31,8 +31,8 @@ class InternalClient extends RequestClient
      *
      * @param   HttpRequest  $request
      * @param   HttpResponse $response
-     *
-     * @return  HttpResponse
+     * @return \tourze\Http\HttpResponse
+     * @throws \tourze\Base\Exception\BaseException
      */
     public function executeRequest(HttpRequest $request, HttpResponse $response)
     {

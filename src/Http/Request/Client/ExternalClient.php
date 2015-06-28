@@ -39,7 +39,6 @@ abstract class ExternalClient extends RequestClient
      * Use:
      *  - CurlClient (default)
      *  - HttpClient
-     *  - StreamClient
      *
      * @var     string    defines the external client to use by default
      */

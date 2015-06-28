@@ -68,8 +68,8 @@ class AuthCode
         $cryptKey = $keyA . md5($keyA . $keyC);
         $keyLength = strlen($cryptKey);
 
-        // 明文，前10位用来保存时间戳，解密时验证数据有效性，10到26位用来保存$keyb(密匙b)，解密时会通过这个密匙验证数据完整性
-        // 如果是解码的话，会从第$ckey_length位开始，因为密文前$ckey_length位保存 动态密匙，以保证解密正确
+        // 明文，前10位用来保存时间戳，解密时验证数据有效性，10到26位用来保存$keyB(密匙b)，解密时会通过这个密匙验证数据完整性
+        // 如果是解码的话，会从第$cKeyLength位开始，因为密文前$cKeyLength位保存 动态密匙，以保证解密正确
         $input = $operation == 'DECODE'
             ? base64_decode(substr($input, $challengeKeyLength))
             : sprintf('%010d', $expiry ? $expiry + time() : 0) . substr(md5($input . $keyB), 0, 16) . $input;

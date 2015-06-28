@@ -8,9 +8,7 @@ use tourze\Http\HttpResponse;
 use tourze\Http\Request\Exception\ClientRecursionException;
 
 /**
- * Request Client. Processes a [Request] and handles [HTTP_Caching] if
- * available. Will usually return a [Response] object as a result of the
- * request unless an unexpected error occurs.
+ * 请求的具体实现类，支持两种请求方式，一种是内部请求，一种是外部请求
  *
  * @package    Base
  * @category   Base
