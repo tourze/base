@@ -68,7 +68,7 @@ class Tag extends Html
 
         foreach ($args as $k => $v)
         {
-            if (strpos($k, 'data-'))
+            if (strpos($k, 'data-') !== false)
             {
                 $this->setAttribute($k, $v);
                 unset($args[$k]);
