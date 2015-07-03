@@ -1,19 +1,19 @@
 <?php
 
-namespace tourze\Http\Flow;
+namespace tourze\Bootstrap\Flow\Http;
 
-use tourze\Base\Flow\FlowHandlerInterface;
-use tourze\Base\Flow\FlowLayer;
+use tourze\Flow\HandlerInterface;
+use tourze\Flow\Layer;
 use tourze\Base\Helper\Cookie;
 use tourze\Http\Http;
-use tourze\Http\HttpRequest;
+use tourze\Http\Request;
 
 /**
  * HTTP初始化
  *
  * @package tourze\Mvc\Flow
  */
-class HttpInit extends FlowLayer implements FlowHandlerInterface
+class Init extends Layer implements HandlerInterface
 {
 
     /**
@@ -29,7 +29,7 @@ class HttpInit extends FlowLayer implements FlowHandlerInterface
             Http::$protocol = $_SERVER['SERVER_PROTOCOL'];
         }
 
-        /** @var HttpRequest $request */
+        /** @var Request $request */
         $request =& $this->flow->contexts['request'];
         //var_dump($request->isInitial());
         //echo "httpInit1:" . spl_object_hash($request) . "<br>\n";
@@ -40,7 +40,7 @@ class HttpInit extends FlowLayer implements FlowHandlerInterface
             if (
                 ( ! empty($_SERVER['HTTPS']) && filter_var($_SERVER['HTTPS'], FILTER_VALIDATE_BOOLEAN))
                 || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && 'https' === $_SERVER['HTTP_X_FORWARDED_PROTO'])
-                && in_array($_SERVER['REMOTE_ADDR'], HttpRequest::$trustedProxies)
+                && in_array($_SERVER['REMOTE_ADDR'], Request::$trustedProxies)
             )
             {
                 $request->secure = true;
@@ -54,7 +54,7 @@ class HttpInit extends FlowLayer implements FlowHandlerInterface
             }
             else
             {
-                $method = HttpRequest::GET;
+                $method = Request::GET;
             }
 
             if (isset($_SERVER['HTTP_REFERER']))
@@ -66,7 +66,7 @@ class HttpInit extends FlowLayer implements FlowHandlerInterface
             if (isset($_SERVER['HTTP_USER_AGENT']))
             {
                 // Browser type
-                HttpRequest::$userAgent = $_SERVER['HTTP_USER_AGENT'];
+                Request::$userAgent = $_SERVER['HTTP_USER_AGENT'];
             }
 
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']))
@@ -77,7 +77,7 @@ class HttpInit extends FlowLayer implements FlowHandlerInterface
 
             if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])
                 && isset($_SERVER['REMOTE_ADDR'])
-                && in_array($_SERVER['REMOTE_ADDR'], HttpRequest::$trustedProxies)
+                && in_array($_SERVER['REMOTE_ADDR'], Request::$trustedProxies)
             )
             {
                 // Use the forwarded IP address, typically set when the
@@ -85,30 +85,30 @@ class HttpInit extends FlowLayer implements FlowHandlerInterface
                 // Format: "X-Forwarded-For: client1, proxy1, proxy2"
                 $clientIps = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
 
-                HttpRequest::$clientIp = array_shift($clientIps);
+                Request::$clientIp = array_shift($clientIps);
 
                 unset($clientIps);
             }
             elseif (isset($_SERVER['HTTP_CLIENT_IP'])
                 && isset($_SERVER['REMOTE_ADDR'])
-                && in_array($_SERVER['REMOTE_ADDR'], HttpRequest::$trustedProxies)
+                && in_array($_SERVER['REMOTE_ADDR'], Request::$trustedProxies)
             )
             {
                 // Use the forwarded IP address, typically set when the
                 // client is using a proxy server.
                 $clientIps = explode(',', $_SERVER['HTTP_CLIENT_IP']);
 
-                HttpRequest::$clientIp = array_shift($clientIps);
+                Request::$clientIp = array_shift($clientIps);
 
                 unset($clientIps);
             }
             elseif (isset($_SERVER['REMOTE_ADDR']))
             {
                 // The remote IP address
-                HttpRequest::$clientIp = $_SERVER['REMOTE_ADDR'];
+                Request::$clientIp = $_SERVER['REMOTE_ADDR'];
             }
 
-            if ($method !== HttpRequest::GET)
+            if ($method !== Request::GET)
             {
                 // Ensure the raw body is saved for future use
                 $body = file_get_contents('php://input');

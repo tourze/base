@@ -5,8 +5,8 @@ namespace tourze\Http\Request\Client;
 use HttpEncodingException;
 use HttpRequestException;
 use tourze\Base\Exception\BaseException;
-use tourze\Http\HttpResponse;
-use tourze\Http\HttpRequest;
+use tourze\Http\Response;
+use tourze\Http\Request;
 use tourze\Http\Request\Exception\RequestException;
 
 /**
@@ -54,24 +54,24 @@ class HttpClient extends ExternalClient
      * Sends the HTTP message [Request] to a remote server and processes
      * the response.
      *
-     * @param  HttpRequest  $request response to send
-     * @param  HttpResponse $response
+     * @param  Request  $request response to send
+     * @param  Response $response
      *
-     * @return HttpResponse
+     * @return Response
      * @throws RequestException
      * @throws BaseException
      */
-    public function _sendMessage(HttpRequest $request, HttpResponse $response)
+    public function _sendMessage(Request $request, Response $response)
     {
         $httpMethodMapping = [
-            HttpRequest::GET     => \HTTPRequest::METH_GET,
-            HttpRequest::HEAD    => \HTTPRequest::METH_HEAD,
-            HttpRequest::POST    => \HTTPRequest::METH_POST,
-            HttpRequest::PUT     => \HTTPRequest::METH_PUT,
-            HttpRequest::DELETE  => \HTTPRequest::METH_DELETE,
-            HttpRequest::OPTIONS => \HTTPRequest::METH_OPTIONS,
-            HttpRequest::TRACE   => \HTTPRequest::METH_TRACE,
-            HttpRequest::CONNECT => \HTTPRequest::METH_CONNECT,
+            Request::GET     => \HTTPRequest::METH_GET,
+            Request::HEAD    => \HTTPRequest::METH_HEAD,
+            Request::POST    => \HTTPRequest::METH_POST,
+            Request::PUT     => \HTTPRequest::METH_PUT,
+            Request::DELETE  => \HTTPRequest::METH_DELETE,
+            Request::OPTIONS => \HTTPRequest::METH_OPTIONS,
+            Request::TRACE   => \HTTPRequest::METH_TRACE,
+            Request::CONNECT => \HTTPRequest::METH_CONNECT,
         ];
 
         // Create an http request object
@@ -87,7 +87,7 @@ class HttpClient extends ExternalClient
         $httpRequest->setHeaders($request->headers()->getArrayCopy());
         $httpRequest->setCookies($request->cookie());
         $httpRequest->setQueryData($request->query());
-        if ($request->method == HttpRequest::PUT)
+        if ($request->method == Request::PUT)
         {
             $httpRequest->addPutData($request->body);
         }

@@ -1,6 +1,6 @@
 <?php
 
-namespace tourze\Redis;
+namespace tourze\NoSQL\Redis;
 
 use tourze\Base\Config;
 use tourze\Base\Helper\Arr;

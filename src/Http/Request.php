@@ -20,7 +20,7 @@ use tourze\Base\Security\Valid;
  * Request. Uses the [Route] class to determine what
  * [Controller] to send the request to.
  *
- * @property   HttpHeader    header
+ * @property   Header    header
  * @property   RequestClient client
  * @property   Route         route
  * @property   array         routes
@@ -38,7 +38,7 @@ use tourze\Base\Security\Valid;
  * @package    Base
  * @category   Base
  */
-class HttpRequest extends Object
+class Request extends Object
 {
 
     // HTTP方法列表
@@ -70,12 +70,12 @@ class HttpRequest extends Object
     ];
 
     /**
-     * @var  HttpRequest  main request instance
+     * @var  Request  main request instance
      */
     public static $initial;
 
     /**
-     * @var  HttpRequest  currently executing request instance
+     * @var  Request  currently executing request instance
      */
     public static $current;
 
@@ -89,12 +89,12 @@ class HttpRequest extends Object
      * @param   bool|string $uri            URI of the request
      * @param   array       $clientParams   An array of params to pass to the request client
      * @param   array       $injectedRoutes An array of routes to use, for testing
-     * @return  HttpRequest|void
+     * @return  Request|void
      * @throws  BaseException
      */
     public static function factory($uri = true, $clientParams = [], $injectedRoutes = [])
     {
-        $request = new HttpRequest($uri, $clientParams, $injectedRoutes);
+        $request = new Request($uri, $clientParams, $injectedRoutes);
 
         return $request;
     }
@@ -106,11 +106,11 @@ class HttpRequest extends Object
      *
      *     $request = Request::current();
      *
-     * @return  HttpRequest
+     * @return  Request
      */
     public static function current()
     {
-        return HttpRequest::$current;
+        return Request::$current;
     }
 
     /**
@@ -122,21 +122,21 @@ class HttpRequest extends Object
      *     if (Request::initial() === Request::current())
      *          // Do something useful
      *
-     * @return  HttpRequest
+     * @return  Request
      */
     public static function initial()
     {
-        return HttpRequest::$initial;
+        return Request::$initial;
     }
 
     /**
      * Process a request to find a matching route
      *
-     * @param   HttpRequest|object $request Request
+     * @param   Request|object $request Request
      * @param   array              $routes  Route
      * @return  array
      */
-    public static function process(HttpRequest $request, $routes = null)
+    public static function process(Request $request, $routes = null)
     {
         // Load routes
         $routes = (empty($routes)) ? Route::all() : $routes;
@@ -346,7 +346,7 @@ class HttpRequest extends Object
     }
 
     /**
-     * @var  HttpHeader  headers to sent as part of the request
+     * @var  Header  headers to sent as part of the request
      */
     protected $_header;
 
@@ -495,7 +495,7 @@ class HttpRequest extends Object
         $clientParams = is_array($clientParams) ? $clientParams : [];
 
         // Initialise the header
-        $this->header = new HttpHeader([]);
+        $this->header = new Header([]);
 
         // Assign injected routes
         $this->routes = $injectedRoutes;
@@ -505,7 +505,7 @@ class HttpRequest extends Object
         $uri = array_shift($splitUri);
 
         // Initial request has global $_GET already applied
-        if (null !== HttpRequest::$initial)
+        if (null !== Request::$initial)
         {
             if ($splitUri)
             {
@@ -655,15 +655,16 @@ class HttpRequest extends Object
      * no headers are sent.
      *     $request->execute();
      *
-     * @return  HttpResponse
-     * @throws  RequestException
-     * @throws  Http404Exception
+     * @return \tourze\Http\Response
+     * @throws \tourze\Http\Exception\HttpException
+     * @throws \tourze\Http\Request\Exception\ClientRecursionException
+     * @throws \tourze\Http\Request\Exception\RequestException
      */
     public function execute()
     {
         if ( ! $this->external)
         {
-            $processed = HttpRequest::process($this, $this->routes);
+            $processed = Request::process($this, $this->routes);
 
             if ($processed)
             {
@@ -714,11 +715,12 @@ class HttpRequest extends Object
 
         if ( ! $this->route instanceof Route)
         {
-            return HttpException::factory(404, 'Unable to find a route to match the URI: :uri', [
+            $e = HttpException::factory(404, 'Unable to find a route to match the URI: :uri', [
                 ':uri' => $this->uri,
-            ])
-                ->request($this)
-                ->getResponse();
+            ]);
+            $e->request($this);
+
+            throw $e;
         }
 
         if ( ! $this->_client instanceof RequestClient)
@@ -764,7 +766,7 @@ class HttpRequest extends Object
      */
     public function headers($key = null, $value = null)
     {
-        if ($key instanceof HttpHeader)
+        if ($key instanceof Header)
         {
             // Act a setter, replace all headers
             $this->header = $key;

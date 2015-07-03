@@ -48,14 +48,14 @@ abstract class Http
      * execution will halt and a 304 Not Modified will be sent if the
      * browser cache is up to date.
      *
-     * @param  HttpRequest  $request  Request
-     * @param  HttpResponse $response Response
+     * @param  Request  $request  Request
+     * @param  Response $response Response
      * @param  string   $etag     Resource ETag
      *
      * @throws Http304Exception
-     * @return HttpResponse
+     * @return Response
      */
-    public static function checkCache(HttpRequest $request, HttpResponse $response, $etag = null)
+    public static function checkCache(Request $request, Response $response, $etag = null)
     {
         // 为空的话，生成新的etag
         if (null == $etag)
@@ -89,7 +89,7 @@ abstract class Http
      *
      * @param   string $headerString Header string to parse
      *
-     * @return  HttpHeader
+     * @return  Header
      */
     public static function parseHeaderString($headerString)
     {
@@ -97,7 +97,7 @@ abstract class Http
         if (extension_loaded('http'))
         {
             // Use the fast method to parse header string
-            return new HttpHeader(http_parse_headers($headerString));
+            return new Header(http_parse_headers($headerString));
         }
 
         // Otherwise we use the slower PHP parsing
@@ -137,7 +137,7 @@ abstract class Http
         }
 
         // Return the headers
-        return new HttpHeader($headers);
+        return new Header($headers);
     }
 
     /**
@@ -148,7 +148,7 @@ abstract class Http
      *      // Get http headers into the request
      *      $request->headers = HTTP::requestHeaders();
      *
-     * @return  HttpHeader
+     * @return  Header
      */
     public static function requestHeaders()
     {
@@ -156,13 +156,13 @@ abstract class Http
         if (function_exists('apache_request_headers'))
         {
             // Return the much faster method
-            return new HttpHeader(apache_request_headers());
+            return new Header(apache_request_headers());
         }
         // If the PECL HTTP tools are installed
         elseif (extension_loaded('http'))
         {
             // Return the much faster method
-            return new HttpHeader(http_get_request_headers());
+            return new Header(http_get_request_headers());
         }
 
         // Setup the output
@@ -198,6 +198,6 @@ abstract class Http
             ], $key)] = $value;
         }
 
-        return new HttpHeader($headers);
+        return new Header($headers);
     }
 }

@@ -3,8 +3,8 @@
 namespace tourze\Http\Request;
 
 use tourze\Base\Helper\Arr;
-use tourze\Http\HttpRequest;
-use tourze\Http\HttpResponse;
+use tourze\Http\Request;
+use tourze\Http\Response;
 use tourze\Http\Request\Exception\ClientRecursionException;
 
 /**
@@ -83,12 +83,12 @@ abstract class RequestClient
      * no headers are sent.
      *     $request->execute();
      *
-     * @param   HttpRequest $request
-     * @return  HttpResponse
+     * @param   Request $request
+     * @return  Response
      * @throws  ClientRecursionException
      * @throws  Exception\RequestException
      */
-    public function execute(HttpRequest $request)
+    public function execute(Request $request)
     {
         // Prevent too much recursion of header callback requests
         if ($this->callbackDepth() > $this->maxCallbackDepth())
@@ -100,7 +100,7 @@ abstract class RequestClient
         }
 
         // Execute the request and pass the currently used protocol
-        $origResponse = $response = HttpResponse::factory(['_protocol' => $request->protocol]);
+        $origResponse = $response = Response::factory(['_protocol' => $request->protocol]);
 
         $response = $this->executeRequest($request, $response);
 
@@ -111,7 +111,7 @@ abstract class RequestClient
             {
                 $cbResult = call_user_func($callback, $request, $response, $this);
 
-                if ($cbResult instanceof HttpRequest)
+                if ($cbResult instanceof Request)
                 {
                     // If the callback returns a request, automatically assign client params
                     $this->assignClientProperties($cbResult->client());
@@ -121,7 +121,7 @@ abstract class RequestClient
                     // Execute the request
                     $response = $cbResult->execute();
                 }
-                elseif ($cbResult instanceof HttpResponse)
+                elseif ($cbResult instanceof Response)
                 {
                     // Assign the returned response
                     $response = $cbResult;
@@ -143,11 +143,11 @@ abstract class RequestClient
      * the URI resource identified.
      * This method must be implemented by all clients.
      *
-     * @param   HttpRequest  $request request to execute by client
-     * @param   HttpResponse $response
-     * @return  HttpResponse
+     * @param   Request  $request request to execute by client
+     * @param   Response $response
+     * @return  Response
      */
-    abstract public function executeRequest(HttpRequest $request, HttpResponse $response);
+    abstract public function executeRequest(Request $request, Response $response);
 
     /**
      * Getter and setter for the follow redirects
@@ -349,12 +349,12 @@ abstract class RequestClient
      * The client's follow property must be set true and the HTTP response status
      * one of 201, 301, 302, 303 or 307 for the redirect to be followed.
      *
-     * @param HttpRequest   $request
-     * @param HttpResponse  $response
+     * @param Request   $request
+     * @param Response  $response
      * @param RequestClient $client
-     * @return  null|HttpRequest
+     * @return  null|Request
      */
-    public static function onHeaderLocation(HttpRequest $request, HttpResponse $response, RequestClient $client)
+    public static function onHeaderLocation(Request $request, Response $response, RequestClient $client)
     {
         // Do we need to follow a Location header ?
         if ($client->follow()
@@ -377,7 +377,7 @@ abstract class RequestClient
                     break;
                 case 201:
                 case 303:
-                    $followMethod = HttpRequest::GET;
+                    $followMethod = Request::GET;
                     break;
                 case 302:
                     // Cater for sites with broken HTTP redirect implementations
@@ -387,7 +387,7 @@ abstract class RequestClient
                     }
                     else
                     {
-                        $followMethod = HttpRequest::GET;
+                        $followMethod = Request::GET;
                     }
                     break;
             }
@@ -396,12 +396,12 @@ abstract class RequestClient
             $origHeaders = $request->headers()->getArrayCopy();
             $followHeaders = array_intersect_assoc($origHeaders, array_fill_keys($client->followHeaders(), true));
 
-            $followRequest = HttpRequest::factory($response->headers('Location'));
+            $followRequest = Request::factory($response->headers('Location'));
             $followRequest->method = $followMethod;
             $followRequest->headers($followHeaders);
 
 
-            if ($followMethod !== HttpRequest::GET)
+            if ($followMethod !== Request::GET)
             {
                 $followRequest->body = $request->body;
             }

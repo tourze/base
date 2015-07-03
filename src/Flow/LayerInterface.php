@@ -1,10 +1,8 @@
 <?php
 
-namespace tourze\Base\Flow;
+namespace tourze\Flow;
 
-use tourze\Base\Flow;
-
-interface FlowLayerInterface
+interface LayerInterface
 {
 
     /**

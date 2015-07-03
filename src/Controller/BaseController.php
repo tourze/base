@@ -2,7 +2,7 @@
 
 namespace tourze\Controller;
 
-use tourze\Http\HttpResponse;
+use tourze\Http\Response;
 use tourze\Http\Http;
 use tourze\Http\Exception\HttpException;
 
@@ -28,7 +28,7 @@ abstract class BaseController extends Controller
      *     $this->checkCache(sha1($content));
      *
      * @param  string $etag Resource Etag
-     * @return HttpResponse
+     * @return Response
      */
     protected function checkCache($etag = null)
     {

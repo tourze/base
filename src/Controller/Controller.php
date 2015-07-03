@@ -5,8 +5,8 @@ namespace tourze\Controller;
 use tourze\Base\Object;
 use tourze\Http\Exception\Http404Exception;
 use tourze\Http\Exception\HttpException;
-use tourze\Http\HttpResponse;
-use tourze\Http\HttpRequest;
+use tourze\Http\Response;
+use tourze\Http\Request;
 
 /**
  * 控制器基础类，请求流程大概为：
@@ -16,8 +16,8 @@ use tourze\Http\HttpRequest;
  *     $controller->actionBar();
  *     $controller->after();
  *
- * @property  HttpRequest   request
- * @property  HttpResponse  response
+ * @property  Request   request
+ * @property  Response  response
  * @property  mixed         actionResult
  * @package    Base
  * @category   Controller
@@ -27,12 +27,12 @@ abstract class Controller extends Object
 {
 
     /**
-     * @var  HttpRequest  创建控制器实例的请求
+     * @var  Request  创建控制器实例的请求
      */
     public $_request;
 
     /**
-     * @var  HttpResponse  用于返回控制器执行结果的响应实例
+     * @var  Response  用于返回控制器执行结果的响应实例
      */
     public $_response;
 
@@ -51,7 +51,7 @@ abstract class Controller extends Object
      *
      * @throws  HttpException
      * @throws  Http404Exception
-     * @return  HttpResponse
+     * @return  Response
      */
     public function execute()
     {
@@ -146,7 +146,7 @@ abstract class Controller extends Object
     }
 
     /**
-     * @return HttpRequest
+     * @return Request
      */
     public function getRequest()
     {
@@ -154,7 +154,7 @@ abstract class Controller extends Object
     }
 
     /**
-     * @param HttpRequest $request
+     * @param Request $request
      */
     public function setRequest($request)
     {
@@ -162,7 +162,7 @@ abstract class Controller extends Object
     }
 
     /**
-     * @return HttpResponse
+     * @return Response
      */
     public function getResponse()
     {
@@ -170,7 +170,7 @@ abstract class Controller extends Object
     }
 
     /**
-     * @param HttpResponse $response
+     * @param Response $response
      */
     public function setResponse($response)
     {

@@ -1,11 +1,11 @@
 <?php
 
-namespace tourze\Base\Flow;
+namespace tourze\Flow;
 
 /**
  * 通用的Flow层接口
  *
- * @package tourze\Base\Flow
+ * @package tourze\Flow
  */
 interface FlowInterface
 {

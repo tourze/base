@@ -4,7 +4,7 @@ namespace tourze\Http\Exception;
 
 use Exception;
 use tourze\Base\Exception\BaseException;
-use tourze\Http\HttpRequest;
+use tourze\Http\Request;
 
 abstract class HttpException extends BaseException
 {
@@ -32,7 +32,7 @@ abstract class HttpException extends BaseException
     protected $_code = 0;
 
     /**
-     * @var  HttpRequest    Request instance that triggered this exception.
+     * @var  Request    Request instance that triggered this exception.
      */
     protected $_request;
 
@@ -51,11 +51,11 @@ abstract class HttpException extends BaseException
     /**
      * Store the Request that triggered this exception.
      *
-     * @param   HttpRequest $request Request object that triggered this exception.
+     * @param   Request $request Request object that triggered this exception.
      *
      * @return  HttpException
      */
-    public function request(HttpRequest $request = null)
+    public function request(Request $request = null)
     {
         if (null === $request)
         {
@@ -74,6 +74,8 @@ abstract class HttpException extends BaseException
     }
 
     /**
+     * 异常抛出时跳转的地址
+     *
      * @param null $uri
      * @return $this
      */

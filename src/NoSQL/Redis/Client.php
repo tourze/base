@@ -1,6 +1,6 @@
 <?php
 
-namespace tourze\Redis;
+namespace tourze\NoSQL\Redis;
 
 /**
  * @method int del(array $keys)

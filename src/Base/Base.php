@@ -116,14 +116,6 @@ class Base extends Object
     public static $expose = false;
 
     /**
-     * @var array SDK工作流分层
-     */
-    public static $layers = [
-        'tourze\Base\BaseFlow',  // SDK基础工作层
-        'tourze\Http\HttpFlow', // 执行HTTP相关控制
-    ];
-
-    /**
      * 初始化
      *
      * @throws  BaseException

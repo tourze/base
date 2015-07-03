@@ -4,7 +4,7 @@ namespace tourze\Http\Exception;
 
 use Exception;
 use tourze\Base\Exception\BaseException;
-use tourze\Http\HttpResponse;
+use tourze\Http\Response;
 
 /**
  * Http异常，一般用于那些不需要显示错误信息的报错，如301、302
@@ -17,7 +17,7 @@ abstract class ExpectedException extends HttpException
 {
 
     /**
-     * @var  HttpResponse   Response Object
+     * @var  Response   Response Object
      */
     protected $_response;
 
@@ -36,7 +36,7 @@ abstract class ExpectedException extends HttpException
         parent::__construct($message, $variables, $previous);
 
         // Prepare our response object and set the correct status code.
-        $this->_response = HttpResponse::factory();
+        $this->_response = Response::factory();
         $this->_response->status = $this->_code;
     }
 
@@ -57,7 +57,7 @@ abstract class ExpectedException extends HttpException
 
         $result = $this->_response->headers($key, $value);
 
-        if ( ! $result instanceof HttpResponse)
+        if ( ! $result instanceof Response)
         {
             return $result;
         }
@@ -80,7 +80,7 @@ abstract class ExpectedException extends HttpException
      * Generate a Response for the current Exception
      *
      * @uses   BaseException::response()
-     * @return HttpResponse
+     * @return Response
      */
     public function getResponse()
     {

@@ -5,8 +5,8 @@ namespace tourze\Http\Request\Client;
 use Exception;
 use tourze\Base\Helper\Arr;
 use tourze\Base\Base;
-use tourze\Http\HttpResponse;
-use tourze\Http\HttpRequest;
+use tourze\Http\Response;
+use tourze\Http\Request;
 use tourze\Http\Request\Exception\RequestException;
 use tourze\Http\Request\RequestClient;
 
@@ -92,17 +92,17 @@ abstract class ExternalClient extends RequestClient
      * no headers are sent.
      *     $request->execute();
      *
-     * @param   HttpRequest  $request  A request object
-     * @param   HttpResponse $response A response object
+     * @param   Request  $request  A request object
+     * @param   Response $response A response object
      *
-     * @return  HttpResponse
+     * @return  Response
      * @throws  Exception
      */
-    public function executeRequest(HttpRequest $request, HttpResponse $response)
+    public function executeRequest(Request $request, Response $response)
     {
         // Store the current active request and replace current with new request
-        $previous = HttpRequest::$current;
-        HttpRequest::$current = $request;
+        $previous = Request::$current;
+        Request::$current = $request;
 
         // Resolve the POST fields
         if ($post = $request->post())
@@ -121,12 +121,12 @@ abstract class ExternalClient extends RequestClient
         catch (Exception $e)
         {
             // Restore the previous request
-            HttpRequest::$current = $previous;
+            Request::$current = $previous;
             throw $e;
         }
 
         // Restore the previous request
-        HttpRequest::$current = $previous;
+        Request::$current = $previous;
 
         // Return the response
         return $response;
@@ -168,11 +168,11 @@ abstract class ExternalClient extends RequestClient
      * Sends the HTTP message [Request] to a remote server and processes
      * the response.
      *
-     * @param   HttpRequest  $request  Request to send
-     * @param   HttpResponse $response Response to send
+     * @param   Request  $request  Request to send
+     * @param   Response $response Response to send
      *
-     * @return  HttpResponse
+     * @return  Response
      */
-    abstract protected function _sendMessage(HttpRequest $request, HttpResponse $response);
+    abstract protected function _sendMessage(Request $request, Response $response);
 
 }

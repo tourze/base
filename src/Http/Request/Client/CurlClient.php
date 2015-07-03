@@ -3,8 +3,8 @@
 namespace tourze\Http\Request\Client;
 
 use tourze\Base\Exception\BaseException;
-use tourze\Http\HttpResponse;
-use tourze\Http\HttpRequest;
+use tourze\Http\Response;
+use tourze\Http\Request;
 use tourze\Http\Request\Exception\RequestException;
 
 /**
@@ -22,14 +22,14 @@ class CurlClient extends ExternalClient
      * Sends the HTTP message [Request] to a remote server and processes
      * the response.
      *
-     * @param   HttpRequest  $request response to send
-     * @param   HttpResponse $response
+     * @param   Request  $request response to send
+     * @param   Response $response
      *
-     * @return  HttpResponse
+     * @return  Response
      * @throws  RequestException
      * @throws  BaseException
      */
-    public function _sendMessage(HttpRequest $request, HttpResponse $response)
+    public function _sendMessage(Request $request, Response $response)
     {
         $options = [];
         // Set the request method
@@ -115,15 +115,15 @@ class CurlClient extends ExternalClient
     /**
      * Sets the appropriate curl request options.
      *
-     * @param HttpRequest $request
+     * @param Request $request
      * @param array       $options
      * @return array
      */
-    public function _setCurlRequestMethod(HttpRequest $request, array $options)
+    public function _setCurlRequestMethod(Request $request, array $options)
     {
         switch ($request->method)
         {
-            case HttpRequest::POST:
+            case Request::POST:
                 $options[CURLOPT_POST] = true;
                 break;
             default:

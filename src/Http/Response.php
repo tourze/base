@@ -3,7 +3,7 @@
 namespace tourze\Http;
 
 use Exception;
-use Hoa\Mime\Mime;
+use tourze\Base\Helper\Mime;
 use tourze\Base\Log;
 use tourze\Base\Object;
 use tourze\Base\Exception\BaseException;
@@ -21,14 +21,14 @@ use tourze\Http\Request\Exception\RequestException;
  * @property   string     body
  * @property   integer    contentLength
  * @property   integer    status
- * @property   HttpHeader header
+ * @property   Header     header
  */
-class HttpResponse extends Object
+class Response extends Object
 {
 
     /**
-     * Factory method to create a new [Response]. Pass properties
-     * in using an associative array.
+     * Factory method to create a new [Response]. Pass properties in using an associative array.
+     *
      *      // Create a new response
      *      $response = Response::factory();
      *      // Create a new response with headers
@@ -40,7 +40,7 @@ class HttpResponse extends Object
      */
     public static function factory(array $config = [])
     {
-        return new HttpResponse($config);
+        return new Response($config);
     }
 
     // HTTP status codes and messages
@@ -105,7 +105,7 @@ class HttpResponse extends Object
     protected $_status = 200;
 
     /**
-     * @return HttpHeader
+     * @return Header
      */
     public function getHeader()
     {
@@ -113,7 +113,7 @@ class HttpResponse extends Object
     }
 
     /**
-     * @param HttpHeader $header
+     * @param Header $header
      */
     public function setHeader($header)
     {
@@ -138,7 +138,7 @@ class HttpResponse extends Object
     }
 
     /**
-     * @var  HttpHeader  Headers returned in the response
+     * @var  Header  Headers returned in the response
      */
     protected $_header;
 
@@ -194,7 +194,7 @@ class HttpResponse extends Object
      */
     public function __construct(array $config = [])
     {
-        $this->header = new HttpHeader();
+        $this->header = new Header();
 
         foreach ($config as $key => $value)
         {

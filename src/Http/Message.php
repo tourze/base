@@ -10,7 +10,7 @@ namespace tourze\Http;
  * @category   HTTP
  * @author     YwiSax
  */
-interface HttpMessage
+interface Message
 {
 
     /**

@@ -5,8 +5,8 @@ namespace tourze\Http\Request\Client;
 use ReflectionClass;
 use tourze\Base\Exception\BaseException;
 use tourze\Http\Exception\HttpException;
-use tourze\Http\HttpResponse;
-use tourze\Http\HttpRequest;
+use tourze\Http\Response;
+use tourze\Http\Request;
 use tourze\Http\Request\RequestClient;
 
 /**
@@ -29,12 +29,12 @@ class InternalClient extends RequestClient
      *
      *     $request->execute();
      *
-     * @param   HttpRequest  $request
-     * @param   HttpResponse $response
-     * @return \tourze\Http\HttpResponse
+     * @param   Request  $request
+     * @param   Response $response
+     * @return \tourze\Http\Response
      * @throws \tourze\Base\Exception\BaseException
      */
-    public function executeRequest(HttpRequest $request, HttpResponse $response)
+    public function executeRequest(Request $request, Response $response)
     {
         $className = 'Controller';
 
@@ -52,8 +52,8 @@ class InternalClient extends RequestClient
         }
 
         // 保存状态
-        $previous = HttpRequest::$current;
-        HttpRequest::$current = $request;
+        $previous = Request::$current;
+        Request::$current = $request;
 
         try
         {
@@ -79,7 +79,7 @@ class InternalClient extends RequestClient
             ]);
             $response = $class->getMethod('execute')->invoke($controller);
 
-            if ( ! $response instanceof HttpResponse)
+            if ( ! $response instanceof Response)
             {
                 // Controller failed to return a Response.
                 throw new BaseException('Controller failed to return a Response');
@@ -98,7 +98,7 @@ class InternalClient extends RequestClient
         }
 
         // Restore the previous request
-        HttpRequest::$current = $previous;
+        Request::$current = $previous;
 
         return $response;
     }

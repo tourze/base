@@ -1,13 +1,12 @@
 <?php
 
-namespace tourze\Base;
+namespace tourze\Flow;
 
-use tourze\Base\Flow\FlowHandlerInterface;
-use tourze\Base\Flow\FlowInterface;
-use tourze\Base\Flow\FlowLayerInterface;
+use tourze\Base\Object;
 
 /**
- * 基础的请求控制类，用于控制执行的请求留
+ * 基础的请求控制类，用于控制执行的请求流
+ * Flow常用于耦合多个模块，合并为单次请求
  *
  * $requestFlow = Flow::instance('request')
  *     ->addLayer([
@@ -20,8 +19,8 @@ use tourze\Base\Flow\FlowLayerInterface;
  * $requestFlow->run();
  *
  * @property mixed              layers
- * @property FlowLayerInterface previousLayer
- * @property FlowLayerInterface nextLayer
+ * @property LayerInterface previousLayer
+ * @property LayerInterface nextLayer
  * @property mixed              previousLayerResult
  */
 class Flow extends Object implements FlowInterface
@@ -33,12 +32,12 @@ class Flow extends Object implements FlowInterface
     protected $_layers = [];
 
     /**
-     * @var  FlowLayerInterface  上一个执行的层
+     * @var  LayerInterface  上一个执行的层
      */
     protected $_previousLayer;
 
     /**
-     * @var  FlowLayerInterface  下一个执行的层
+     * @var  LayerInterface  下一个执行的层
      */
     protected $_nextLayer;
 
@@ -71,7 +70,7 @@ class Flow extends Object implements FlowInterface
                 $layer = new $layer;
             }
 
-            if ($layer instanceof FlowLayerInterface && $layer instanceof FlowHandlerInterface)
+            if ($layer instanceof LayerInterface && $layer instanceof HandlerInterface)
             {
                 // 传递当前请求流
                 $layer->setFlow($this);
@@ -141,7 +140,7 @@ class Flow extends Object implements FlowInterface
     }
 
     /**
-     * @return FlowLayerInterface
+     * @return LayerInterface
      */
     public function getPreviousLayer()
     {
@@ -149,7 +148,7 @@ class Flow extends Object implements FlowInterface
     }
 
     /**
-     * @param FlowLayerInterface $previousLayer
+     * @param LayerInterface $previousLayer
      */
     public function setPreviousLayer($previousLayer)
     {
@@ -157,7 +156,7 @@ class Flow extends Object implements FlowInterface
     }
 
     /**
-     * @return FlowLayerInterface
+     * @return LayerInterface
      */
     public function getNextLayer()
     {
@@ -165,7 +164,7 @@ class Flow extends Object implements FlowInterface
     }
 
     /**
-     * @param FlowLayerInterface $nextLayer
+     * @param LayerInterface $nextLayer
      */
     public function setNextLayer($nextLayer)
     {

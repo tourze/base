@@ -1,8 +1,7 @@
 <?php
 
-namespace tourze\Base\Flow;
+namespace tourze\Flow;
 
-use tourze\Base\Flow;
 use tourze\Base\Object;
 
 /**
@@ -10,7 +9,7 @@ use tourze\Base\Object;
  *
  * @property  Flow  flow
  */
-class FlowLayer extends Object implements FlowLayerInterface
+class Layer extends Object implements LayerInterface
 {
 
     /**

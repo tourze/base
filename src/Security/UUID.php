@@ -1,6 +1,6 @@
 <?php
 
-namespace tourze\Base\Security;
+namespace tourze\Security;
 
 use Rhumsaa\Uuid\Uuid as VendorUUID;
 use Rhumsaa\Uuid\Exception\UnsatisfiedDependencyException;

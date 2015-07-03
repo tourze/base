@@ -1,13 +1,13 @@
 <?php
 
-namespace tourze\Base\Flow;
+namespace tourze\Flow;
 
 /**
  * handle实现接口
  *
- * @package tourze\Base\Flow
+ * @package tourze\Flow
  */
-interface FlowHandlerInterface
+interface HandlerInterface
 {
 
     /**

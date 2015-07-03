@@ -1,16 +1,16 @@
 <?php
 
-namespace tourze\Http\Flow;
+namespace tourze\Bootstrap\Flow\Http;
 
-use tourze\Base\Flow\FlowHandlerInterface;
-use tourze\Base\Flow\FlowLayer;
+use tourze\Flow\HandlerInterface;
+use tourze\Flow\Layer;
 
 /**
  * HTTP授权
  *
  * @package tourze\Mvc\Flow
  */
-class HttpAuthorization extends FlowLayer implements FlowHandlerInterface
+class Authorization extends Layer implements HandlerInterface
 {
 
     /**

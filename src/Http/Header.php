@@ -7,7 +7,7 @@ use tourze\Base\Helper\Cookie;
 use tourze\Base\Base;
 
 /**
- * The HttpHeader class provides an Object-Orientated interface
+ * The Header class provides an Object-Orientated interface
  * to HTTP headers. This can parse header arrays returned from the
  * PHP functions `apache_request_headers()` or the `http_parse_headers()`
  * function available within the PECL HTTP library.
@@ -16,7 +16,7 @@ use tourze\Base\Base;
  * @category   HTTP
  * @author     YwiSax
  */
-class HttpHeader extends ArrayObject
+class Header extends ArrayObject
 {
 
     // Default Accept-* quality value if none supplied
@@ -211,7 +211,7 @@ class HttpHeader extends ArrayObject
      *     ];
      *     // Create the cache control header, creates :
      *     // cache-control: max-age=3600, must-revalidate, public
-     *     $response->headers('Cache-Control', HttpHeader::createCacheControl($cacheControl);
+     *     $response->headers('Cache-Control', Header::createCacheControl($cacheControl);
      *
      * @link    http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13
      *
@@ -237,7 +237,7 @@ class HttpHeader extends ArrayObject
      *     // Create the cache control header
      *     $response->headers('cache-control', 'max-age=3600, must-revalidate, public');
      *     // Parse the cache control header
-     *     if ($cacheControl = HttpHeader::parseCacheControl($response->headers('cache-control')))
+     *     if ($cacheControl = Header::parseCacheControl($response->headers('cache-control')))
      *     {
      *          // Cache-Control header was found
      *          $maxAge = $cacheControl['max-age'];
@@ -296,9 +296,9 @@ class HttpHeader extends ArrayObject
     protected $_acceptLanguage;
 
     /**
-     * Constructor method for [HttpHeader]. Uses the standard constructor of the parent `ArrayObject` class.
+     * Constructor method for [Header]. Uses the standard constructor of the parent `ArrayObject` class.
      *
-     *     $header_object = new HttpHeader(['x-powered-by' => 'PHP 4.1.9', 'expires' => '...']);
+     *     $header_object = new Header(['x-powered-by' => 'PHP 4.1.9', 'expires' => '...']);
      *
      * @param   mixed  $input          Input array
      * @param   int    $flags          Flags
@@ -447,7 +447,7 @@ class HttpHeader extends ArrayObject
     }
 
     /**
-     * Parses a HTTP Message header line and applies it to this HttpHeader
+     * Parses a HTTP Message header line and applies it to this Header
      *
      *     $header = $response->headers();
      *     $header->parseHeaderString(null, 'content-type: application/json');
@@ -841,19 +841,19 @@ class HttpHeader extends ArrayObject
      * [!!] if you supply a custom header handler via `$callback`, it is
      *  recommended that `$response` is returned
      *
-     * @param   HttpResponse  $response header to send
+     * @param   Response  $response header to send
      * @param   boolean      $replace  replace existing value
      * @param   callback     $callback optional callback to replace PHP header function
      *
      * @return  mixed
      */
-    public function sendHeaders(HttpResponse $response = null, $replace = false, $callback = null)
+    public function sendHeaders(Response $response = null, $replace = false, $callback = null)
     {
         $protocol = $response->protocol;
         $status = $response->status;
 
         // Create the response header
-        $processedHeaders = [$protocol . ' ' . $status . ' ' . HttpResponse::$messages[$status]];
+        $processedHeaders = [$protocol . ' ' . $status . ' ' . Response::$messages[$status]];
 
         // Get the headers array
         $headers = $response->headers()
@@ -913,7 +913,7 @@ class HttpHeader extends ArrayObject
      * @param   array   $headers headers to send to php
      * @param   boolean $replace replace existing headers
      *
-     * @return  self
+     * @return  Header
      */
     protected function _sendHeadersToPhp(array $headers, $replace)
     {

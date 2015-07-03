@@ -13,7 +13,6 @@
     "filp/whoops": "^1.1",
     "doctrine/dbal": "~2.5",
     "monolog/monolog": "~1.13",
-    "hoa/mime": "~2.0",
     "doctrine/inflector": "~1.0",
     "hassankhan/config": "0.8.*",
     "predis/predis": "^1.0",
@@ -25,14 +24,26 @@
     "ramsey/uuid": "^2.8",
     "respect/validation": "^0.9.3",
     "euantor/simple-gravatar": "^1.0",
-    "riimu/kit-csrf": "^2.3",
     "egulias/email-validator": "^1.2",
     "symfony/filesystem": "^2.7",
-    "swiftmailer/swiftmailer": "^5.4"
+    "swiftmailer/swiftmailer": "^5.4",
+    "bjeavons/zxcvbn-php": "^0.1.3",
+    "league/monga": "^1.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.7"
   },
   "autoload": {
     "psr-4": {
       "tourze\\": "src/"
+    },
+    "files": [
+      "init.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "tourze\\tests\\": "tests/"
     },
     "files": [
       "init.php"

@@ -1,18 +1,20 @@
 <?php
 
-namespace tourze\Base;
+namespace tourze\Bootstrap\Flow;
 
-use tourze\Base\Flow\FlowHandlerInterface;
-use tourze\Base\Flow\FlowLayer;
+use tourze\Base\I18n;
+use tourze\Flow\HandlerInterface;
+use tourze\Flow\Layer;
 use tourze\Base\Helper\Url;
 use tourze\Route\Exception\RouteNotFoundException;
+use tourze\Route\Route;
 
 /**
  * SDK框架执行流
  *
  * @package tourze\Mvc\Flow
  */
-class BaseFlow extends FlowLayer implements FlowHandlerInterface
+class Base extends Layer implements HandlerInterface
 {
 
     /**

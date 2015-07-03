@@ -4,7 +4,7 @@ namespace tourze\Base\Helper;
 
 use tourze\Base\Exception\HelperException;
 use tourze\Base\Base;
-use tourze\Http\HttpRequest;
+use tourze\Http\Request;
 
 /**
  * URL助手类.
@@ -106,10 +106,10 @@ class Url
         if (true === $protocol)
         {
             // Use the initial request to get the protocol
-            $protocol = HttpRequest::$initial;
+            $protocol = Request::$initial;
         }
 
-        if ($protocol instanceof HttpRequest)
+        if ($protocol instanceof Request)
         {
             if ( ! $protocol->secure)
             {
