@@ -27,6 +27,7 @@ abstract class Http
     const TRACE   = 'TRACE';
     const CONNECT = 'CONNECT';
     const MERGE   = 'MERGE';
+    const PATCH   = 'PATCH';
 
     /**
      * @var  string  默认HTTP协议
