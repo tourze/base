@@ -107,14 +107,24 @@ abstract class Controller extends Object
         // 检查对应的方法是否存在
         if ( ! $matchAction)
         {
-            throw HttpException::factory(404,
-                'The requested URL :uri was not found on this server.',
-                [':uri' => $this->request->uri]
-            )->request($this->request);
+            $this->missingAction();
         }
 
         // 保存结果
         $this->actionResult = $this->{$matchAction}();
+    }
+
+    /**
+     * 动作不存在时的操作
+     *
+     * @throws \tourze\Http\Exception\HttpException
+     */
+    public function missingAction()
+    {
+        throw HttpException::factory(404,
+            'The requested URL :uri was not found on this server.',
+            [':uri' => $this->request->uri]
+        )->request($this->request);
     }
 
     /**
