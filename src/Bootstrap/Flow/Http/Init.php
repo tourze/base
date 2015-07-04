@@ -54,7 +54,7 @@ class Init extends Layer implements HandlerInterface
             }
             else
             {
-                $method = Request::GET;
+                $method = Http::GET;
             }
 
             if (isset($_SERVER['HTTP_REFERER']))
@@ -108,7 +108,7 @@ class Init extends Layer implements HandlerInterface
                 Request::$clientIp = $_SERVER['REMOTE_ADDR'];
             }
 
-            if ($method !== Request::GET)
+            if ($method !== Http::GET)
             {
                 // Ensure the raw body is saved for future use
                 $body = file_get_contents('php://input');

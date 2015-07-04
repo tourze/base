@@ -17,6 +17,17 @@ use tourze\Http\Exception\RedirectException;
 abstract class Http
 {
 
+    // HTTP方法列表
+    const GET     = 'GET';
+    const POST    = 'POST';
+    const PUT     = 'PUT';
+    const DELETE  = 'DELETE';
+    const HEAD    = 'HEAD';
+    const OPTIONS = 'OPTIONS';
+    const TRACE   = 'TRACE';
+    const CONNECT = 'CONNECT';
+    const MERGE   = 'MERGE';
+
     /**
      * @var  string  默认HTTP协议
      */

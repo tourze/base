@@ -3,6 +3,7 @@
 namespace tourze\Http\Request\Client;
 
 use tourze\Base\Exception\BaseException;
+use tourze\Http\Http;
 use tourze\Http\Response;
 use tourze\Http\Request;
 use tourze\Http\Request\Exception\RequestException;
@@ -123,7 +124,7 @@ class CurlClient extends ExternalClient
     {
         switch ($request->method)
         {
-            case Request::POST:
+            case Http::POST:
                 $options[CURLOPT_POST] = true;
                 break;
             default:

@@ -7,7 +7,6 @@ use tourze\Base\Exception\BaseException;
 use tourze\Base\Helper\Arr;
 use tourze\Base\Helper\Url;
 use tourze\Base\Base;
-use tourze\Http\Exception\Http404Exception;
 use tourze\Http\Exception\HttpException;
 use tourze\Http\Request\Client\ExternalClient;
 use tourze\Http\Request\Client\InternalClient;
@@ -40,16 +39,6 @@ use tourze\Base\Security\Valid;
  */
 class Request extends Object
 {
-
-    // HTTP方法列表
-    const GET     = 'GET';
-    const POST    = 'POST';
-    const PUT     = 'PUT';
-    const DELETE  = 'DELETE';
-    const HEAD    = 'HEAD';
-    const OPTIONS = 'OPTIONS';
-    const TRACE   = 'TRACE';
-    const CONNECT = 'CONNECT';
 
     /**
      * @var  string  client user agent

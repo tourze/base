@@ -3,6 +3,7 @@
 namespace tourze\Http\Request;
 
 use tourze\Base\Helper\Arr;
+use tourze\Http\Http;
 use tourze\Http\Request;
 use tourze\Http\Response;
 use tourze\Http\Request\Exception\ClientRecursionException;
@@ -377,7 +378,7 @@ abstract class RequestClient
                     break;
                 case 201:
                 case 303:
-                    $followMethod = Request::GET;
+                    $followMethod = Http::GET;
                     break;
                 case 302:
                     // Cater for sites with broken HTTP redirect implementations
@@ -387,7 +388,7 @@ abstract class RequestClient
                     }
                     else
                     {
-                        $followMethod = Request::GET;
+                        $followMethod = Http::GET;
                     }
                     break;
             }
@@ -401,7 +402,7 @@ abstract class RequestClient
             $followRequest->headers($followHeaders);
 
 
-            if ($followMethod !== Request::GET)
+            if ($followMethod !== Http::GET)
             {
                 $followRequest->body = $request->body;
             }

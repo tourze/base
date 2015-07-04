@@ -3,8 +3,10 @@
 namespace tourze\Http\Request\Client;
 
 use HttpEncodingException;
+use HTTPRequest;
 use HttpRequestException;
 use tourze\Base\Exception\BaseException;
+use tourze\Http\Http;
 use tourze\Http\Response;
 use tourze\Http\Request;
 use tourze\Http\Request\Exception\RequestException;
@@ -64,18 +66,18 @@ class HttpClient extends ExternalClient
     public function _sendMessage(Request $request, Response $response)
     {
         $httpMethodMapping = [
-            Request::GET     => \HTTPRequest::METH_GET,
-            Request::HEAD    => \HTTPRequest::METH_HEAD,
-            Request::POST    => \HTTPRequest::METH_POST,
-            Request::PUT     => \HTTPRequest::METH_PUT,
-            Request::DELETE  => \HTTPRequest::METH_DELETE,
-            Request::OPTIONS => \HTTPRequest::METH_OPTIONS,
-            Request::TRACE   => \HTTPRequest::METH_TRACE,
-            Request::CONNECT => \HTTPRequest::METH_CONNECT,
+            Http::GET     => HTTPRequest::METH_GET,
+            Http::HEAD    => HTTPRequest::METH_HEAD,
+            Http::POST    => HTTPRequest::METH_POST,
+            Http::PUT     => HTTPRequest::METH_PUT,
+            Http::DELETE  => HTTPRequest::METH_DELETE,
+            Http::OPTIONS => HTTPRequest::METH_OPTIONS,
+            Http::TRACE   => HTTPRequest::METH_TRACE,
+            Http::CONNECT => HTTPRequest::METH_CONNECT,
         ];
 
         // Create an http request object
-        $httpRequest = new \HTTPRequest($request->uri, $httpMethodMapping[$request->method]);
+        $httpRequest = new HTTPRequest($request->uri, $httpMethodMapping[$request->method]);
 
         if ($this->_options)
         {
@@ -87,7 +89,7 @@ class HttpClient extends ExternalClient
         $httpRequest->setHeaders($request->headers()->getArrayCopy());
         $httpRequest->setCookies($request->cookie());
         $httpRequest->setQueryData($request->query());
-        if ($request->method == Request::PUT)
+        if ($request->method == Http::PUT)
         {
             $httpRequest->addPutData($request->body);
         }
