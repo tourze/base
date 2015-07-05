@@ -158,8 +158,9 @@ class File
     }
 
     /**
-     * @param $path
+     * 修正目录路径
      *
+     * @param $path
      * @return string
      */
     public static function fixFolderPath($path)
@@ -173,8 +174,9 @@ class File
     }
 
     /**
-     * @param $path
+     * 获取指定目录的上级目录
      *
+     * @param $path
      * @return string
      */
     public static function getParentFolder($path)
@@ -189,5 +191,39 @@ class File
         }
 
         return substr($path, 0, $marker);
+    }
+
+    /**
+     * 获取路径中的文件名
+     *
+     * @param $path
+     * @return string
+     */
+    public static function getNameFromPath($path)
+    {
+        $path = rtrim($path, '/'); // may be a folder
+        if (empty($path))
+        {
+            return '.';
+        } // self directory
+
+        $marker = strrpos($path, '/');
+        if (false === $marker)
+        {
+            return $path;
+        }
+
+        return substr($path, $marker + 1);
+    }
+
+    /**
+     * 获取文件扩展名
+     *
+     * @param string $path
+     * @return string
+     */
+    public static function ext($path)
+    {
+        return pathinfo($path, PATHINFO_EXTENSION);
     }
 }
