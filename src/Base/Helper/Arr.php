@@ -271,9 +271,9 @@ class Arr
      *     $sorting = ArrayHelper::get($_GET, 'sorting');
      *
      * @param array|ArrayObject $target            Target to grab $key from
-     * @param string             $key               Index into target to retrieve
-     * @param mixed              $defaultValue      Value returned if $key is not in $target
-     * @param bool               $emptyStringIsNull If true, and the result is an empty string (''), NULL is returned
+     * @param string            $key               Index into target to retrieve
+     * @param mixed             $defaultValue      Value returned if $key is not in $target
+     * @param bool              $emptyStringIsNull If true, and the result is an empty string (''), NULL is returned
      *
      * @return mixed
      */
@@ -286,13 +286,39 @@ class Arr
 
     /**
      * @param array|ArrayObject $target Target to check
-     * @param string             $key    Key to check
+     * @param string            $key    Key to check
      *
      * @return bool
      */
     public static function has(array $target, $key)
     {
         return is_array($target) && array_key_exists($key, $target);
+    }
+
+    /**
+     * Ensures the argument passed in is actually an array with optional iteration callback
+     *
+     * @param array             $array
+     * @param callable|\Closure $callback
+     * @return array
+     */
+    public static function clean($array = null, $callback = null)
+    {
+        $_result = (empty($array) ? [] : (! is_array($array) ? [$array] : $array));
+
+        if (null === $callback || ! is_callable($callback))
+        {
+            return $_result;
+        }
+
+        $_response = [];
+
+        foreach ($_result as $_item)
+        {
+            $_response[] = call_user_func($callback, $_item);
+        }
+
+        return $_response;
     }
 
     /**
