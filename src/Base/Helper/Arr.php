@@ -2,6 +2,7 @@
 
 namespace tourze\Base\Helper;
 
+use ArrayObject;
 use tourze\Base\Exception\InvalidArgumentException;
 use Traversable;
 
@@ -34,11 +35,7 @@ class Arr
      */
     public static function isAssoc(array $array)
     {
-        // Keys of the array
         $keys = array_keys($array);
-
-        // If the array keys of the keys match the keys, then the array must
-        // not be associative (e.g. the keys array looked like {0:0, 1:1...}).
         return array_keys($keys) !== $keys;
     }
 
@@ -273,15 +270,29 @@ class Arr
      *     // 从$_GET中读取sorting
      *     $sorting = ArrayHelper::get($_GET, 'sorting');
      *
-     * @param   array  $array   要检查的数组
-     * @param   string $key     键名
-     * @param   mixed  $default 默认返回值，默认为null
+     * @param array|ArrayObject $target            Target to grab $key from
+     * @param string             $key               Index into target to retrieve
+     * @param mixed              $defaultValue      Value returned if $key is not in $target
+     * @param bool               $emptyStringIsNull If true, and the result is an empty string (''), NULL is returned
      *
-     * @return  mixed
+     * @return mixed
      */
-    public static function get($array, $key, $default = null)
+    public static function get(array $target, $key, $defaultValue = null, $emptyStringIsNull = false)
     {
-        return isset($array[$key]) ? $array[$key] : $default;
+        $_result = is_array($target) ? (array_key_exists($key, $target) ? $target[$key] : $defaultValue) : $defaultValue;
+
+        return $emptyStringIsNull && '' === $_result ? null : $_result;
+    }
+
+    /**
+     * @param array|ArrayObject $target Target to check
+     * @param string             $key    Key to check
+     *
+     * @return bool
+     */
+    public static function has(array $target, $key)
+    {
+        return is_array($target) && array_key_exists($key, $target);
     }
 
     /**
@@ -672,6 +683,21 @@ class Arr
         return $input;
     }
 
+    /**
+     * Removes items with null value from an array.
+     *
+     * @param array $array
+     */
+    public static function removeNull(array & $array)
+    {
+        foreach ($array as $key => $value)
+        {
+            if (null === $value)
+            {
+                unset($array[$key]);
+            }
+        }
+    }
 
     /**
      * Convert an iterator to an array.

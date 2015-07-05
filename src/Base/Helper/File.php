@@ -156,4 +156,38 @@ class File
 
         return file_get_contents($filename);
     }
+
+    /**
+     * @param $path
+     *
+     * @return string
+     */
+    public static function fixFolderPath($path)
+    {
+        if ( ! empty($path))
+        {
+            $path = rtrim($path, '/') . '/';
+        }
+
+        return $path;
+    }
+
+    /**
+     * @param $path
+     *
+     * @return string
+     */
+    public static function getParentFolder($path)
+    {
+        $path = rtrim($path, '/'); // may be a folder
+
+        $marker = strrpos($path, '/');
+
+        if (false === $marker)
+        {
+            return '';
+        }
+
+        return substr($path, 0, $marker);
+    }
 }
