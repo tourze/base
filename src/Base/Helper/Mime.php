@@ -53,4 +53,64 @@ class Mime
         return Arr::get($mimeTypes, $ext, 'application/octet-stream');
     }
 
+    /**
+     * @param string $ext
+     * @param string $content
+     * @param string $local_file
+     * @param string $default
+     *
+     * @return string
+     */
+    public static function determineContentType($ext = '', $content = '', $local_file = '', $default = '')
+    {
+        $mimeTypes = Config::load(self::$configName)->asArray();
+
+        $defaultMime = 'application/octet-stream';
+
+        if ( ! empty($default))
+        {
+            $defaultMime = $default;
+        }
+
+        $mime = '';
+
+        if (class_exists('finfo'))
+        {
+            $file_info = new \finfo(FILEINFO_MIME_TYPE);
+            if ( ! empty($content))
+            {
+                $mime = $file_info->buffer($content);
+            }
+            elseif ( ! empty($local_file))
+            {
+                $mime = $file_info->file($local_file);
+            }
+        }
+
+        if (empty($mime) ||
+            (0 === strcasecmp($mime, $defaultMime)) ||
+            (0 === strcasecmp('text/plain', $mime)) ||
+            (0 === strcasecmp('text/x-asm', $mime)) ||
+            (0 === strcasecmp('text/x-c', $mime)) ||
+            (0 === strcasecmp('text/x-c++', $mime)) ||
+            (0 === strcasecmp('text/x-java', $mime))
+        )
+        {
+            // need further guidance on these, as they are sometimes incorrect
+            if (0 === strcasecmp('dfpkg', $ext))
+            {
+                $mime = 'application/zip';
+            }
+            else
+            {
+                $mime = Arr::get($mimeTypes, $ext);
+            }
+        }
+        if (empty($mime))
+        {
+            return $defaultMime;
+        }
+
+        return $mime;
+    }
 }
