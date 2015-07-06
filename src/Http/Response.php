@@ -46,57 +46,57 @@ class Response extends Object
     // HTTP status codes and messages
     public static $messages = [
         // Informational 1xx
-        100 => 'Continue',
-        101 => 'Switching Protocols',
+        Message::CONTINUES                       => 'Continue',
+        Message::SWITCHING_PROTOCOLS             => 'Switching Protocols',
 
         // Success 2xx
-        200 => 'OK',
-        201 => 'Created',
-        202 => 'Accepted',
-        203 => 'Non-Authoritative Information',
-        204 => 'No Content',
-        205 => 'Reset Content',
-        206 => 'Partial Content',
+        Message::OK                              => 'OK',
+        Message::CREATED                         => 'Created',
+        Message::ACCEPTED                        => 'Accepted',
+        Message::NON_AUTHORITATIVE_INFORMATION   => 'Non-Authoritative Information',
+        Message::NO_CONTENT                      => 'No Content',
+        Message::RESET_CONTENT                   => 'Reset Content',
+        Message::PARTIAL_CONTENT                 => 'Partial Content',
 
         // Redirection 3xx
-        300 => 'Multiple Choices',
-        301 => 'Moved Permanently',
-        302 => 'Found',
+        Message::MULTIPLE_CHOICES                => 'Multiple Choices',
+        Message::MOVED_PERMANENTLY               => 'Moved Permanently',
+        Message::FOUND                           => 'Found',
         // 1.1
-        303 => 'See Other',
-        304 => 'Not Modified',
-        305 => 'Use Proxy',
+        Message::SEE_OTHER                       => 'See Other',
+        Message::NOT_MODIFIED                    => 'Not Modified',
+        Message::USE_PROXY                       => 'Use Proxy',
         // 306 is deprecated but reserved
-        307 => 'Temporary Redirect',
+        Message::TEMPORARY_REDIRECT              => 'Temporary Redirect',
 
         // Client Error 4xx
-        400 => 'Bad Request',
-        401 => 'Unauthorized',
-        402 => 'Payment Required',
-        403 => 'Forbidden',
-        404 => 'Not Found',
-        405 => 'Method Not Allowed',
-        406 => 'Not Acceptable',
-        407 => 'Proxy Authentication Required',
-        408 => 'Request Timeout',
-        409 => 'Conflict',
-        410 => 'Gone',
-        411 => 'Length Required',
-        412 => 'Precondition Failed',
-        413 => 'Request Entity Too Large',
-        414 => 'Request-URI Too Long',
-        415 => 'Unsupported Media Type',
-        416 => 'Requested Range Not Satisfiable',
-        417 => 'Expectation Failed',
+        Message::BAD_REQUEST                     => 'Bad Request',
+        Message::UNAUTHORIZED                    => 'Unauthorized',
+        Message::PAYMENT_REQUIRED                => 'Payment Required',
+        Message::FORBIDDEN                       => 'Forbidden',
+        Message::NOT_FOUND                       => 'Not Found',
+        Message::METHOD_NOT_ALLOWED              => 'Method Not Allowed',
+        Message::NOT_ACCEPTABLE                  => 'Not Acceptable',
+        Message::PROXY_AUTHENTICATION_REQUIRED   => 'Proxy Authentication Required',
+        Message::REQUEST_TIMEOUT                 => 'Request Timeout',
+        Message::CONFLICT                        => 'Conflict',
+        Message::GONE                            => 'Gone',
+        Message::LENGTH_REQUIRED                 => 'Length Required',
+        Message::PRECONDITION_FAILED             => 'Precondition Failed',
+        Message::REQUEST_ENTITY_TOO_LARGE        => 'Request Entity Too Large',
+        Message::REQUEST_URI_TOO_LONG            => 'Request-URI Too Long',
+        Message::UNSUPPORTED_MEDIA_TYPE          => 'Unsupported Media Type',
+        Message::REQUESTED_RANGE_NOT_SATISFIABLE => 'Requested Range Not Satisfiable',
+        Message::EXPECTATION_FAILED              => 'Expectation Failed',
 
         // Server Error 5xx
-        500 => 'Internal Server Error',
-        501 => 'Not Implemented',
-        502 => 'Bad Gateway',
-        503 => 'Service Unavailable',
-        504 => 'Gateway Timeout',
-        505 => 'HTTP Version Not Supported',
-        509 => 'Bandwidth Limit Exceeded'
+        Message::INTERNAL_SERVER_ERROR           => 'Internal Server Error',
+        Message::NOT_IMPLEMENTED                 => 'Not Implemented',
+        Message::BAD_GATEWAY                     => 'Bad Gateway',
+        Message::SERVICE_UNAVAILABLE             => 'Service Unavailable',
+        Message::GATEWAY_TIMEOUT                 => 'Gateway Timeout',
+        Message::HTTP_VERSION_NOT_SUPPORTED      => 'HTTP Version Not Supported',
+        Message::BANDWIDTH_LIMIT_EXCEEDED        => 'Bandwidth Limit Exceeded'
     ];
 
     /**
