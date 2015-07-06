@@ -83,4 +83,20 @@ abstract class HttpException extends BaseException
     {
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return $this->_code;
+    }
+
+    /**
+     * @param int $code
+     */
+    public function setStatusCode($code)
+    {
+        $this->_code = $code;
+    }
 }
