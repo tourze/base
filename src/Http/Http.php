@@ -28,6 +28,7 @@ abstract class Http
     const CONNECT = 'CONNECT';
     const MERGE   = 'MERGE';
     const PATCH   = 'PATCH';
+    const COPY    = 'COPY';
 
     /**
      * @var  string  默认HTTP协议
