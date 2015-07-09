@@ -17,14 +17,17 @@ abstract class JsonpController extends Controller
      */
     public $callbackParam = 'callback';
 
-
+    /**
+     * @var bool 自动降级标记，当没有callback时，自动调整为json方式
+     */
+    public $autoSink = false;
 
     /**
      * @inheritdoc
      */
     public function executeAction()
     {
-        if ( ! $callback = $this->request->query($this->callbackParam))
+        if ( ! ($callback = $this->request->query($this->callbackParam)) && ! $this->autoSink)
         {
             throw new JsonpInvalidParameterException('The required parameter ":param" not found.', [
                 ':param' => $this->callbackParam
@@ -41,13 +44,17 @@ abstract class JsonpController extends Controller
     /**
      * 格式化输出
      *
-     * @param $callback
-     * @param $result
+     * @param string $callback
+     * @param mixed  $result
      * @return string
      */
     protected function formatContent($callback, $result)
     {
-        return $callback . '(' .json_encode($result) . ')';
+        if ( ! $callback && $this->autoSink)
+        {
+            return json_encode($result);
+        }
+        return $callback . '(' . json_encode($result) . ')';
     }
 
 }
