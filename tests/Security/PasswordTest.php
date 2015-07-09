@@ -7,18 +7,22 @@ use tourze\Security\Password;
 class PasswordTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testStrength()
+    public static function provider()
     {
-        $expectData = [
-            'abc'                     => 0,
-            '123456'                  => 0,
-            '&*3fds*)&^*(Hor3*)&O&(*' => 5,
+        return [
+            ['abc', 0],
+            ['123456', 0],
+            ['&*3fds*)&^*(Hor3*)&O&(*', 5],
         ];
-
-        foreach ($expectData as $password => $expect)
-        {
-            $this->assertGreaterThanOrEqual(Password::strength($password), $expect, $password.' test failed.');
-        }
     }
 
+    /**
+     * @dataProvider provider
+     * @param $password
+     * @param $expect
+     */
+    public function testStrength($password, $expect)
+    {
+        $this->assertGreaterThanOrEqual(Password::strength($password), $expect, $password.' test failed.');
+    }
 }
