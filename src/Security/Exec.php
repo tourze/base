@@ -1,6 +1,7 @@
 <?php
 
 namespace tourze\Security;
+
 use tourze\Base\Exception\InvalidArgumentException;
 
 /**
@@ -22,20 +23,19 @@ class Exec
     ];
 
     /**
-     * Array containing additional ENV variables.
+     * @var array 附加环境变量
      */
     public $_env = [];
 
     /**
-     * Current Working Directory.
-     * Defaults to where the script is located.
+     * @var string 当前工作目录，默认是脚本路径
      */
     public $_cwd = null;
 
     /**
      * 执行外部应用，允许使用类似PDO的参数绑定
      *
-     * @param string $cmd  要执行的命令，如："ls -lsa %path".
+     * @param string $cmd   要执行的命令，如："ls -lsa %path".
      * @param array  $args  参数，数组形式，如：['%path' => '/home']
      * @param string $stdin 输入重定向，完成一些需要交互才能搞定的功能
      * @return array  返回执行结果
@@ -71,12 +71,11 @@ class Exec
     }
 
     /**
-     * Builds a command that is safe to execute.
+     * 生成最终执行的命令
      *
-     * @param string $cmd  Base command (with placeholders) to execute.
-     *
-     * @param array  $args An associative array containing data to filter.
-     * @return string Returns a command that is safe to execute.
+     * @param string $cmd 要执行的命令
+     * @param array  $args 命令中要替换的参数
+     * @return string 执行结果
      * @throws \tourze\Base\Exception\InvalidArgumentException
      */
     private function buildCommand($cmd, $args = [])

@@ -2,8 +2,6 @@
 
 namespace tourze\Route\Exception;
 
-use tourze\Base\Exception\BaseException;
-
-class RouteNotFoundException extends BaseException
+class RouteNotFoundException extends RouteException
 {
 }

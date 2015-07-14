@@ -40,7 +40,6 @@ abstract class Http
      *
      * @param  string $uri  要跳转的URI
      * @param  int    $code 跳转时使用的http状态码
-     *
      * @throws HttpException
      * @throws BaseException
      */
@@ -64,7 +63,6 @@ abstract class Http
      * @param  Request  $request  Request
      * @param  Response $response Response
      * @param  string   $etag     Resource ETag
-     *
      * @throws Http304Exception
      * @return Response
      */
@@ -101,7 +99,6 @@ abstract class Http
      * Parses a HTTP header string into an associative array
      *
      * @param   string $headerString Header string to parse
-     *
      * @return  Header
      */
     public static function parseHeaderString($headerString)
