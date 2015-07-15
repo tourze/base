@@ -139,7 +139,7 @@ class Valid
      */
     public static function minLength($value, $length)
     {
-        return Validator::string($length, null)->validate($value);
+        return Validator::string()->length($length, null)->validate($value);
     }
 
     /**
@@ -152,7 +152,7 @@ class Valid
      */
     public static function maxLength($value, $length)
     {
-        return Validator::string(null, $length)->validate($value);
+        return Validator::string()->length(null, $length)->validate($value);
     }
 
     /**
