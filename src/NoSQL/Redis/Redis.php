@@ -46,7 +46,7 @@ class Redis extends Object
             self::$_instances[$instanceKey] = new Client(Arr::get($config, 'parameters'), Arr::get($config, 'options'));
         }
 
-        return self::$_instances[$key];
+        return self::$_instances[$instanceKey];
     }
 
 }
