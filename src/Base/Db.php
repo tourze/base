@@ -4,6 +4,7 @@ namespace tourze\Base;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use tourze\Base\Helper\Arr;
 
 /**
  * 数据库连接类，基于doctrine/dbal来实现
@@ -50,9 +51,11 @@ class Db
      * @var array  额外的数据库字段格式支持
      */
     public static $mappingType = [
-        'enum'      => 'string',
-        'set'       => 'string',
-        'varbinary' => 'string',
+        'pdo_mysql' => [
+            'enum'      => 'string',
+            'set'       => 'string',
+            'varbinary' => 'string',
+        ],
     ];
 
     /**
@@ -84,12 +87,16 @@ class Db
 
             $conn = DriverManager::getConnection($config);
 
-            $platform = $conn->getDatabasePlatform();
-            foreach (self::$mappingType as $dbType => $doctrineType)
+            // 额外注册字段类型
+            if (isset(self::$mappingType[Arr::get($config, 'driver')]))
             {
-                if ( ! $platform->hasDoctrineTypeMappingFor($dbType))
+                $platform = $conn->getDatabasePlatform();
+                foreach (self::$mappingType[Arr::get($config, 'driver')] as $dbType => $doctrineType)
                 {
-                    $platform->registerDoctrineTypeMapping($dbType, $doctrineType);
+                    if ( ! $platform->hasDoctrineTypeMappingFor($dbType))
+                    {
+                        $platform->registerDoctrineTypeMapping($dbType, $doctrineType);
+                    }
                 }
             }
 

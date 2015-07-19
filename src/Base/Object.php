@@ -18,12 +18,15 @@ use tourze\Base\Exception\UnknownPropertyException;
 class Object
 {
 
+    /**
+     * @var array 保存实例列表
+     */
     protected static $_instances = [];
 
     /**
-     * 根据参数生成instance key
+     * 为保证不重复，根据参数生成instance key
      *
-     * @param null $args
+     * @param mixed $args
      * @return string
      */
     protected static function instanceKey($args = null)
@@ -52,7 +55,7 @@ class Object
      *
      * @static
      * @access public
-     * @param  mixed  $args 实例传参，直接传给构造方法
+     * @param  mixed $args 实例传参，直接传给构造方法
      * @return $this
      */
     public static function instance($args = null)
@@ -104,6 +107,12 @@ class Object
     {
     }
 
+    /**
+     * 生成驼峰命名格式的变量名
+     *
+     * @param $str
+     * @return string
+     */
     final protected function __buildCamelizeName($str)
     {
         return Inflector::classify($str);

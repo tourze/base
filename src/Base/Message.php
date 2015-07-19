@@ -7,8 +7,14 @@ use tourze\Base\Helper\Arr;
 class Message
 {
 
+    /**
+     * @var string 默认后缀
+     */
     public static $ext = '.php';
 
+    /**
+     * @var array 保存加载过的文件缓存
+     */
     protected static $_messagePaths = [];
 
     /**
@@ -24,15 +30,13 @@ class Message
     /**
      * 读取消息文本
      *
-     *     // Get "username" from messages/text.php
+     *     // 读取message/text.php中的username
      *     $username = Message::load('text', 'username');
      *
      * @param   string $file    文件名
      * @param   string $path    键名
      * @param   mixed  $default 键名不存在时返回默认值
-     *
-     * @return  string  message string for the given path
-     * @return  array   complete message list, when no path is specified
+     * @return  string|array  内容，如果$path为空的话，就返回完整数组内容
      */
     public static function load($file, $path = null, $default = null)
     {

@@ -85,25 +85,23 @@ class Debug
     /**
      * 返回单个变量的HTML格式
      *
-     * @param   mixed   $value          variable to dump
-     * @param   integer $length         maximum length of strings
-     * @param   integer $levelRecursion recursion limit
-     *
+     * @param   mixed   $value          要打印的变量
+     * @param   integer $length         最大长度
+     * @param   integer $recursionLevel 递归次数限制
      * @return  string
      */
-    public static function dump($value, $length = 128, $levelRecursion = 10)
+    public static function dump($value, $length = 128, $recursionLevel = 10)
     {
-        return self::_dump($value, $length, $levelRecursion);
+        return self::_dump($value, $length, $recursionLevel);
     }
 
     /**
-     * Helper for self::dump(), handles recursion in arrays and objects.
+     * 打印变量的最终实现方法
      *
-     * @param   mixed   $var    variable to dump
-     * @param   integer $length maximum length of strings
-     * @param   integer $limit  recursion limit
-     * @param   integer $level  current recursion level (internal usage only!)
-     *
+     * @param   mixed   $var    变量
+     * @param   integer $length 打印字符串的最大长度
+     * @param   integer $limit  递归次数限制
+     * @param   integer $level  当前递归层次
      * @return  string
      */
     protected static function _dump(& $var, $length = 128, $limit = 10, $level = 0)
@@ -170,7 +168,6 @@ class Debug
 
             if (empty($var))
             {
-                // Do nothing
             }
             elseif (isset($var[$marker]))
             {
@@ -200,7 +197,6 @@ class Debug
             }
             else
             {
-                // Depth too great
                 $output[] = "(\n$space$s...\n$space)";
             }
 
@@ -208,22 +204,17 @@ class Debug
         }
         elseif (is_object($var))
         {
-            // Copy the object as an array
-            $array = (array) $var;
-
-            $output = [];
-
-            // Indentation for this variable
-            $space = str_repeat($s = '    ', $level);
-
-            $hash = spl_object_hash($var);
-
-            // Objects that are being dumped
+            // 已经打印的对象
             static $objects = [];
+
+            // 对象转换为数组
+            $array = (array) $var;
+            $output = [];
+            $space = str_repeat($s = '    ', $level);
+            $hash = spl_object_hash($var);
 
             if (empty($var))
             {
-                // Do nothing
             }
             elseif (isset($objects[$hash]))
             {
@@ -236,12 +227,10 @@ class Debug
                 $objects[$hash] = true;
                 foreach ($array as $key => & $val)
                 {
+                    // protected方法
                     if ($key[0] === "\x00")
                     {
-                        // Determine if the access is protected or protected
                         $access = '<small>' . (($key[1] === '*') ? 'protected' : 'private') . '</small>';
-
-                        // Remove the access level from the variable name
                         $key = substr($key, strrpos($key, "\x00") + 1);
                     }
                     else
@@ -257,7 +246,6 @@ class Debug
             }
             else
             {
-                // Depth too great
                 $output[] = "{\n$space$s...\n$space}";
             }
 

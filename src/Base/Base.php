@@ -250,7 +250,7 @@ class Base extends Object
     /**
      * 加载指定文件并返回内容
      *
-     *     $foo = self::load('foo.php');
+     *     $foo = Base::load('foo.php');
      *
      * @param   string $file
      *
@@ -264,66 +264,57 @@ class Base extends Object
     /**
      * 一个简单的内置缓存类
      *
-     *     // Set the "foo" cache
+     *     // 写缓存
      *     self::cache('foo', 'hello, world');
-     *     // Get the "foo" cache
+     *     // 读取缓存
      *     $foo = self::cache('foo');
      *
      * @throws  BaseException
-     * @param   string  $name     name of the cache
-     * @param   mixed   $data     data to cache
-     * @param   integer $lifetime number of seconds the cache is valid for
-     * @return  mixed    for getting
-     * @return  boolean  for setting
+     * @param   string  $name     缓存名
+     * @param   mixed   $data     缓存数据
+     * @param   integer $lifetime 缓存生效时间（单位：秒）
+     * @return  mixed|boolean
      */
     public static function cache($name, $data = null, $lifetime = null)
     {
-        // Cache file is a hash of the name
         $file = sha1($name) . '.txt';
-
-        // Cache directories are split by keys to prevent filesystem overload
         $dir = self::$cacheDir . DIRECTORY_SEPARATOR . $file[0] . $file[1] . DIRECTORY_SEPARATOR;
 
         if (null === $lifetime)
         {
-            // Use the default lifetime
             $lifetime = self::$cacheLife;
         }
 
+        // 读取数据
         if (null === $data)
         {
             if (is_file($dir . $file))
             {
+                // 判断下时间是否过期
                 if ((time() - filemtime($dir . $file)) < $lifetime)
                 {
-                    // Return the cache
                     try
                     {
                         return unserialize(file_get_contents($dir . $file));
                     }
                     catch (Exception $e)
                     {
-                        // Cache is corrupt, let return happen normally.
+                        // 读取缓存时，数据出错了
+                        // 不抛出异常，继续执行
                     }
                 }
                 else
                 {
-                    try
-                    {
-                        // Cache has expired
-                        unlink($dir . $file);
-                    }
-                    catch (Exception $e)
-                    {
-                        // Cache has mostly likely already been deleted,
-                        // let return happen normally.
-                    }
+                    // 时间过期了，直接删除缓存
+                    @unlink($dir . $file);
                 }
             }
 
-            // Cache not found
+            // 查找不到内存
             return null;
         }
+
+        // 下面就是保存缓存的逻辑了
 
         // 自动创建目录
         if ( ! is_dir($dir))
@@ -332,17 +323,13 @@ class Base extends Object
             chmod($dir, 0777);
         }
 
-        // Force the data to be a string
         $data = serialize($data);
-
         try
         {
-            // Write the cache
             return (bool) file_put_contents($dir . $file, $data, LOCK_EX);
         }
         catch (Exception $e)
         {
-            // Failed to write cache
             return false;
         }
     }

@@ -57,6 +57,7 @@ class Config extends VendorConfig
         {
             foreach (self::$configPaths as $includePath)
             {
+                // 检测和包含带下面后缀的文件
                 $files = [
                     $includePath . $_path . '.php',
                     $includePath . $_path . '-local.php',
