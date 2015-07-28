@@ -148,6 +148,44 @@ class Request extends Object
     }
 
     /**
+     * 读取客户端IP地址
+     *
+     * @return mixed|string
+     */
+    public static function getClientIP()
+    {
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])
+            && isset($_SERVER['REMOTE_ADDR'])
+            && in_array($_SERVER['REMOTE_ADDR'], Request::$trustedProxies)
+        )
+        {
+            // Use the forwarded IP address, typically set when the
+            // client is using a proxy server.
+            // Format: "X-Forwarded-For: client1, proxy1, proxy2"
+            $clientIps = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+
+            return array_shift($clientIps);
+        }
+        elseif (isset($_SERVER['HTTP_CLIENT_IP'])
+            && isset($_SERVER['REMOTE_ADDR'])
+            && in_array($_SERVER['REMOTE_ADDR'], Request::$trustedProxies)
+        )
+        {
+            // Use the forwarded IP address, typically set when the
+            // client is using a proxy server.
+            $clientIps = explode(',', $_SERVER['HTTP_CLIENT_IP']);
+
+            return array_shift($clientIps);
+        }
+        elseif (isset($_SERVER['REMOTE_ADDR']))
+        {
+            return $_SERVER['REMOTE_ADDR'];
+        }
+
+        return '0.0.0.0';
+    }
+
+    /**
      * Parses an accept header and returns an array (type => quality) of the
      * accepted types, ordered by quality.
      *     $accept = Request::_parseAccept($header, $defaults);
