@@ -234,6 +234,8 @@ class Route extends Object
      */
     public function __construct($uri = null, $regex = null, $identify = null)
     {
+        parent::__construct();
+
         if (null === $uri)
         {
             return;
@@ -416,16 +418,9 @@ class Route extends Object
     }
 
     /**
-     * Generates a URI for the current route based on the parameters given.
+     * 传入参数，生成当前路由的uri
      *
-     *     // Using the "default" route: "users/profile/10"
-     *     $route->uri([
-     *         'controller' => 'users',
-     *         'action'     => 'profile',
-     *         'id'         => '10'
-     *     ]);
-     *
-     * @param   array $params URI parameters
+     * @param   array $params URI参数
      * @return  string
      * @throws  BaseException
      */
