@@ -704,7 +704,7 @@ class Request extends Object
 
                 if (isset($params['directory']))
                 {
-                    // Controllers are in a sub-directory
+                    // 控制器放在子目录中的情况
                     $this->directory = $params['directory'];
                 }
 
@@ -713,6 +713,8 @@ class Request extends Object
                 {
                     $this->directory = $params['namespace'];
                 }
+
+                // 命名空间处理
                 if ( ! $this->directory)
                 {
                     $this->directory = Route::$defaultNamespace;

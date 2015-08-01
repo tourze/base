@@ -226,4 +226,31 @@ class File
     {
         return pathinfo($path, PATHINFO_EXTENSION);
     }
+
+    /**
+     * 字节数可视化阅读
+     *
+     * @param integer $filesize
+     * @return string
+     */
+    public static function sizeCount($filesize)
+    {
+        if ($filesize >= 1073741824)
+        {
+            $filesize = round($filesize / 1073741824 * 100) / 100 . ' GB';
+        }
+        elseif ($filesize >= 1048576)
+        {
+            $filesize = round($filesize / 1048576 * 100) / 100 . ' MB';
+        }
+        elseif ($filesize >= 1024)
+        {
+            $filesize = round($filesize / 1024 * 100) / 100 . ' KB';
+        }
+        else
+        {
+            $filesize = $filesize . ' Bytes';
+        }
+        return $filesize;
+    }
 }
