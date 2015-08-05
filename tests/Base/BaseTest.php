@@ -8,7 +8,11 @@
 
 namespace tourze\Base;
 
-
+/**
+ * Base测试用例
+ *
+ * @package tourze\Base
+ */
 class BaseTest extends \PHPUnit_Framework_TestCase
 {
 
