@@ -270,19 +270,19 @@ class Base extends Object
      *     $foo = self::cache('foo');
      *
      * @throws  BaseException
-     * @param   string  $name     缓存名
-     * @param   mixed   $data     缓存数据
-     * @param   integer $lifetime 缓存生效时间（单位：秒）
+     * @param   string  $name    缓存名
+     * @param   mixed   $data    缓存数据
+     * @param   integer $expired 缓存生效时间（单位：秒）
      * @return  mixed|boolean
      */
-    public static function cache($name, $data = null, $lifetime = null)
+    public static function cache($name, $data = null, $expired = null)
     {
         $file = sha1($name) . '.txt';
         $dir = self::$cacheDir . DIRECTORY_SEPARATOR . $file[0] . $file[1] . DIRECTORY_SEPARATOR;
 
-        if (null === $lifetime)
+        if (null === $expired)
         {
-            $lifetime = self::$cacheLife;
+            $expired = self::$cacheLife;
         }
 
         // 读取数据
@@ -290,24 +290,16 @@ class Base extends Object
         {
             if (is_file($dir . $file))
             {
-                // 判断下时间是否过期
-                if ((time() - filemtime($dir . $file)) < $lifetime)
+                $result = unserialize(file_get_contents($dir . $file));
+                if (isset($result['data']) && isset($result['expired']))
                 {
-                    try
+                    // 过期
+                    if (time() <= $result['expired'])
                     {
-                        return unserialize(file_get_contents($dir . $file));
-                    }
-                    catch (Exception $e)
-                    {
-                        // 读取缓存时，数据出错了
-                        // 不抛出异常，继续执行
+                        return $result['data'];
                     }
                 }
-                else
-                {
-                    // 时间过期了，直接删除缓存
-                    @unlink($dir . $file);
-                }
+                @unlink($dir . $file);
             }
 
             // 查找不到内存
@@ -323,10 +315,14 @@ class Base extends Object
             chmod($dir, 0777);
         }
 
-        $data = serialize($data);
+        $result = [
+            'data'    => $data,
+            'expired' => time() + $expired,
+        ];
+        $result = serialize($result);
         try
         {
-            return (bool) file_put_contents($dir . $file, $data, LOCK_EX);
+            return (bool) file_put_contents($dir . $file, $result, LOCK_EX);
         }
         catch (Exception $e)
         {

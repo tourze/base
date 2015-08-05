@@ -37,10 +37,10 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "tourze\\tests\\": "tests/"
+      "tourze\\": "tests/"
     },
     "files": [
-      "init.php"
+      "bootstrap-dev.php"
     ]
   },
   "repositories": [
