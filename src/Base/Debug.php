@@ -80,6 +80,6 @@ class Debug
             $output[] = VarDumper::dump($var);
         }
 
-        return '<pre class="debug">' . implode("\n", $output) . '</pre>';
+        return implode("\n", $output);
     }
 }
