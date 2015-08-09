@@ -83,6 +83,25 @@ class Object
     }
 
     /**
+     * 返回当前类的命名空间
+     */
+    final public static function namespaceName()
+    {
+        $class = self::className();
+        $data = explode('\\', $class);
+
+        if (count($data) == 1)
+        {
+            return '\\';
+        }
+        else
+        {
+            array_pop($data);
+            return '\\' . implode('\\', $data) . '\\';
+        }
+    }
+
+    /**
      * 构造函数，使用数组传参，直接给成员赋值
      *
      * @access public
