@@ -1,6 +1,6 @@
 {
   "name": "tourze/core",
-  "description": "Tourze Core",
+  "description": "途者PHP框架-核心部分",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
@@ -43,11 +43,4 @@
       "bootstrap-dev.php"
     ]
   },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "http://php.composer.org/repo/packagist/"
-    },
-    {"packagist": false}
-  ]
 }
