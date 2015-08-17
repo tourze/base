@@ -81,6 +81,18 @@ abstract class Base
     }
 
     /**
+     * 读取全局变量
+     *
+     * @param string $key
+     * @param mixed  $default
+     * @return mixed
+     */
+    public static function getGlobal($key, $default = null)
+    {
+        return Arr::get(self::$_globalData, $key, $default);
+    }
+
+    /**
      * @var string 当前视图文件
      */
     protected $_file;
