@@ -7,6 +7,11 @@ use tourze\Base\Debug;
 use tourze\Base\Helper\Arr;
 use tourze\View\Exception\ViewException;
 
+/**
+ * 基础的基于PHP实现的视图
+ *
+ * @package tourze\View
+ */
 abstract class Base
 {
 
@@ -38,7 +43,7 @@ abstract class Base
      *
      * @param string $file 视图文件
      * @param array  $data 视图数据
-     * @return  Base
+     * @return Base
      */
     public static function factory($file = null, array $data = null)
     {
@@ -83,8 +88,8 @@ abstract class Base
     /**
      * 读取全局变量
      *
-     * @param string $key
-     * @param mixed  $default
+     * @param string $key     键名
+     * @param mixed  $default 默认值
      * @return mixed
      */
     public static function getGlobal($key, $default = null)
@@ -161,9 +166,9 @@ abstract class Base
     /**
      * 魔术方法，用户保存变量数据
      *
-     * @param   string $name  变量名
-     * @param   mixed  $value 变量值
-     * @return  void
+     * @param  string $name  变量名
+     * @param  mixed  $value 变量值
+     * @return void
      */
     public function __set($name, $value)
     {
@@ -173,8 +178,8 @@ abstract class Base
     /**
      * 魔术方法，检测指定的变量值是否存在
      *
-     * @param   string $name 变量名
-     * @return  boolean
+     * @param  string $name 变量名
+     * @return boolean
      */
     public function __isset($name)
     {
@@ -184,8 +189,8 @@ abstract class Base
     /**
      * 魔术方法，注销指定变量
      *
-     * @param   string $name variable name
-     * @return  void
+     * @param  string $name 变量名
+     * @return void
      */
     public function __unset($name)
     {
@@ -212,9 +217,9 @@ abstract class Base
     /**
      * 设置当前的视图文件名
      *
-     * @param   string $file view filename
-     * @return  View
-     * @throws  ViewException
+     * @param  string $file 视图文件
+     * @return View
+     * @throws ViewException
      */
     public function setFilename($file)
     {
@@ -241,9 +246,9 @@ abstract class Base
     /**
      * 设置视图变量
      *
-     * @param   string $key   variable name or an array of variables
-     * @param   mixed  $value value
-     * @return  $this
+     * @param  string $key   变量名，或者包含了所有变量的关联数组
+     * @param  mixed  $value 值
+     * @return $this
      */
     public function set($key, $value = null)
     {
@@ -263,17 +268,13 @@ abstract class Base
     }
 
     /**
-     * Assigns a value by reference. The benefit of binding is that values can
-     * be altered without re-setting them. It is also possible to bind variables
-     * before they have values. Assigned values will be available as a
-     * variable within the view file:
-     *     // This reference can be accessed as $ref within the view
+     * 绑定变量引用值
+     *
      *     $view->bind('ref', $bar);
      *
-     * @param   string $key   variable name
-     * @param   mixed  $value referenced variable
-     *
-     * @return  $this
+     * @param  string $key   变量名
+     * @param  mixed  $value 引用值
+     * @return $this
      */
     public function bind($key, & $value)
     {
@@ -285,9 +286,9 @@ abstract class Base
     /**
      * 渲染视图
      *
-     * @param   string $file view filename
-     * @return  string
-     * @throws  ViewException
+     * @param  string $file 视图文件名
+     * @return string
+     * @throws ViewException
      */
     public function render($file = null)
     {

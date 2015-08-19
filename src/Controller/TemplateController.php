@@ -3,6 +3,7 @@
 namespace tourze\Controller;
 
 use tourze\View\View;
+use tourze\View\ViewInterface;
 
 /**
  * 最基础的模板控制器，实现页面布局分离功能
@@ -15,17 +16,17 @@ abstract class TemplateController extends BaseController
 {
 
     /**
-     * @var  View  page template
+     * @var  string|View  模板名，或者模板对象
      */
     protected $template = 'template';
 
     /**
-     * @var  boolean  auto render template
+     * @var  boolean  是否自动加载模板
      **/
     public $autoRender = true;
 
     /**
-     * Loads the template [View] object.
+     * 初始化，并加载模板对象
      */
     public function before()
     {
@@ -33,13 +34,15 @@ abstract class TemplateController extends BaseController
 
         if (true === $this->autoRender)
         {
-            // Load the template
-            $this->template = View::factory($this->template);
+            if ( ! $this->template instanceof ViewInterface)
+            {
+                $this->template = View::factory($this->template);
+            }
         }
     }
 
     /**
-     * Assigns the template [View] as the request response.
+     * 完成模板渲染，并输出
      */
     public function after()
     {
@@ -47,7 +50,6 @@ abstract class TemplateController extends BaseController
         {
             $this->response->body = $this->template->render();
         }
-
         parent::after();
     }
 

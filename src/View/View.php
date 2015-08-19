@@ -11,7 +11,7 @@ use Exception;
  * @category   Base
  * @author     YwiSax
  */
-class View extends Base
+class View extends Base implements ViewInterface
 {
 
     /**

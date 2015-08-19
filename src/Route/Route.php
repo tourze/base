@@ -11,12 +11,14 @@ use tourze\Route\Exception\RouteNotFoundException;
 /**
  * 路由处理类
  *
- * @property   string  $identify
- * @package    tourze
- * @category   Route
- * @author     YwiSax
+ * @property  string $identify
+ * @property  array $regex
+ * @property  string $uri
+ * @package   tourze
+ * @category  Route
+ * @author    YwiSax
  */
-class Route extends Object
+class Route extends Object implements RouteInterface
 {
 
     /**
@@ -82,11 +84,10 @@ class Route extends Object
      *             'controller' => 'welcome',
      *         ]);
      *
-     * @param   string $name  路由名称
-     * @param   string $uri   URI规则
-     * @param   array  $regex 匹配规则
-     *
-     * @return  Route
+     * @param  string $name  路由名称
+     * @param  string $uri   URI规则
+     * @param  array  $regex 匹配规则
+     * @return Route
      */
     public static function set($name, $uri = null, $regex = null)
     {
@@ -98,10 +99,9 @@ class Route extends Object
      *
      *     $route = Route::get('default');
      *
-     * @param   string $name 路由名称
-     *
-     * @return  Route
-     * @throws  BaseException
+     * @param  string $name 路由名称
+     * @return Route
+     * @throws BaseException
      */
     public static function get($name)
     {
@@ -132,11 +132,10 @@ class Route extends Object
      *
      *     echo URL::site(Route::get($name)->uri($params), $protocol);
      *
-     * @param   string $name     路由名
-     * @param   array  $params   URI参数
-     * @param   mixed  $protocol 协议字符串、布尔值、等等
-     *
-     * @return  string
+     * @param  string $name     路由名
+     * @param  array  $params   URI参数
+     * @param  mixed  $protocol 协议字符串、布尔值、等等
+     * @return string
      */
     public static function url($name, array $params = null, $protocol = null)
     {
@@ -154,10 +153,9 @@ class Route extends Object
      *         'id' => '\d+',
      *     ]);
      *
-     * @param   string $uri
-     * @param   array  $regex
-     *
-     * @return  string
+     * @param  string $uri
+     * @param  array  $regex
+     * @return string
      */
     public static function compile($uri, array $regex = null)
     {
@@ -171,7 +169,7 @@ class Route extends Object
             $expression = str_replace(['(', ')'], ['(?:', ')?'], $expression);
         }
 
-        // Insert default regex for keys
+        // 插入默认规则
         $expression = str_replace(['<', '>'], ['(?P<', '>' . Route::REGEX_SEGMENT . ')'], $expression);
 
         if ($regex)
@@ -228,9 +226,9 @@ class Route extends Object
      *
      *     $route = new Route($uri, $regex);
      *
-     * @param   string $uri   URI
-     * @param   array  $regex 规则描述
-     * @param  string  $identify 路由名称
+     * @param string $uri      URI
+     * @param array  $regex    规则描述
+     * @param string $identify 路由名称
      */
     public function __construct($uri = null, $regex = null, $identify = null)
     {
@@ -262,8 +260,8 @@ class Route extends Object
      *
      *     $name = $route->name()
      *
-     * @param   Route $route 指定的路由实例
-     * @return  string
+     * @param  Route $route 指定的路由实例
+     * @return string
      */
     public function name(Route $route = null)
     {
@@ -283,8 +281,8 @@ class Route extends Object
      *         'action'     => 'index'
      *     ]);
      *
-     * @param   array $defaults key values
-     * @return  $this or array
+     * @param   array $defaults 键值数据
+     * @return  $this|array
      */
     public function defaults(array $defaults = null)
     {
@@ -321,7 +319,7 @@ class Route extends Object
      * [!!] 在filter被调用前，默认数据就已经被合并到路由参数中的了
      *
      * @throws  BaseException
-     * @param   callable $callback  回调函数，可以为字符串、数组或closure
+     * @param   callable $callback 回调函数，可以为字符串、数组或closure
      * @return  $this
      */
     public function filter($callback)
@@ -339,9 +337,9 @@ class Route extends Object
     /**
      * 检测路由是否与路由表中的记录有匹配
      *
-     * @param   string $uri
-     * @param null     $method
-     * @return array on success
+     * @param string $uri
+     * @param string $method
+     * @return array
      */
     public function matches($uri, $method = null)
     {
@@ -357,11 +355,9 @@ class Route extends Object
         {
             if (is_int($key))
             {
-                // Skip all unnamed keys
+                // 如果键值不是关联的话，那么就跳过
                 continue;
             }
-
-            // Set the value for all matched keys
             $params[$key] = $value;
         }
 
@@ -369,7 +365,7 @@ class Route extends Object
         {
             if ( ! isset($params[$key]) || '' === $params[$key])
             {
-                // Set default values for any key that was not matched
+                // 如果没匹配到，那么就设置默认值
                 $params[$key] = $value;
             }
         }
@@ -388,17 +384,17 @@ class Route extends Object
         {
             foreach ($this->_filters as $callback)
             {
-                // Execute the filter giving it the route, params, and request
+                // 执行过滤器
                 $return = call_user_func($callback, $this, $params, $uri);
 
                 if (false === $return)
                 {
-                    // Filter has aborted the match
+                    // 停止继续匹配
                     return false;
                 }
                 elseif (is_array($return))
                 {
-                    // Filter has modified the parameters
+                    // 修改参数值
                     $params = $return;
                 }
             }
@@ -420,9 +416,9 @@ class Route extends Object
     /**
      * 传入参数，生成当前路由的uri
      *
-     * @param   array $params URI参数
-     * @return  string
-     * @throws  BaseException
+     * @param  array $params URI参数
+     * @return string
+     * @throws BaseException
      */
     public function uri(array $params = null)
     {
@@ -446,7 +442,6 @@ class Route extends Object
          *
          * @param   string  $portion  Part of the URI specification
          * @param   boolean $required Whether or not parameters are required (initially)
-         *
          * @return  array Tuple of the compiled portion and whether or not it contained specified parameters
          * @throws  BaseException
          */
@@ -517,19 +512,20 @@ class Route extends Object
 
         list($uri) = $compile($this->_uri, true);
 
-        // Trim all extra slashes from the URI
+        // 过滤URI中的重复斜杆
         $uri = preg_replace('#//+#', '/', rtrim($uri, '/'));
 
+        // 如果是外部链接
         if ($this->isExternal())
         {
-            // Need to add the host to the URI
             $host = $this->_defaults['host'];
+
+            // 使用默认协议
             if (false === strpos($host, '://'))
             {
-                // Use the default defined protocol
                 $host = Route::$defaultProtocol . $host;
             }
-            // Clean up the host and prepend it to the URI
+
             $uri = rtrim($host, '/') . '/' . $uri;
         }
 
@@ -554,6 +550,38 @@ class Route extends Object
     public function setIdentify($identify)
     {
         $this->_identify = $identify;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRegex()
+    {
+        return $this->_regex;
+    }
+
+    /**
+     * @param array $regex
+     */
+    public function setRegex($regex)
+    {
+        $this->_regex = $regex;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUri()
+    {
+        return $this->_uri;
+    }
+
+    /**
+     * @param string $uri
+     */
+    public function setUri($uri)
+    {
+        $this->_uri = $uri;
     }
 
 }
