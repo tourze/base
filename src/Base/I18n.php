@@ -59,8 +59,8 @@ class I18n
      *     // 更改语言
      *     I18n::lang('es-es');
      *
-     * @param   string $lang new language setting
-     * @return  string
+     * @param  string $lang 要更改的语言
+     * @return string
      */
     public static function lang($lang = null)
     {
