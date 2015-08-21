@@ -6,7 +6,7 @@ use Exception;
 use tourze\Base\Log;
 
 /**
- * 最基础的异常类。 Translates exceptions using the [I18n] class.
+ * 最基础的异常类，使用[I18n]来做异常信息的翻译
  *
  * @package    Base
  * @category   Exceptions
@@ -16,7 +16,7 @@ class BaseException extends Exception implements ExceptionInterface
 {
 
     /**
-     * @var  array  PHP error code => human readable name
+     * @var array 错误代码列表
      */
     public static $phpErrors = [
         E_ERROR             => 'Fatal Error',
@@ -31,14 +31,16 @@ class BaseException extends Exception implements ExceptionInterface
     ];
 
     /**
-     * Creates a new translated exception.
-     *     throw new BaseException('Something went terrible wrong, :user',
-     *         [':user' => $user]);
+     * 创建一个新的异常实例
      *
-     * @param   string         $message   error message
-     * @param   array          $variables translation variables
-     * @param   integer|string $code      the exception code
-     * @param   Exception      $previous  Previous exception
+     *     throw new BaseException('Something went terrible wrong, :user', [
+     *         ':user' => $user
+     *     ]);
+     *
+     * @param   string    $message   错误信息
+     * @param   array     $variables 用于翻译的变量
+     * @param   int       $code      异常代码
+     * @param   Exception $previous  上一次异常
      */
     public function __construct($message = "", array $variables = null, $code = 0, Exception $previous = null)
     {
@@ -48,11 +50,11 @@ class BaseException extends Exception implements ExceptionInterface
     }
 
     /**
-     * Magic object-to-string method.
+     * 输出异常文本
+     *
      *     echo $exception;
      *
-     * @uses    BaseException::text
-     * @return  string
+     * @return string
      */
     public function __toString()
     {
@@ -62,7 +64,7 @@ class BaseException extends Exception implements ExceptionInterface
     /**
      * 记录异常信息
      *
-     * @param   Exception $e
+     * @param Exception $e
      */
     public static function log(Exception $e)
     {
@@ -71,24 +73,23 @@ class BaseException extends Exception implements ExceptionInterface
     }
 
     /**
-     * Get a single line of text representing the exception:
+     * 获取最简单的异常信息
+     *
      * Error [ Code ]: Message ~ File [ Line ]
      *
-     * @param   Exception $e
-     *
-     * @return  string
+     * @param  Exception $e
+     * @return string
      */
     public static function text(Exception $e)
     {
-        return sprintf('%s [ %s ]: %s ~ %s [ %d ]',
-            get_class($e), $e->getCode(), strip_tags($e->getMessage()), $e->getFile(), $e->getLine());
+        return sprintf('%s [ %s ]: %s ~ %s [ %d ]', get_class($e), $e->getCode(), strip_tags($e->getMessage()), $e->getFile(), $e->getLine());
     }
 
     /**
-     * Get a Response object representing the exception
+     * 获取异常响应对象
      *
-     * @param \Exception $e
-     * @throws \Exception
+     * @param Exception $e
+     * @throws Exception
      */
     public static function response(Exception $e)
     {

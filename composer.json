@@ -30,6 +30,7 @@
       "tourze\\": "src/"
     },
     "files": [
+      "functions.php",
       "bootstrap.php"
     ]
   },
