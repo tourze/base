@@ -40,43 +40,38 @@ class Cookie
     public static $secure = false;
 
     /**
-     * @var  boolean  Only transmit cookies over HTTP, disabling Javascript access
+     * @var bool 只允许http/https访问，禁止Javascript访问
      */
     public static $httpOnly = false;
 
     /**
      * 获取指定key的cookie值，否则返回默认值
      *
-     * @param   string $key     cookie名
-     * @param   mixed  $default 默认值
-     * @return  string
+     * @param  string $key     cookie名
+     * @param  mixed  $default 默认值
+     * @return string
      */
     public static function get($key, $default = null)
     {
-        if ( ! isset($_COOKIE[ $key ]))
+        if ( ! isset($_COOKIE[$key]))
         {
-            // The cookie does not exist
             return $default;
         }
 
-        // Get the cookie value
-        $cookie = $_COOKIE[ $key ];
-
-        // Find the position of the split between salt and contents
+        $cookie = $_COOKIE[$key];
+        // 分离salt和内容
         $split = strlen(Cookie::salt($key, null));
 
-        if (isset($cookie[ $split ]) && $cookie[ $split ] === '~')
+        if (isset($cookie[$split]) && $cookie[$split] === '~')
         {
-            // Separate the salt and the value
             list ($hash, $value) = explode('~', $cookie, 2);
 
             if (Cookie::salt($key, $value) === $hash)
             {
-                // CookieHelper signature is valid
+                // 检查hash是否正确
                 return $value;
             }
-
-            // The cookie signature is invalid, delete it
+            // 不正确的话，那就删除cookie
             Cookie::delete($key);
         }
 
@@ -88,57 +83,52 @@ class Cookie
      *
      *     Cookie::set('theme', 'red');
      *
-     * @param   string  $name       name of cookie
-     * @param   string  $value      value of cookie
-     * @param   int $expiration lifetime in seconds
-     * @return  boolean
+     * @param  string $name    cookie名
+     * @param  string $value   cookie值
+     * @param  int    $expired 生效时间（秒数）
+     * @return bool
      */
-    public static function set($name, $value, $expiration = null)
+    public static function set($name, $value, $expired = null)
     {
-        if (null === $expiration)
+        // 处理过期时间
+        if (null === $expired)
         {
-            // Use the default expiration
-            $expiration = Cookie::$expiration;
+            $expired = Cookie::$expiration;
         }
-
-        if ($expiration !== 0)
+        if ($expired !== 0)
         {
-            // The expiration is expected to be a UNIX timestamp
-            $expiration += time();
+            $expired += time();
         }
 
         // Add the salt to the cookie value
         $value = Cookie::salt($name, $value) . '~' . $value;
 
-        return setcookie($name, $value, $expiration, Cookie::$path, Cookie::$domain, Cookie::$secure, Cookie::$httpOnly);
+        return setcookie($name, $value, $expired, Cookie::$path, Cookie::$domain, Cookie::$secure, Cookie::$httpOnly);
     }
 
     /**
-     * Deletes a cookie by making the value null and expiring it.
+     * 删除指定的cookie
      *
-     *     CookieHelper::delete('theme');
+     *     Cookie::delete('theme');
      *
-     * @param   string $name cookie name
-     * @return  boolean
+     * @param  string $name cookie名
+     * @return bool
      */
     public static function delete($name)
     {
-        // Remove the cookie
-        unset($_COOKIE[ $name ]);
-
-        // Nullify the cookie and make it expire
+        unset($_COOKIE[$name]);
         return setcookie($name, null, -86400, Cookie::$path, Cookie::$domain, Cookie::$secure, Cookie::$httpOnly);
     }
 
     /**
-     * Generates a salt string for a cookie based on the name and value.
+     * 根据cookie名和内容，生成一个salt
      *
-     *     $salt = CookieHelper::salt('theme', 'red');
+     *     $salt = Cookie::salt('theme', 'red');
      *
-     * @param   string $name  name of cookie
-     * @param   string $value value of cookie
-     * @return  string
-     * @throws  HelperException
+     * @param  string $name  cookie名
+     * @param  string $value cookie值
+     * @return string
+     * @throws HelperException
      */
     public static function salt($name, $value)
     {
