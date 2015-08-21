@@ -3,7 +3,7 @@
 namespace tourze\Base\Helper;
 
 use ArrayObject;
-use tourze\Base\Exception\InvalidArgumentException;
+use Closure;
 use Traversable;
 
 /**
@@ -122,7 +122,7 @@ class Arr
 
             if (ctype_digit($key))
             {
-                // Make the key an integer
+                // 如果为数字格式的话，那就强制转换为整形
                 $key = (int) $key;
             }
 
@@ -132,25 +132,23 @@ class Arr
                 {
                     if (self::isArray($array[$key]))
                     {
-                        // Dig down into the next part of the path
+                        // 循环读取下一节
                         $array = $array[$key];
                     }
                     else
                     {
-                        // Unable to dig deeper
                         break;
                     }
                 }
                 else
                 {
-                    // Found the path requested
+                    // 找到结果啦
                     return $array[$key];
                 }
             }
+            // 通配符处理
             elseif ($key === '*')
             {
-                // Handle wildcards
-
                 $values = [];
                 foreach ($array as $arr)
                 {
@@ -162,24 +160,21 @@ class Arr
 
                 if ($values)
                 {
-                    // Found the values requested
                     return $values;
                 }
                 else
                 {
-                    // Unable to dig deeper
                     break;
                 }
             }
             else
             {
-                // Unable to dig deeper
                 break;
             }
         }
         while ($keys);
 
-        // Unable to find the value requested
+        // 查找不到，返回默认值
         return $default;
     }
 
@@ -199,22 +194,19 @@ class Arr
             $delimiter = self::$delimiter;
         }
 
-        // The path has already been separated into keys
+        // 处理path节
         $keys = $path;
         if ( ! is_array($path))
         {
-            // Split the keys by delimiter
             $keys = explode($delimiter, $path);
         }
 
-        // Set current $array to inner-most array path
         while (count($keys) > 1)
         {
             $key = array_shift($keys);
 
             if (ctype_digit($key))
             {
-                // Make the key an integer
                 $key = (int) $key;
             }
 
@@ -226,7 +218,6 @@ class Arr
             $array = &$array[$key];
         }
 
-        // Set key on inner-most array
         $array[array_shift($keys)] = $value;
     }
 
@@ -261,38 +252,42 @@ class Arr
      *
      *     // 从$_POST中读取username
      *     $username = Arr::get($_POST, 'username');
+     *
      *     // 从$_GET中读取sorting
      *     $sorting = Arr::get($_GET, 'sorting');
      *
-     * @param array|ArrayObject $target            Target to grab $key from
-     * @param string            $key               Index into target to retrieve
-     * @param mixed             $defaultValue      Value returned if $key is not in $target
-     * @param bool              $emptyStringIsNull If true, and the result is an empty string (''), NULL is returned
+     * @param array|ArrayObject $array        要读取的数组
+     * @param string            $key          索引值
+     * @param mixed             $defaultValue 默认返回值
+     * @param bool              $emptyNull    如果设置为true，而且结果是空字符串，此时返回null
      * @return mixed
      */
-    public static function get(array $target, $key, $defaultValue = null, $emptyStringIsNull = false)
+    public static function get(array $array, $key, $defaultValue = null, $emptyNull = false)
     {
-        $_result = is_array($target) ? (array_key_exists($key, $target) ? $target[$key] : $defaultValue) : $defaultValue;
+        $result = is_array($array)
+            ? (array_key_exists($key, $array) ? $array[$key] : $defaultValue)
+            : $defaultValue;
 
-        return $emptyStringIsNull && '' === $_result ? null : $_result;
+        return $emptyNull && '' === $result ? null : $result;
     }
 
     /**
-     * @param array|ArrayObject $target Target to check
-     * @param string            $key    Key to check
+     * 查看目标是否有指定的key
      *
+     * @param array|ArrayObject $array 要检查的数组
+     * @param string            $key   要检查的值
      * @return bool
      */
-    public static function has(array $target, $key)
+    public static function has(array $array, $key)
     {
-        return is_array($target) && array_key_exists($key, $target);
+        return is_array($array) && array_key_exists($key, $array);
     }
 
     /**
-     * Ensures the argument passed in is actually an array with optional iteration callback
+     * 保证数组中每个值都经callback处理一次
      *
-     * @param array             $array
-     * @param callable|\Closure $callback
+     * @param array            $array
+     * @param callable|Closure $callback
      * @return array
      */
     public static function clean($array = null, $callback = null)
@@ -305,28 +300,27 @@ class Arr
         }
 
         $finalResult = [];
-        foreach ($result as $_item)
+        foreach ($result as $item)
         {
-            $finalResult[] = call_user_func($callback, $_item);
+            $finalResult[] = call_user_func($callback, $item);
         }
         return $finalResult;
     }
 
     /**
-     * Retrieves multiple paths from an array. If the path does not exist in the
-     * array, the default value will be added instead.
+     * 读取数组中指定的若干个key，可以传path格式
      *
-     *     // Get the values "username", "password" from $_POST
+     *     // 从$_POST中读取"username"和"password"
      *     $auth = Arr::extract($_POST, ['username', 'password']);
      *
-     *     // Get the value "level1.level2a" from $data
+     *     // 读取"level1.level2a"
      *     $data = ['level1' => ['level2a' => 'value 1', 'level2b' => 'value 2']];
      *     Arr::extract($data, ['level1.level2a', 'password']);
      *
-     * @param   array $array   array to extract paths from
-     * @param   array $paths   list of path
-     * @param   mixed $default default value
-     * @return  array
+     * @param  array $array   要读取的数组
+     * @param  array $paths   键值或path列表
+     * @param  mixed $default 默认值
+     * @return array
      */
     public static function extract($array, array $paths, $default = null)
     {
@@ -340,16 +334,14 @@ class Arr
     }
 
     /**
-     * Retrieves multiple single-key values from a list of arrays.
+     * 从一个包含若干个数组的数组中读取一个指定key
      *
-     *     // Get all of the "id" values from a result
+     *     // 获取所有id
      *     $ids = Arr::pluck($result, 'id');
      *
-     * [!!] A list of arrays is an array that contains arrays, eg: [array $a, array $b, array $c, ...]
-     *
-     * @param   array  $array list of arrays to check
-     * @param   string $key   key to pluck
-     * @return  array
+     * @param  array  $array 包含若干个数组的数组
+     * @param  string $key   键名
+     * @return array
      */
     public static function pluck($array, $key)
     {
@@ -359,7 +351,6 @@ class Arr
         {
             if (isset($row[$key]))
             {
-                // Found a value in this row
                 $values[] = $row[$key];
             }
         }
@@ -368,15 +359,14 @@ class Arr
     }
 
     /**
-     * Adds a value to the beginning of an associative array.
+     * 在数组开头增加一个元素
      *
-     *     // Add an empty value to the start of a select list
      *     Arr::unshift($array, 'none', 'Select a value');
      *
-     * @param   array  $array array to modify
-     * @param   string $key   array key name
-     * @param   mixed  $val   array value
-     * @return  array
+     * @param  array  $array 要更改的数组
+     * @param  string $key   键名
+     * @param  mixed  $val   键值
+     * @return array
      */
     public static function unshift(array & $array, $key, $val)
     {
@@ -388,35 +378,29 @@ class Arr
     }
 
     /**
-     * [array_map](http://php.net/array_map) 的强化版本
+     * 跟 [array_map](http://php.net/array_map) 类似的函数，差异在于这个函数只能处理单个数组
      *
-     *     // Apply "strip_tags" to every element in the array
+     *     // 数组中的每个元素都执行一次strip_tags
      *     $array = Arr::map('strip_tags', $array);
      *
-     *     // Apply $this->filter to every element in the array
+     *     // 数组中的每个元素都$this->filter过滤一次
      *     $array = Arr::map([[$this,'filter']], $array);
      *
-     *     // Apply strip_tags and $this->filter to every element
+     *     // 数组中的每个元素都执行strip_tags和$this->filter
      *     $array = Arr::map(['strip_tags', [$this,'filter']), $array];
      *
-     * [!!] Because you can pass an array of callbacks, if you wish to use an array-form callback
-     * you must nest it in an additional array as above. Calling self::map([$this,'filter'], $array)
-     * will cause an error.
-     * [!!] Unlike `array_map`, this method requires a callback and will only map
-     * a single array.
-     *
-     * @param   mixed $callbacks array of callbacks to apply to every element in the array
-     * @param   array $array     array to map
-     * @param   array $keys      array of keys to apply to
-     * @return  array
+     * @param  array    $array     要映射的数组
+     * @param  callable $callbacks 包含了callback的数组，或者一个函数
+     * @param  array    $keys      只过滤这部分key
+     * @return array
      */
-    public static function map($callbacks, $array, $keys = null)
+    public static function map($array, $callbacks, $keys = null)
     {
         foreach ($array as $key => $val)
         {
             if (is_array($val))
             {
-                $array[$key] = self::map($callbacks, $array[$key]);
+                $array[$key] = self::map($array[$key], $callbacks);
             }
             elseif ( ! is_array($keys) || in_array($key, $keys))
             {
@@ -439,19 +423,17 @@ class Arr
 
     /**
      * array_merge的强化版本。注意这个方法跟 [array_merge_recursive](http://php.net/array_merge_recursive) 是有区别的。
-     * 具体区别看例子：
      *
      *     $john = ['name' => 'john', 'children' => ['fred', 'paul', 'sally', 'jane']];
      *     $mary = ['name' => 'mary', 'children' => ['jane']];
      *
-     *     // John and Mary are married, merge them together
      *     $john = self::merge($john, $mary);
      *
-     *     // The output of $john will now be:
+     *     // 输出
      *     ['name' => 'mary', 'children' => ['fred', 'paul', 'sally', 'jane']]
      *
-     * @param   array $array1     initial array
-     * @param   array $array2,... array to merge
+     * @param   array $array1     初始数组
+     * @param   array $array2,... 要合并的数组
      * @return  array
      */
     public static function merge($array1, $array2)
@@ -522,20 +504,19 @@ class Arr
     }
 
     /**
-     * Overwrites an array with values from input arrays.
-     * Keys that do not exist in the first array will not be added!
+     * 使用后面的数组来覆盖前面的数组内容
      *
      *     $a1 = ['name' => 'john', 'mood' => 'happy', 'food' => 'bacon'];
      *     $a2 = ['name' => 'jack', 'food' => 'tacos', 'drink' => 'beer'];
-     *     // Overwrite the values of $a1 with $a2
+     *
      *     $array = Arr::overwrite($a1, $a2);
      *
-     *     // The output of $array will now be:
+     *     // 输出
      *     ['name' => 'jack', 'mood' => 'happy', 'food' => 'tacos']
      *
-     * @param   array $array1 master array
-     * @param   array $array2 input arrays that will overwrite existing values
-     * @return  array
+     * @param  array $array1 主数组
+     * @param  array $array2 覆盖源
+     * @return array
      */
     public static function overwrite($array1, $array2)
     {
@@ -559,17 +540,16 @@ class Arr
     }
 
     /**
-     * Creates a callable function and parameter list from a string representation.
-     * Note that this function does not validate the callback string.
+     * 创建一个有效的callback和对应参数
      *
-     *     // Get the callback function and parameters
+     *     // 获取调用的函数名和参数
      *     list($func, $params) = self::callback('Foo::bar(apple,orange)');
      *
-     *     // Get the result of the callback
+     *     // 执行并获取结果
      *     $result = call_user_func_array($func, $params);
      *
-     * @param   string $str callback string
-     * @return  array   function, params
+     * @param  string $str callback字符串
+     * @return array   function, params
      */
     public static function callback($str)
     {
@@ -608,20 +588,19 @@ class Arr
     }
 
     /**
-     * Convert a multi-dimensional array into a single-dimensional array.
+     * 转换一个多维数组为一维数组
      *
      *     $array = ['set' => ['one' => 'something'], 'two' => 'other'];
      *
-     *     // Flatten the array
      *     $array = Arr::flatten($array);
      *
-     *     // The array will now be
+     *     // 输出
      *     [('one' => 'something', 'two' => 'other'];
      *
-     * [!!] The keys of array values will be discarded.
+     * [!!] 键名会被忽略
      *
-     * @param   array $array array to flatten
-     * @return  array
+     * @param  array $array 要处理的数组
+     * @return array
      */
     public static function flatten($array)
     {
@@ -699,9 +678,10 @@ class Arr
     }
 
     /**
-     * Removes items with null value from an array.
+     * 删除所有为null的数据
      *
      * @param array $array
+     * @return array
      */
     public static function removeNull(array & $array)
     {
@@ -712,64 +692,5 @@ class Arr
                 unset($array[$key]);
             }
         }
-    }
-
-    /**
-     * Convert an iterator to an array.
-     * Converts an iterator to an array. The $recursive flag, on by default,
-     * hints whether or not you want to do so recursively.
-     *
-     * @param  array|Traversable $iterator  The array or Traversable object to convert
-     * @param  bool              $recursive Recursively check all nested structures
-     * @throws InvalidArgumentException if $iterator is not an array or a Traversable object
-     * @return array
-     */
-    public static function iteratorToArray($iterator, $recursive = true)
-    {
-        if ( ! is_array($iterator) && ! $iterator instanceof Traversable)
-        {
-            throw new InvalidArgumentException(__METHOD__ . ' expects an array or Traversable object');
-        }
-
-        if ( ! $recursive)
-        {
-            if (is_array($iterator))
-            {
-                return $iterator;
-            }
-
-            return iterator_to_array($iterator);
-        }
-
-        if (method_exists($iterator, 'toArray'))
-        {
-            return $iterator->toArray();
-        }
-
-        $array = [];
-        foreach ($iterator as $key => $value)
-        {
-            if (is_scalar($value))
-            {
-                $array[$key] = $value;
-                continue;
-            }
-
-            if ($value instanceof Traversable)
-            {
-                $array[$key] = static::iteratorToArray($value, $recursive);
-                continue;
-            }
-
-            if (is_array($value))
-            {
-                $array[$key] = static::iteratorToArray($value, $recursive);
-                continue;
-            }
-
-            $array[$key] = $value;
-        }
-
-        return $array;
     }
 }
