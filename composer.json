@@ -17,9 +17,7 @@
     "ezyang/htmlpurifier": "^4.6",
     "ircmaxell/security-lib": "^1.0",
     "ircmaxell/random-lib": "^1.1",
-    "overtrue/pinyin": "^2.5",
     "respect/validation": "^0.9.3",
-    "euantor/simple-gravatar": "^1.0",
     "egulias/email-validator": "^1.2",
     "symfony/filesystem": "^2.7",
     "symfony/var-dumper": "^2.7"
