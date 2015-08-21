@@ -17,7 +17,7 @@ class Arr
 {
 
     /**
-     * @var  string  default delimiter for path()
+     * @var  string  `path()`使用的分隔符
      */
     public static $delimiter = '.';
 
@@ -25,13 +25,13 @@ class Arr
      * 指定数组是否为一个关联数组
      *
      *     // true
-     *     ArrayHelper::isAssoc(['username' => 'john.doe']);
+     *     Arr::isAssoc(['username' => 'john.doe']);
+     *
      *     // false
-     *     ArrayHelper::isAssoc('foo', 'bar');
+     *     Arr::isAssoc(['foo', 'bar']);
      *
-     * @param   array $array array to check
-     *
-     * @return  boolean
+     * @param  array $array 要检查的数组
+     * @return bool
      */
     public static function isAssoc(array $array)
     {
@@ -43,17 +43,16 @@ class Arr
      * 检查参数是否为一个数组或数组对象
      *
      *     // true
-     *     ArrayHelper::isArray([]);
-     *     ArrayHelper::isArray(new ArrayObject);
+     *     Arr::isArray([]);
+     *     Arr::isArray(new ArrayObject);
      *
      *     // false
-     *     ArrayHelper::isArray(false);
-     *     ArrayHelper::isArray('not an array!');
-     *     ArrayHelper::isArray(Db::instance());
+     *     Arr::isArray(false);
+     *     Arr::isArray('not an array!');
+     *     Arr::isArray(Db::instance());
      *
-     * @param   mixed $value value to check
-     *
-     * @return  boolean
+     * @param  mixed $value 要检查的值
+     * @return boolean
      */
     public static function isArray($value)
     {
@@ -68,54 +67,52 @@ class Arr
     }
 
     /**
-     * Gets a value from an array using a dot separated path.
-     *     // Get the value of $array['foo']['bar']
+     * 使用路径格式来读取一个数组值
+     *
+     *     // $array['foo']['bar']
      *     $value = self::path($array, 'foo.bar');
-     * Using a wildcard "*" will search intermediate arrays and return an array.
-     *     // Get the values of "color" in theme
+     *
+     * 这里也可以使用通配符“*”
+     *
+     *     // 返回所有三级的color
      *     $colors = self::path($array, 'theme.*.color');
-     *     // Using an array of keys
+     *     // 跟上面一样效果
      *     $colors = self::path($array, ['theme', '*', 'color']);
      *
-     * @param   array  $array     array to search
-     * @param   mixed  $path      key path string (delimiter separated) or array of keys
-     * @param   mixed  $default   default value if the path is not set
-     * @param   string $delimiter key path delimiter
-     *
+     * @param  array  $array     要搜索的数组
+     * @param  mixed  $path      path值，或者数组
+     * @param  mixed  $default   默认返回值
+     * @param  string $delimiter 自定义分隔符
      * @return  mixed
      */
     public static function path($array, $path, $default = null, $delimiter = null)
     {
         if ( ! self::isArray($array))
         {
-            // This is not an array!
             return $default;
         }
 
         if (is_array($path))
         {
-            // The path has already been separated into keys
             $keys = $path;
         }
         else
         {
+            // 如果直接就存在这样的path名，那么直接返回
             if (array_key_exists($path, $array))
             {
-                // No need to do extra processing
                 return $array[$path];
             }
 
+            // 使用默认分隔符
             if (null === $delimiter)
             {
-                // Use the default delimiter
                 $delimiter = self::$delimiter;
             }
 
-            // Remove starting delimiters and spaces
+            // 移除左右的空格和分隔符，并分割成数组
             $path = ltrim($path, "{$delimiter} ");
-            // Remove ending delimiters, spaces, and wildcards
             $path = rtrim($path, "{$delimiter} *");
-            // Split the keys by delimiter
             $keys = explode($delimiter, $path);
         }
 
@@ -187,20 +184,18 @@ class Arr
     }
 
     /**
-     * Set a value on an array by path.
+     * 根据路径来设置值
      *
-     * @see self::path()
-     *
-     * @param array  $array     Array to update
-     * @param string $path      Path
-     * @param mixed  $value     Value to set
-     * @param string $delimiter Path delimiter
+     * @param array  $array     要更新的数组
+     * @param string $path      路径名
+     * @param mixed  $value     要更新的值
+     * @param string $delimiter 自定义分隔符
      */
     public static function setPath(& $array, $path, $value, $delimiter = null)
     {
+        // 使用默认分隔符
         if ( ! $delimiter)
         {
-            // Use the default delimiter
             $delimiter = self::$delimiter;
         }
 
@@ -239,12 +234,11 @@ class Arr
      * 指定步进和范围，生成数组
      *
      *     // 5, 10, 15, 20
-     *     $values = self::range(5, 20);
+     *     $values = Arr::range(5, 20);
      *
-     * @param   integer $step 步进
-     * @param   integer $max  最大数
-     *
-     * @return  array
+     * @param  int $step 步进
+     * @param  int $max  最大数
+     * @return array
      */
     public static function range($step = 10, $max = 100)
     {
@@ -266,15 +260,14 @@ class Arr
      * 从指定数组中，读取指定键值
      *
      *     // 从$_POST中读取username
-     *     $username = ArrayHelper::get($_POST, 'username');
+     *     $username = Arr::get($_POST, 'username');
      *     // 从$_GET中读取sorting
-     *     $sorting = ArrayHelper::get($_GET, 'sorting');
+     *     $sorting = Arr::get($_GET, 'sorting');
      *
      * @param array|ArrayObject $target            Target to grab $key from
      * @param string            $key               Index into target to retrieve
      * @param mixed             $defaultValue      Value returned if $key is not in $target
      * @param bool              $emptyStringIsNull If true, and the result is an empty string (''), NULL is returned
-     *
      * @return mixed
      */
     public static function get(array $target, $key, $defaultValue = null, $emptyStringIsNull = false)
@@ -304,36 +297,35 @@ class Arr
      */
     public static function clean($array = null, $callback = null)
     {
-        $_result = (empty($array) ? [] : (! is_array($array) ? [$array] : $array));
+        $result = (empty($array) ? [] : (! is_array($array) ? [$array] : $array));
 
         if (null === $callback || ! is_callable($callback))
         {
-            return $_result;
+            return $result;
         }
 
-        $_response = [];
-
-        foreach ($_result as $_item)
+        $finalResult = [];
+        foreach ($result as $_item)
         {
-            $_response[] = call_user_func($callback, $_item);
+            $finalResult[] = call_user_func($callback, $_item);
         }
-
-        return $_response;
+        return $finalResult;
     }
 
     /**
      * Retrieves multiple paths from an array. If the path does not exist in the
      * array, the default value will be added instead.
+     *
      *     // Get the values "username", "password" from $_POST
-     *     $auth = ArrayHelper::extract($_POST, ['username', 'password']);
+     *     $auth = Arr::extract($_POST, ['username', 'password']);
+     *
      *     // Get the value "level1.level2a" from $data
      *     $data = ['level1' => ['level2a' => 'value 1', 'level2b' => 'value 2']];
-     *     ArrayHelper::extract($data, ['level1.level2a', 'password']);
+     *     Arr::extract($data, ['level1.level2a', 'password']);
      *
      * @param   array $array   array to extract paths from
      * @param   array $paths   list of path
      * @param   mixed $default default value
-     *
      * @return  array
      */
     public static function extract($array, array $paths, $default = null)
@@ -351,13 +343,12 @@ class Arr
      * Retrieves multiple single-key values from a list of arrays.
      *
      *     // Get all of the "id" values from a result
-     *     $ids = ArrayHelper::pluck($result, 'id');
+     *     $ids = Arr::pluck($result, 'id');
      *
      * [!!] A list of arrays is an array that contains arrays, eg: [array $a, array $b, array $c, ...]
      *
      * @param   array  $array list of arrays to check
      * @param   string $key   key to pluck
-     *
      * @return  array
      */
     public static function pluck($array, $key)
@@ -380,12 +371,11 @@ class Arr
      * Adds a value to the beginning of an associative array.
      *
      *     // Add an empty value to the start of a select list
-     *     ArrayHelper::unshift($array, 'none', 'Select a value');
+     *     Arr::unshift($array, 'none', 'Select a value');
      *
      * @param   array  $array array to modify
      * @param   string $key   array key name
      * @param   mixed  $val   array value
-     *
      * @return  array
      */
     public static function unshift(array & $array, $key, $val)
@@ -401,13 +391,13 @@ class Arr
      * [array_map](http://php.net/array_map) 的强化版本
      *
      *     // Apply "strip_tags" to every element in the array
-     *     $array = ArrayHelper::map('strip_tags', $array);
+     *     $array = Arr::map('strip_tags', $array);
      *
      *     // Apply $this->filter to every element in the array
-     *     $array = ArrayHelper::map([[$this,'filter']], $array);
+     *     $array = Arr::map([[$this,'filter']], $array);
      *
      *     // Apply strip_tags and $this->filter to every element
-     *     $array = ArrayHelper::map(['strip_tags', [$this,'filter']), $array];
+     *     $array = Arr::map(['strip_tags', [$this,'filter']), $array];
      *
      * [!!] Because you can pass an array of callbacks, if you wish to use an array-form callback
      * you must nest it in an additional array as above. Calling self::map([$this,'filter'], $array)
@@ -418,7 +408,6 @@ class Arr
      * @param   mixed $callbacks array of callbacks to apply to every element in the array
      * @param   array $array     array to map
      * @param   array $keys      array of keys to apply to
-     *
      * @return  array
      */
     public static function map($callbacks, $array, $keys = null)
@@ -449,7 +438,7 @@ class Arr
     }
 
     /**
-     * array_merge的强化版本。注意这个方法跟 [array_merge_recursive](http://php.net/array_merge_recursive) 是由区别的。
+     * array_merge的强化版本。注意这个方法跟 [array_merge_recursive](http://php.net/array_merge_recursive) 是有区别的。
      * 具体区别看例子：
      *
      *     $john = ['name' => 'john', 'children' => ['fred', 'paul', 'sally', 'jane']];
@@ -463,7 +452,6 @@ class Arr
      *
      * @param   array $array1     initial array
      * @param   array $array2,... array to merge
-     *
      * @return  array
      */
     public static function merge($array1, $array2)
@@ -536,16 +524,17 @@ class Arr
     /**
      * Overwrites an array with values from input arrays.
      * Keys that do not exist in the first array will not be added!
+     *
      *     $a1 = ['name' => 'john', 'mood' => 'happy', 'food' => 'bacon'];
      *     $a2 = ['name' => 'jack', 'food' => 'tacos', 'drink' => 'beer'];
      *     // Overwrite the values of $a1 with $a2
-     *     $array = ArrayHelper::overwrite($a1, $a2);
+     *     $array = Arr::overwrite($a1, $a2);
+     *
      *     // The output of $array will now be:
      *     ['name' => 'jack', 'mood' => 'happy', 'food' => 'tacos']
      *
      * @param   array $array1 master array
      * @param   array $array2 input arrays that will overwrite existing values
-     *
      * @return  array
      */
     public static function overwrite($array1, $array2)
@@ -572,13 +561,14 @@ class Arr
     /**
      * Creates a callable function and parameter list from a string representation.
      * Note that this function does not validate the callback string.
+     *
      *     // Get the callback function and parameters
      *     list($func, $params) = self::callback('Foo::bar(apple,orange)');
+     *
      *     // Get the result of the callback
      *     $result = call_user_func_array($func, $params);
      *
      * @param   string $str callback string
-     *
      * @return  array   function, params
      */
     public static function callback($str)
@@ -619,15 +609,18 @@ class Arr
 
     /**
      * Convert a multi-dimensional array into a single-dimensional array.
+     *
      *     $array = ['set' => ['one' => 'something'], 'two' => 'other'];
+     *
      *     // Flatten the array
-     *     $array = ArrayHelper::flatten($array);
+     *     $array = Arr::flatten($array);
+     *
      *     // The array will now be
      *     [('one' => 'something', 'two' => 'other'];
+     *
      * [!!] The keys of array values will be discarded.
      *
      * @param   array $array array to flatten
-     *
      * @return  array
      */
     public static function flatten($array)
@@ -659,14 +652,13 @@ class Arr
 
     /**
      * 将关联数组的属性-值copy到对象上去
-     *     ArrayHelper::mix($object, ['foo' => 'bar'], true);
+     *
+     *     Arr::mix($object, ['foo' => 'bar'], true);
      *
      * @copyright   https://github.com/akira-cn/JKit
-     *
      * @param       mixed   $obj      被copy到的对象
      * @param       array   $hash     关联数组
      * @param       boolean $override 是否覆盖对象上已有属性
-     *
      * @return      mixed    被copy到的对象
      */
     public static function mix($obj, $hash, $override = false)
@@ -684,12 +676,9 @@ class Arr
 
 
     /**
-     * Unset all keys that have empty string values
-     *
-     * @static
+     * 删除所有空值的数据
      *
      * @param array $input
-     *
      * @return array
      */
     public static function removeEmpty(array $input)
@@ -732,7 +721,6 @@ class Arr
      *
      * @param  array|Traversable $iterator  The array or Traversable object to convert
      * @param  bool              $recursive Recursively check all nested structures
-     *
      * @throws InvalidArgumentException if $iterator is not an array or a Traversable object
      * @return array
      */
