@@ -3,7 +3,7 @@
 namespace tourze\Base\Exception;
 
 /**
- * Exception marker interface
+ * 异常接口
  */
 interface ExceptionInterface
 {
