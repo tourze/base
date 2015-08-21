@@ -230,7 +230,7 @@ class File
     /**
      * 字节数可视化阅读
      *
-     * @param integer $filesize
+     * @param int $filesize
      * @return string
      */
     public static function sizeCount($filesize)

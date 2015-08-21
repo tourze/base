@@ -106,7 +106,7 @@ class Base extends Object
     public static $cacheDir;
 
     /**
-     * @var  integer  自带缓存的默认生命周期
+     * @var  int  自带缓存的默认生命周期
      */
     public static $cacheLife = 60;
 
@@ -270,9 +270,9 @@ class Base extends Object
      *     $foo = self::cache('foo');
      *
      * @throws  BaseException
-     * @param   string  $name    缓存名
-     * @param   mixed   $data    缓存数据
-     * @param   integer $expired 缓存生效时间（单位：秒）
+     * @param   string $name    缓存名
+     * @param   mixed  $data    缓存数据
+     * @param   int    $expired 缓存生效时间（单位：秒）
      * @return  mixed|boolean
      */
     public static function cache($name, $data = null, $expired = null)

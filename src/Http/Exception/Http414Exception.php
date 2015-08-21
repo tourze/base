@@ -6,7 +6,7 @@ class Http414Exception extends HttpException
 {
 
     /**
-     * @var   integer    HTTP 414 Request-URI Too Long
+     * @var   int    HTTP 414 Request-URI Too Long
      */
     protected $_code = 414;
 

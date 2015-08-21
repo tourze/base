@@ -6,7 +6,7 @@ class Http505Exception extends HttpException
 {
 
     /**
-     * @var   integer    HTTP 505 HTTP Version Not Supported
+     * @var   int    HTTP 505 HTTP Version Not Supported
      */
     protected $_code = 505;
 

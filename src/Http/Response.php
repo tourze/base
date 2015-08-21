@@ -19,8 +19,8 @@ use tourze\Http\Request\Exception\RequestException;
  *
  * @property   string     protocol
  * @property   string     body
- * @property   integer    contentLength
- * @property   integer    status
+ * @property   int    contentLength
+ * @property   int    status
  * @property   Header     header
  */
 class Response extends Object
@@ -100,7 +100,7 @@ class Response extends Object
     ];
 
     /**
-     * @var  integer     The response http status
+     * @var  int     The response http status
      */
     protected $_status = 200;
 
@@ -655,7 +655,7 @@ class Response extends Object
     /**
      * Calculates the byte range to use with send_file. If HTTP_RANGE does not exist then the complete byte range is returned
      *
-     * @param  integer $size
+     * @param  int $size
      *
      * @return array
      */

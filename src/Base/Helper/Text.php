@@ -57,7 +57,7 @@ class Text
      *     $text = self::limitWords($text);
      *
      * @param   string  $str     phrase to limit words of
-     * @param   integer $limit   number of words to limit to
+     * @param   int $limit   number of words to limit to
      * @param   string  $endChar end character or entity
      *
      * @return  string
@@ -89,7 +89,7 @@ class Text
      *     $text = self::limitChars($text);
      *
      * @param   string  $str           phrase to limit characters of
-     * @param   integer $limit         number of characters to limit to
+     * @param   int $limit         number of characters to limit to
      * @param   string  $endChar       end character or entity
      * @param   boolean $preserveWords enable or disable the preservation of words while limiting
      *
@@ -169,7 +169,7 @@ class Text
     /**
      * 生成随机字符串
      *
-     * @param integer $length
+     * @param int $length
      * @param string  $pool
      * @return string
      */
@@ -268,7 +268,7 @@ class Text
      *
      *     echo self::bytes(filesize($file));
      *
-     * @param   integer $bytes     字节数
+     * @param   int $bytes     字节数
      * @param   string  $forceUnit a definitive unit
      * @param   string  $format    the return string format
      * @param   boolean $si        whether to use SI prefixes or IEC
@@ -324,7 +324,7 @@ class Text
      *     // 返回：five million, six hundred and thirty-two
      *     echo Text::number(5000632);
      *
-     * @param   integer $number number to format
+     * @param   int $number number to format
      * @return  string
      */
     public static function number($number)
@@ -521,7 +521,7 @@ class Text
      *    becomes
      *
      *    array(2) (
-     *       "depth" => integer 2
+     *       "depth" => int 2
      *       "something" => string(4) "test"
      *    )
      *

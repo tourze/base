@@ -8,7 +8,7 @@ class Http305Exception extends ExpectedException
 {
 
     /**
-     * @var   integer    HTTP 305 Use Proxy
+     * @var   int    HTTP 305 Use Proxy
      */
     protected $_code = 305;
 

@@ -10,9 +10,16 @@ namespace tourze\Base\Helper;
 class AuthCode
 {
 
+    /**
+     * 对称加密的默认key
+     *
+     * @var string
+     */
     public static $key = 'tourze';
 
     /**
+     * 加密数据
+     *
      * @param mixed $plain
      * @param string $key
      * @param int    $expire
@@ -24,6 +31,8 @@ class AuthCode
     }
 
     /**
+     * 解密数据
+     *
      * @param mixed $plain
      * @param string $key
      * @param int    $expire
@@ -35,6 +44,8 @@ class AuthCode
     }
 
     /**
+     * 加解密的逻辑实现
+     *
      * @param string $input     要加密的字符串
      * @param string $operation 要加密还是解密
      * @param string $key       密钥

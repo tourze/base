@@ -12,7 +12,7 @@ abstract class HttpException extends BaseException
     /**
      * Creates an HTTP_Exception of the specified type.
      *
-     * @param   integer   $code      the http status code
+     * @param   int   $code      the http status code
      * @param   string    $message   status message, custom content to display with error
      * @param   array     $variables translation variables
      * @param   Exception $previous

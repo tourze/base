@@ -133,7 +133,7 @@ class Valid
      * 是否满足最短长度要求
      *
      * @param   string  $value  value
-     * @param   integer $length minimum length required
+     * @param   int $length minimum length required
      *
      * @return  boolean
      */
@@ -146,7 +146,7 @@ class Valid
      * 是否满足最大长度要求
      *
      * @param   string  $value  value
-     * @param   integer $length maximum length required
+     * @param   int $length maximum length required
      *
      * @return  boolean
      */
@@ -254,7 +254,7 @@ class Valid
     /**
      * 检验输入的数据是否为合适的信用卡号码
      *
-     * @param   integer      $number credit card number
+     * @param   int      $number credit card number
      * @return  boolean
      */
     public static function creditCard($number)
@@ -374,8 +374,8 @@ class Valid
      * Tests if a number is within a range.
      *
      * @param   string  $number number to check
-     * @param   integer $min    minimum value
-     * @param   integer $max    maximum value
+     * @param   int $min    minimum value
+     * @param   int $max    maximum value
      * @return  boolean
      */
     public static function range($number, $min, $max)
@@ -388,8 +388,8 @@ class Valid
      * number of digits can be checked too.
      *
      * @param   string  $str    number to check
-     * @param   integer $places number of decimal places
-     * @param   integer $digits number of digits
+     * @param   int $places number of decimal places
+     * @param   int $digits number of digits
      * @return  boolean
      */
     public static function decimal($str, $places = 2, $digits = null)

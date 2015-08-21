@@ -12,10 +12,10 @@ if ( ! function_exists('__'))
      *
      *    __('Welcome back, :user', [':user' => $username]);
      *
-     * @param   string $string 要翻译的文本
-     * @param   array  $values 变量数组
-     * @param   string $lang   源语言
-     * @return  string
+     * @param  string $string 要翻译的文本
+     * @param  array  $values 变量数组
+     * @param  string $lang   源语言
+     * @return string
      */
     function __($string, array $values = null, $lang = 'en-us')
     {
@@ -31,6 +31,7 @@ if ( ! function_exists('__'))
     }
 }
 
+// 检测是否在SAE中
 if ( ! defined('IN_SAE'))
 {
     define('IN_SAE', function_exists('sae_debug'));

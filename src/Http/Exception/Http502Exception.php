@@ -6,7 +6,7 @@ class Http502Exception extends HttpException
 {
 
     /**
-     * @var   integer    HTTP 502 Bad Gateway
+     * @var   int    HTTP 502 Bad Gateway
      */
     protected $_code = 502;
 

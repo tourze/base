@@ -20,22 +20,22 @@ class Cookie
     public static $salt = null;
 
     /**
-     * @var  integer  默认过期时间
+     * @var int 默认过期时间
      */
     public static $expiration = 0;
 
     /**
-     * @var  string  默认作用路径
+     * @var string 默认作用路径
      */
     public static $path = '/';
 
     /**
-     * @var  string  默认作用域
+     * @var string 默认作用域
      */
     public static $domain = null;
 
     /**
-     * @var  boolean  Only transmit cookies over secure connections
+     * @var bool 是否只通过https传递cookie
      */
     public static $secure = false;
 
@@ -90,7 +90,7 @@ class Cookie
      *
      * @param   string  $name       name of cookie
      * @param   string  $value      value of cookie
-     * @param   integer $expiration lifetime in seconds
+     * @param   int $expiration lifetime in seconds
      * @return  boolean
      */
     public static function set($name, $value, $expiration = null)

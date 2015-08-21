@@ -8,7 +8,7 @@ class Http401Exception extends ExpectedException
 {
 
     /**
-     * @var   integer    HTTP 401 Unauthorized
+     * @var   int    HTTP 401 Unauthorized
      */
     protected $_code = 401;
 

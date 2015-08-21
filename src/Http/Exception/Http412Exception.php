@@ -6,7 +6,7 @@ class Http412Exception extends HttpException
 {
 
     /**
-     * @var   integer    HTTP 412 Precondition Failed
+     * @var   int    HTTP 412 Precondition Failed
      */
     protected $_code = 412;
 

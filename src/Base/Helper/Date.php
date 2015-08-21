@@ -88,9 +88,9 @@ class Date
      *
      *     $seconds = Date::seconds(); // 01, 02, 03, ..., 58, 59, 60
      *
-     * @param   integer $step  amount to increment each step by, 1 to 30
-     * @param   integer $start start value
-     * @param   integer $end   end value
+     * @param   int $step  amount to increment each step by, 1 to 30
+     * @param   int $start start value
+     * @param   int $end   end value
      * @return  array   A mirrored (foo => foo) array from 1-60.
      */
     public static function seconds($step = 1, $start = 0, $end = 60)
@@ -115,7 +115,7 @@ class Date
      *     $minutes = Date::minutes(); // 05, 10, 15, ..., 50, 55, 60
      *
      * @uses    Date::seconds
-     * @param   integer $step amount to increment each step by, 1 to 30
+     * @param   int $step amount to increment each step by, 1 to 30
      * @return  array   A mirrored (foo => foo) array from 1-60.
      */
     public static function minutes($step = 5)
@@ -133,9 +133,9 @@ class Date
      *
      *     $hours = Date::hours(); // 01, 02, 03, ..., 10, 11, 12
      *
-     * @param   integer $step  amount to increment each step by
+     * @param   int $step  amount to increment each step by
      * @param   boolean $long  use 24-hour time
-     * @param   integer $start the hour to start at
+     * @param   int $start the hour to start at
      * @return  array   A mirrored (foo => foo) array from start-12 or start-23.
      */
     public static function hours($step = 1, $long = false, $start = null)
@@ -170,7 +170,7 @@ class Date
      *     $type = Date::ampm(12); // PM
      *     $type = Date::ampm(1);  // AM
      *
-     * @param   integer $hour number of the hour
+     * @param   int $hour number of the hour
      * @return  string
      */
     public static function ampm($hour)
@@ -186,7 +186,7 @@ class Date
      *
      *     $hour = Date::adjust(3, 'pm'); // 15
      *
-     * @param   integer $hour hour to adjust
+     * @param   int $hour hour to adjust
      * @param   string  $ampm AM or PM
      * @return  string
      */
@@ -220,8 +220,8 @@ class Date
      *
      *     Date::days(4, 2010); // 1, 2, 3, ..., 28, 29, 30
      *
-     * @param   integer $month number of month
-     * @param   integer $year  number of year to check month, defaults to the current year
+     * @param   int $month number of month
+     * @param   int $year  number of year to check month, defaults to the current year
      * @return  array   A mirrored (foo => foo) array of the days.
      */
     public static function days($month, $year = false)
@@ -304,8 +304,8 @@ class Date
      *
      *     $years = Date::years(2000, 2010); // 2000, 2001, ..., 2009, 2010
      *
-     * @param   integer $start starting year (default is current year - 5)
-     * @param   integer $end   ending year (default is current year + 5)
+     * @param   int $start starting year (default is current year - 5)
+     * @param   int $end   ending year (default is current year + 5)
      * @return  array
      */
     public static function years($start = false, $end = false)
@@ -332,8 +332,8 @@ class Date
      *     $span = Date::span(60, 182, 'minutes,seconds'); // array('minutes' => 2, 'seconds' => 2)
      *     $span = Date::span(60, 182, 'minutes'); // 2
      *
-     * @param   integer $remote timestamp to find the span of
-     * @param   integer $local  timestamp to use as the baseline
+     * @param   int $remote timestamp to find the span of
+     * @param   int $local  timestamp to use as the baseline
      * @param   string  $output formatting string
      * @return  string   when only a single output is requested
      * @return  array    associative list of all outputs requested
@@ -424,8 +424,8 @@ class Date
      * however this parameter shouldn't be needed in normal usage and is only
      * included for unit tests
      *
-     * @param   integer $timestamp       "remote" timestamp
-     * @param   integer $local_timestamp "local" timestamp, defaults to time()
+     * @param   int $timestamp       "remote" timestamp
+     * @param   int $local_timestamp "local" timestamp, defaults to time()
      * @return  string
      */
     public static function fuzzySpan($timestamp, $local_timestamp = null)
@@ -535,7 +535,7 @@ class Date
      *
      *     $dos = Date::unix2dos($unix);
      *
-     * @param   integer $timestamp UNIX timestamp
+     * @param   int $timestamp UNIX timestamp
      * @return  integer
      */
     public static function unix2dos($timestamp = false)
@@ -563,7 +563,7 @@ class Date
      *
      *     $unix = Date::dos2unix($dos);
      *
-     * @param   integer $timestamp DOS timestamp
+     * @param   int $timestamp DOS timestamp
      * @return  integer
      */
     public static function dos2unix($timestamp = false)

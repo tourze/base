@@ -35,13 +35,6 @@ class Url
             // REQUEST_URI and PHP_SELF include the docroot and index
             if (isset($_SERVER['REQUEST_URI']))
             {
-                /**
-                 * We use REQUEST_URI as the fallback value. The reason
-                 * for this is we might have a malformed URL such as:
-                 *  http://localhost/http://example.com/judge.php
-                 * which parse_url can't handle. So rather than leave empty
-                 * handed, we'll use this.
-                 */
                 $uri = $_SERVER['REQUEST_URI'];
                 if ($requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))
                 {
@@ -89,8 +82,10 @@ class Url
      *
      *     // Absolute URL path with no host or protocol
      *     echo URL::base();
+     *
      *     // Absolute URL path with host, https protocol and index.php if set
      *     echo URL::base('https', true);
+     *
      *     // Absolute URL path with host and protocol from $request
      *     echo URL::base($request);
      *
@@ -162,14 +157,13 @@ class Url
 
     /**
      * Fetches an absolute site URL based on a URI segment.
+     *
      *     echo URL::site('foo/bar');
      *
      * @param   string  $uri      Site URI to convert
      * @param   mixed   $protocol Protocol string or [Request] class to use protocol from
      * @param   boolean $index    Include the index_page in the URL
-     *
      * @return  string
-     * @uses    URL::base
      */
     public static function site($uri = '', $protocol = null, $index = true)
     {
@@ -195,11 +189,11 @@ class Url
      *
      * Typically you would use this when you are sorting query results,
      * or something similar.
+     *
      * [!!] Parameters with a null value are left out.
      *
      * @param   array   $params Array of GET parameters
      * @param   boolean $useGet Include current request GET parameters
-     *
      * @return  string
      */
     public static function query(array $params = null, $useGet = true)
