@@ -2,6 +2,7 @@
 
 namespace tourze\Base\Helper;
 
+use Doctrine\Common\Inflector\Inflector;
 use RandomLib\Factory as RandomFactory;
 use SecurityLib\Strength as RandomStrength;
 
@@ -16,7 +17,7 @@ class Text
 {
 
     /**
-     * @var  array   number units and text equivalents
+     * @var array 数字单元的描述
      */
     public static $units = [
         1000000000 => 'billion',
@@ -53,14 +54,14 @@ class Text
     ];
 
     /**
-     * Limits a phrase to a given number of words.
-     *     $text = self::limitWords($text);
+     * 限制单词长度
      *
-     * @param   string  $str     phrase to limit words of
-     * @param   int $limit   number of words to limit to
-     * @param   string  $endChar end character or entity
+     *     $text = Text::limitWords($text);
      *
-     * @return  string
+     * @param  string $str     要检查的字符
+     * @param  int    $limit   限制长度
+     * @param  string $endChar 截断后使用该字符来代替
+     * @return string
      */
     public static function limitWords($str, $limit = 100, $endChar = null)
     {
@@ -79,22 +80,19 @@ class Text
 
         preg_match('/^\s*+(?:\S++\s*+){1,' . $limit . '}/u', $str, $matches);
 
-        // Only attach the end character if the matched string is shorter
-        // than the starting string.
         return rtrim($matches[0]) . ((strlen($matches[0]) === strlen($str)) ? '' : $endChar);
     }
 
     /**
-     * Limits a phrase to a given number of characters.
-     *     $text = self::limitChars($text);
+     * 限制字符长度
      *
-     * @param   string  $str           phrase to limit characters of
-     * @param   int $limit         number of characters to limit to
-     * @param   string  $endChar       end character or entity
-     * @param   boolean $preserveWords enable or disable the preservation of words while limiting
+     *     $text = Text::limitChars($text);
      *
-     * @return  string
-     * @uses    UTF8::strlen
+     * @param  string  $str           要限制的字符
+     * @param  int     $limit         限制长度
+     * @param  string  $endChar       结尾字符
+     * @param  boolean $preserveWords 激活或禁用字符保护
+     * @return string
      */
     public static function limitChars($str, $limit = 100, $endChar = null, $preserveWords = false)
     {
@@ -117,13 +115,10 @@ class Text
             return rtrim(substr($str, 0, $limit)) . $endChar;
         }
 
-        // Don't preserve words. The limit is considered the top limit.
-        // No strings with a length longer than $limit should be returned.
         if ( ! preg_match('/^.{0,' . $limit . '}\s/us', $str, $matches))
         {
             return $endChar;
         }
-
         return rtrim($matches[0]) . ((strlen($matches[0]) === strlen($str)) ? '' : $endChar);
     }
 
@@ -139,16 +134,13 @@ class Text
     }
 
     /**
-     * Alternates between two or more strings.
+     * 两个字符串之间交替返回
      *
-     *     echo self::alternate('one', 'two'); // "one"
-     *     echo self::alternate('one', 'two'); // "two"
-     *     echo self::alternate('one', 'two'); // "one"
-     *
-     * Note that using multiple iterations of different strings may produce unexpected results.
+     *     echo Text::alternate('one', 'two'); // "one"
+     *     echo Text::alternate('one', 'two'); // "two"
+     *     echo Text::alternate('one', 'two'); // "one"
      *
      * @return string
-     * @internal param string $str strings to alternate between
      */
     public static function alternate()
     {
@@ -169,8 +161,8 @@ class Text
     /**
      * 生成随机字符串
      *
-     * @param int $length
-     * @param string  $pool
+     * @param int    $length
+     * @param string $pool
      * @return string
      */
     public static function random($length = 20, $pool = '')
@@ -182,12 +174,12 @@ class Text
     }
 
     /**
-     * Reduces multiple slashes in a string to single slashes.
+     * 删除字符串中多余的斜杆
      *
-     *     $str = self::reduceSlashes('foo//bar/baz'); // "foo/bar/baz"
+     *     $str = Text::reduceSlashes('foo//bar/baz'); // "foo/bar/baz"
      *
-     * @param   string $str string to reduce slashes of
-     * @return  string
+     * @param  string $str 要处理的字符串
+     * @return string
      */
     public static function reduceSlashes($str)
     {
@@ -198,60 +190,53 @@ class Text
      * 字符过滤
      *
      *     // 返回 "What the #####, man!"
-     *     echo self::censor('What the fuck, man!', [
+     *     echo Text::censor('What the fuck, man!', [
      *         'fuck' => '#####',
      *     ]);
      *
-     * @param   string  $str                 phrase to replace words in
-     * @param   array   $badWords            words to replace
-     * @param   string  $replacement         replacement string
-     * @param   boolean $replacePartialWords replace words across word boundaries (space, period, etc)
-     * @return  string
+     * @param  string $str         要过滤的字符串
+     * @param  array  $badwordList 敏感词汇列表
+     * @param  string $replacement 默认替换成这个字符
+     * @return string
      */
-    public static function censor($str, $badWords, $replacement = '#', $replacePartialWords = true)
+    public static function censor($str, $badwordList, $replacement = '#')
     {
-        foreach ((array) $badWords as $key => $badWord)
+        // 如果替换列表不是关联数组，那么就手动处理一次
+        if ( ! Arr::isAssoc($badwordList))
         {
-            $badWords[$key] = str_replace('\*', '\S*?', preg_quote((string) $badWord));
+            $temp = [];
+            foreach ($badwordList as $badword)
+            {
+                $temp[$badword] = str_repeat($replacement, strlen($badword));
+            }
+            $badwordList = $temp;
         }
 
-        $regex = '(' . implode('|', $badWords) . ')';
-
-        if (false === $replacePartialWords)
+        foreach ($badwordList as $badword => $replace)
         {
-            // Just using \b isn't sufficient when we need to replace a badword that already contains word boundaries itself
-            $regex = '(?<=\b|\s|^)' . $regex . '(?=\b|\s|$)';
+            $str = str_replace($badword, $replace, $str);
         }
 
-        $regex = '!' . $regex . '!ui';
-
-        if (strlen($replacement) == 1)
-        {
-            $regex .= 'e';
-            return preg_replace($regex, 'str_repeat($replacement, strlen(\'$1\'))', $str);
-        }
-
-        return preg_replace($regex, $replacement, $str);
+        return $str;
     }
 
     /**
      * 返回指定字符串的相似部分
      *
-     *     $match = self::similar('fred', 'fran', 'free'); // "fr"
+     *     $match = Text::similar('fred', 'fran', 'free'); // "fr"
      *
      * @return  string
      */
     public static function similar()
     {
         $words = func_get_args();
-        // First word is the word to match against
         $word = current($words);
 
         for ($i = 0, $max = strlen($word); $i < $max; ++$i)
         {
             foreach ($words as $w)
             {
-                // Once a difference is found, break out of the loops
+                // 如果找到差异了，立即退出
                 if ( ! isset($w[$i]) || $w[$i] !== $word[$i])
                 {
                     break 2;
@@ -259,29 +244,26 @@ class Text
             }
         }
 
-        // Return the similar text
         return substr($word, 0, $i);
     }
 
     /**
      * 返回字节数的可读形式
      *
-     *     echo self::bytes(filesize($file));
+     *     echo Text::bytes(filesize($file));
      *
-     * @param   int $bytes     字节数
-     * @param   string  $forceUnit a definitive unit
-     * @param   string  $format    the return string format
-     * @param   boolean $si        whether to use SI prefixes or IEC
-     *
-     * @return  string
+     * @param  int    $bytes  字节数
+     * @param  string $unit   单元
+     * @param  string $format 返回字符串的格式
+     * @param  bool   $si     是否使用SI前缀或IEC
+     * @return string
      */
-    public static function bytes($bytes, $forceUnit = null, $format = null, $si = true)
+    public static function bytes($bytes, $unit = null, $format = null, $si = true)
     {
-        // Format string
         $format = (null === $format) ? '%01.2f %s' : (string) $format;
 
-        // IEC prefixes (binary)
-        if (false == $si || false !== strpos($forceUnit, 'i'))
+        // IEC前缀（二进制）
+        if (false == $si || false !== strpos($unit, 'i'))
         {
             $units = [
                 'B',
@@ -293,7 +275,7 @@ class Text
             ];
             $mod = 1024;
         }
-        // SI prefixes (decimal)
+        // SI前缀（十进制）
         else
         {
             $units = [
@@ -307,8 +289,7 @@ class Text
             $mod = 1000;
         }
 
-        // Determine unit to use
-        if (false === ($power = array_search((string) $forceUnit, $units)))
+        if (false === ($power = array_search((string) $unit, $units)))
         {
             $power = ($bytes > 0) ? floor(log($bytes, $mod)) : 0;
         }
@@ -321,30 +302,24 @@ class Text
      *
      *     // 返回：one thousand and twenty-four
      *     echo Text::number(1024);
+     *
      *     // 返回：five million, six hundred and thirty-two
      *     echo Text::number(5000632);
      *
-     * @param   int $number number to format
-     * @return  string
+     * @param  int $number 要格式化的数值
+     * @return string
      */
     public static function number($number)
     {
-        // The number must always be an integer
         $number = (int) $number;
-
         $text = [];
-
-        // Last matched unit within the loop
         $lastUnit = null;
-
-        // The last matched item within the loop
         $lastItem = '';
 
         foreach (self::$units as $unit => $name)
         {
             if ($number / $unit >= 1)
             {
-                // $value = the number of times the number is divisible by unit
                 $number -= $unit * ($value = (int) floor($number / $unit));
                 $item = '';
 
@@ -364,8 +339,6 @@ class Text
                     $item = self::number($value) . ' ' . $name;
                 }
 
-                // In the situation that we need to make a composite number (i.e. twenty-three)
-                // then we need to modify the previous entry
                 if (empty($item))
                 {
                     array_pop($text);
@@ -396,29 +369,26 @@ class Text
     /**
      * 创建驼峰命名
      *
-     *     $str = self::camelize('mother cat');     // "motherCat"
-     *     $str = self::camelize('kittens in bed'); // "kittensInBed"
+     *     $str = Text::camelize('mother cat');     // "motherCat"
+     *     $str = Text::camelize('kittens in bed'); // "kittensInBed"
      *
-     * @param   string $str 要解析的字符串
-     * @param   string $dot 删除的字符串，如空格
-     * @return  string
+     * @param  string $str 要解析的字符串
+     * @return string
      */
-    public static function camelize($str, $dot = ' ')
+    public static function camelize($str)
     {
-        $str = str_replace($dot, '', ucwords(preg_replace('/[^A-Za-z0-9]+/', ' ', $str)));
-
-        return str_replace(' ', '', $str);
+        return Inflector::camelize($str);
     }
 
     /**
      * 反驼峰命名
      *
-     *     $str = self::decamelize('houseCat');    // "house cat"
-     *     $str = self::decamelize('kingAllyCat'); // "king ally cat"
+     *     $str = Text::decamelize('houseCat');    // "house cat"
+     *     $str = Text::decamelize('kingAllyCat'); // "king ally cat"
      *
-     * @param   string $str phrase to camelize
-     * @param   string $sep word separator
-     * @return  string
+     * @param  string $str 驼峰风格字符串
+     * @param  string $sep 分隔符
+     * @return string
      */
     public static function decamelize($str, $sep = ' ')
     {
@@ -428,10 +398,10 @@ class Text
     /**
      * 下划线风格
      *
-     *     $str = self::underscore('five cats'); // "five_cats";
+     *     $str = Text::underscore('five cats'); // "five_cats";
      *
-     * @param   string $str 处理字符串
-     * @return  string
+     * @param  string $str 处理字符串
+     * @return string
      */
     public static function underscore($str)
     {
@@ -441,11 +411,11 @@ class Text
     /**
      * 中划线风格
      *
-     *     $str = self::humanize('kittens-are-cats'); // "kittens are cats"
-     *     $str = self::humanize('dogs_as_well');     // "dogs as well"
+     *     $str = Text::humanize('kittens-are-cats'); // "kittens are cats"
+     *     $str = Text::humanize('dogs_as_well');     // "dogs as well"
      *
-     * @param   string $str phrase to make human-readable
-     * @return  string
+     * @param  string $str 要处理的字符串
+     * @return string
      */
     public static function humanize($str)
     {
@@ -493,11 +463,10 @@ class Text
     }
 
     /**
-     * Determine if a given string contains a given sub-string.
+     * 检查指定字符串是否包含另外一个字符串
      *
      * @param  string       $haystack
      * @param  string|array $needle
-     *
      * @return bool
      */
     public static function contains($haystack, $needle)
@@ -514,19 +483,19 @@ class Text
     }
 
     /**
-     * parses a string of params into an array, and changes numbers to ints
+     * 解析参数字符串为数组
      *
      *    params('depth=2,something=test')
      *
-     *    becomes
+     *    转换为
      *
      *    array(2) (
      *       "depth" => int 2
      *       "something" => string(4) "test"
      *    )
      *
-     * @param  string $var the params to parse
-     * @return array   the resulting array
+     * @param  string $var 要解析的字符串
+     * @return array
      */
     public static function params($var)
     {
@@ -537,7 +506,7 @@ class Text
             $i = explode('=', trim($i));
             $new[$i[0]] = Arr::get($i, 1, null);
 
-            if (is_numeric($new[$i[0]]))
+            if (ctype_digit($new[$i[0]]))
             {
                 $new[$i[0]] = (int) $new[$i[0]];
             }
