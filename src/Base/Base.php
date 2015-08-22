@@ -12,10 +12,7 @@ use tourze\Base\Exception\BaseException;
  * - 类的自动加载
  * - 助手traits
  *
- * @package    tourze\Base
- * @category   Base
- * @access     public
- * @author     lzp <25803471@qq.com>
+ * @package tourze\Base
  */
 class Base extends Object
 {
@@ -118,12 +115,8 @@ class Base extends Object
     /**
      * 初始化
      *
-     * @throws  BaseException
-     *
-     * @return  void
-     * @uses    Base::globals
-     * @uses    Base::sanitize
-     * @uses    Base::cache
+     * @throws BaseException
+     * @return void
      */
     public function init()
     {
@@ -216,9 +209,8 @@ class Base extends Object
      * - 安全过滤，对特殊字符进行转义
      * - 对换行符进行格式化
      *
-     * @param   mixed $value any variable
-     *
-     * @return  mixed   sanitized variable
+     * @param  mixed $value 任意变量
+     * @return mixed
      */
     public static function sanitize($value)
     {
@@ -252,9 +244,8 @@ class Base extends Object
      *
      *     $foo = Base::load('foo.php');
      *
-     * @param   string $file
-     *
-     * @return  mixed
+     * @param  string $file
+     * @return mixed
      */
     public static function load($file)
     {
