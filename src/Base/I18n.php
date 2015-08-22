@@ -10,13 +10,14 @@ namespace tourze\Base;
  *     // 带参数
  *     echo __('Hello, :user', [':user' => $username]);
  *
- * @package    Base
- * @category   Base
- * @author     YwiSax
+ * @package tourze\Base
  */
 class I18n
 {
 
+    /**
+     * @var string 语言文件默认后缀
+     */
     public static $ext = '.php';
 
     /**
@@ -76,9 +77,9 @@ class I18n
      *
      *     $hello = I18n::get('Hello friends, my name is :name');
      *
-     * @param   string $string 要翻译的文本
-     * @param   string $lang   目标语言
-     * @return  string
+     * @param  string $string 要翻译的文本
+     * @param  string $lang   目标语言
+     * @return string
      */
     public static function get($string, $lang = null)
     {
@@ -97,8 +98,8 @@ class I18n
      *
      *     $messages = I18n::load('es-es');
      *
-     * @param   string $lang 要加载的语言
-     * @return  array
+     * @param  string $lang 要加载的语言
+     * @return array
      */
     public static function load($lang)
     {
