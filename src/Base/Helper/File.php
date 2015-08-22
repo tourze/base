@@ -3,9 +3,12 @@
 namespace tourze\Base\Helper;
 
 use Symfony\Component\Filesystem\Filesystem;
+use Traversable;
 
 /**
  * 基于symfony/filesystem来做一个文件的助手类
+ *
+ * @package tourze\Base\Helper
  */
 class File
 {
@@ -16,6 +19,8 @@ class File
     protected static $_fileSystem = null;
 
     /**
+     * 确保生成了文件操作对象
+     *
      * @return Filesystem
      */
     public static function ensureFileSystem()
@@ -54,7 +59,7 @@ class File
     /**
      * 检测文件是否存在
      *
-     * @param $files
+     * @param string|array|Traversable $files
      * @return bool
      */
     public static function exists($files)
@@ -65,9 +70,9 @@ class File
     /**
      * touch创建一个空文件
      *
-     * @param      $files
-     * @param null $time
-     * @param null $atime
+     * @param string|array|Traversable $files
+     * @param int                      $time
+     * @param int                      $atime
      */
     public static function touch($files, $time = null, $atime = null)
     {
@@ -77,7 +82,7 @@ class File
     /**
      * 删除指定文件
      *
-     * @param $files
+     * @param string|array|Traversable $files
      */
     public static function delete($files)
     {
@@ -87,10 +92,10 @@ class File
     /**
      * chmod
      *
-     * @param      $files
-     * @param      $mode
-     * @param int  $umask
-     * @param bool $recursive
+     * @param string|array|Traversable $files
+     * @param int                      $mode
+     * @param int                      $umask
+     * @param bool                     $recursive
      */
     public static function chmod($files, $mode, $umask = 0000, $recursive = false)
     {
@@ -98,9 +103,9 @@ class File
     }
 
     /**
-     * @param      $files
-     * @param      $user
-     * @param bool $recursive
+     * @param string|array|Traversable $files
+     * @param string                   $user
+     * @param bool                     $recursive
      */
     public static function chown($files, $user, $recursive = false)
     {
@@ -110,9 +115,9 @@ class File
     /**
      * 重命名指定文件
      *
-     * @param      $origin
-     * @param      $target
-     * @param bool $overwrite
+     * @param string $origin
+     * @param string $target
+     * @param bool   $overwrite
      */
     public static function rename($origin, $target, $overwrite = false)
     {
@@ -120,8 +125,10 @@ class File
     }
 
     /**
-     * @param $endPath
-     * @param $startPath
+     * 生成两个路径之间的相对路径
+     *
+     * @param string $endPath
+     * @param string $startPath
      * @return string
      */
     public static function makePathRelative($endPath, $startPath)
@@ -160,7 +167,7 @@ class File
     /**
      * 修正目录路径
      *
-     * @param $path
+     * @param string $path
      * @return string
      */
     public static function fixFolderPath($path)
@@ -176,7 +183,7 @@ class File
     /**
      * 获取指定目录的上级目录
      *
-     * @param $path
+     * @param string $path
      * @return string
      */
     public static function getParentFolder($path)
@@ -196,7 +203,7 @@ class File
     /**
      * 获取路径中的文件名
      *
-     * @param $path
+     * @param string $path
      * @return string
      */
     public static function getNameFromPath($path)
