@@ -16,59 +16,6 @@ class Valid
 {
 
     /**
-     * @var array 信用卡规则
-     */
-    public static $creditCardRules = [
-        'default'          => [
-            'length' => '13,14,15,16,17,18,19',
-            'prefix' => '',
-            'luhn'   => true,
-        ],
-
-        'american express' => [
-            'length' => '15',
-            'prefix' => '3[47]',
-            'luhn'   => true,
-        ],
-
-        'diners club'      => [
-            'length' => '14,16',
-            'prefix' => '36|55|30[0-5]',
-            'luhn'   => true,
-        ],
-
-        'discover'         => [
-            'length' => '16',
-            'prefix' => '6(?:5|011)',
-            'luhn'   => true,
-        ],
-
-        'jcb'              => [
-            'length' => '15,16',
-            'prefix' => '3|1800|2131',
-            'luhn'   => true,
-        ],
-
-        'maestro'          => [
-            'length' => '16,18',
-            'prefix' => '50(?:20|38)|6(?:304|759)',
-            'luhn'   => true,
-        ],
-
-        'mastercard'       => [
-            'length' => '16',
-            'prefix' => '5[1-5]',
-            'luhn'   => true,
-        ],
-
-        'visa'             => [
-            'length' => '13,16',
-            'prefix' => '4',
-            'luhn'   => true,
-        ],
-    ];
-
-    /**
      * 检测输入是否为数组
      *
      * @param mixed $value
@@ -82,9 +29,9 @@ class Valid
     /**
      * 检查数组是否包含指定的值
      *
-     * @param      $needle
-     * @param      $array
-     * @param null $strict
+     * @param mixed $needle
+     * @param array $array
+     * @param bool  $strict
      * @return bool
      */
     public static function inArray($needle, array $array, $strict = null)
@@ -95,19 +42,17 @@ class Valid
     /**
      * 检查传入参数是否不为空
      *
-     * @param   $value
-     *
-     * @return  bool
+     * @param  mixed $value
+     * @return bool
      */
     public static function notEmpty($value)
     {
         if (is_object($value) && $value instanceof ArrayObject)
         {
-            // Get the array from the ArrayObject
+            // 如果是个ArrayObject对象，那么先读取起内容
             $value = $value->getArrayCopy();
         }
 
-        // Value cannot be null, false, '', or an empty array
         return ! in_array($value, [
             null,
             false,
@@ -117,12 +62,11 @@ class Valid
     }
 
     /**
-     * Checks a field against a regular expression.
+     * 检查输入是否符合正则
      *
-     * @param   string $value      value
-     * @param   string $expression regular expression to match (including delimiters)
-     *
-     * @return  boolean
+     * @param  string $value      要检查的值
+     * @param  string $expression 正则表达式（包含分隔符）
+     * @return bool
      */
     public static function regex($value, $expression)
     {
@@ -132,10 +76,9 @@ class Valid
     /**
      * 是否满足最短长度要求
      *
-     * @param   string  $value  value
-     * @param   int $length minimum length required
-     *
-     * @return  boolean
+     * @param  string $value
+     * @param  int    $length 最小长度
+     * @return bool
      */
     public static function minLength($value, $length)
     {
@@ -145,10 +88,9 @@ class Valid
     /**
      * 是否满足最大长度要求
      *
-     * @param   string  $value  value
-     * @param   int $length maximum length required
-     *
-     * @return  boolean
+     * @param  string $value
+     * @param  int    $length 最大长度
+     * @return boolean
      */
     public static function maxLength($value, $length)
     {
@@ -158,10 +100,9 @@ class Valid
     /**
      * 检测是否为指定长度
      *
-     * @param   string        $value  value
-     * @param   integer|array $length exact length required, or array of valid lengths
-     *
-     * @return  boolean
+     * @param  string    $value
+     * @param  int|array $length 指定长度，或者提供一个可选长度的数组
+     * @return bool
      */
     public static function exactLength($value, $length)
     {
@@ -182,11 +123,11 @@ class Valid
     }
 
     /**
-     * Checks that a field is exactly the value required.
+     * 检测是否为特定值
      *
-     * @param   string $value    value
-     * @param   string $required required value
-     * @param bool     $strict
+     * @param  string $value
+     * @param  string $required 要比较的值
+     * @param  bool   $strict
      * @return bool
      */
     public static function equals($value, $required, $strict = false)
@@ -195,12 +136,12 @@ class Valid
     }
 
     /**
-     * Check an email address for correct format.
+     * 检测邮箱是否正确
      *
      * @link  http://www.iamcal.com/publish/articles/php/parsing_email/
      * @link  http://www.w3.org/Protocols/rfc822/
-     * @param   string  $email  email address
-     * @return  boolean
+     * @param  string $email email地址
+     * @return bool
      */
     public static function email($email)
     {
@@ -208,122 +149,119 @@ class Valid
     }
 
     /**
-     * Validate the domain of an email address by checking if the domain has a valid MX record.
+     * 通过检测邮箱的MX记录来判断邮箱地址是否正确
      *
-     * @link  http://php.net/checkdnsrr  not added to Windows until PHP 5.3.0
-     * @param   string $email email address
-     * @return  boolean
+     * @link  http://php.net/checkdnsrr
+     * @param  string $value email地址
+     * @return bool
      */
-    public static function emailDomain($email)
+    public static function emailDomain($value)
     {
-        if ( ! self::notEmpty($email))
+        if ( ! self::notEmpty($value))
         {
             return false;
         }
 
         // 检查MX记录
-        return (bool) checkdnsrr(preg_replace('/^[^@]++@/', '', $email), 'MX');
+        return (bool) checkdnsrr(preg_replace('/^[^@]++@/', '', $value), 'MX');
     }
 
     /**
      * 是否为正确的URL
      *
-     * @param   string $url URL
-     * @return  boolean
+     * @param  string $value URL
+     * @return bool
      */
-    public static function url($url)
+    public static function url($value)
     {
-        return Validator::url()->validate($url);
+        return Validator::url()->validate($value);
     }
 
     /**
      * 是否为合格的IP地址
      *
-     * @param   string  $ip           IP address
-     * @param   boolean $allowPrivate allow private IP networks
-     *
-     * @return  boolean
+     * @param  string  $value        IP地址
+     * @param  boolean $allowPrivate 是否允许私有IP地址
+     * @return bool
      */
-    public static function ip($ip, $allowPrivate = true)
+    public static function ip($value, $allowPrivate = true)
     {
         return $allowPrivate
-            ? Validator::ip()->validate($ip)
-            : Validator::ip(FILTER_FLAG_NO_PRIV_RANGE)->validate($ip);
+            ? Validator::ip()->validate($value)
+            : Validator::ip(FILTER_FLAG_NO_PRIV_RANGE)->validate($value);
     }
 
     /**
      * 检验输入的数据是否为合适的信用卡号码
      *
-     * @param   int      $number credit card number
-     * @return  boolean
+     * @param  int $value 信用卡号码
+     * @return bool
      */
-    public static function creditCard($number)
+    public static function creditCard($value)
     {
-        return Validator::creditCard()->validate($number);
+        return Validator::creditCard()->validate($value);
     }
 
     /**
-     * Checks if a phone number is valid.
+     * 检测手机号码是否正确
      *
-     * @param   string $number phone number to check
-     * @return  boolean
+     * @param  string $value 手机号码
+     * @return bool
      */
-    public static function phone($number)
+    public static function phone($value)
     {
-        return Validator::phone()->validate($number);
+        return Validator::phone()->validate($value);
     }
 
     /**
-     * Tests if a string is a valid date string.
+     * 检测日期字符串是否正确
      *
-     * @param   string $input date to check
-     * @return  boolean
+     * @param  string $value
+     * @return bool
      */
-    public static function date($input)
+    public static function date($value)
     {
-        return Validator::date()->validate($input);
+        return Validator::date()->validate($value);
     }
 
     /**
-     * Checks whether a string consists of alphabetical characters only.
+     * 检查字符串是否只包含字母
      *
-     * @param   string  $input  input string
-     * @return  boolean
+     * @param  string $value
+     * @return bool
      */
-    public static function alpha($input)
+    public static function alpha($value)
     {
-        return Validator::alpha()->validate($input);
+        return Validator::alpha()->validate($value);
     }
 
     /**
-     * Checks whether a string consists of alphabetical characters and numbers only.
+     * 检测字符串是否只包含了字母或数字
      *
-     * @param   string  $str  input string
-     * @param   boolean $utf8 trigger UTF-8 compatibility
-     *
-     * @return  boolean
+     * @param  string  $value
+     * @param  boolean $utf8 UTF8兼容
+     * @return bool
      */
-    public static function alphaNumeric($str, $utf8 = false)
+    public static function alphaNumeric($value, $utf8 = false)
     {
         if (true === $utf8)
         {
-            return (bool) preg_match('/^[\pL\pN]++$/uD', $str);
+            return (bool) preg_match('/^[\pL\pN]++$/uD', $value);
         }
         else
         {
-            return ctype_alnum($str);
+            return ctype_alnum($value);
         }
     }
 
     /**
-     * Checks whether a string consists of alphabetical characters, numbers, underscores and dashes only.
+     * 检测字符串是否只包含了字母、数字、下划线或破折号
      *
-     * @param   string  $str  input string
-     * @param   boolean $utf8 trigger UTF-8 compatibility
-     *
-     * @return  boolean
+     * @param  string  $value
+     * @param  boolean $utf8 UTF8兼容
+     * @return bool
      */
-    public static function alphaDash($str, $utf8 = false)
+    public static function alphaDash($value, $utf8 = false)
     {
         if (true === $utf8)
         {
@@ -334,35 +272,35 @@ class Valid
             $regex = '/^[-a-z0-9_]++$/iD';
         }
 
-        return (bool) preg_match($regex, $str);
+        return (bool) preg_match($regex, $value);
     }
 
     /**
-     * Checks whether a string consists of digits only (no dots or dashes).
+     * 检测字符串是否只有数字
      *
-     * @param   string  $input  input string
-     * @return  boolean
+     * @param  string $value
+     * @return bool
      */
-    public static function digit($input)
+    public static function digit($value)
     {
-        return Validator::digit()->validate($input);
+        return Validator::digit()->validate($value);
     }
 
     /**
      * 检查输入字符串是否为有效数字（正负数都可以）
      *
-     * @param   string $input input string
-     * @return  boolean
+     * @param  string $value
+     * @return bool
      */
-    public static function numeric($input)
+    public static function numeric($value)
     {
-        return Validator::numeric()->validate($input);
+        return Validator::numeric()->validate($value);
     }
 
     /**
      * 是否为非负数
      *
-     * @param string $value
+     * @param  string $value
      * @return bool
      */
     public static function notNegative($value)
@@ -371,64 +309,54 @@ class Valid
     }
 
     /**
-     * Tests if a number is within a range.
+     * 检测数值是否在范围内
      *
-     * @param   string  $number number to check
-     * @param   int $min    minimum value
-     * @param   int $max    maximum value
-     * @return  boolean
+     * @param  string $value
+     * @param  int    $min 最小值
+     * @param  int    $max 最大值
+     * @return bool
      */
-    public static function range($number, $min, $max)
+    public static function range($value, $min, $max)
     {
-        return Validator::int()->between($min, $max)->validate($number);
+        return Validator::int()->between($min, $max)->validate($value);
     }
 
     /**
-     * Checks if a string is a proper decimal format. Optionally, a specific
-     * number of digits can be checked too.
+     * 检查字符串是否为适当的十进制格式。也可以检查特定数目的数字
      *
-     * @param   string  $str    number to check
-     * @param   int $places number of decimal places
-     * @param   int $digits number of digits
-     * @return  boolean
+     * @param  string $value
+     * @param  int    $places 小数点为
+     * @param  int    $digits 数字位数
+     * @return bool
      */
-    public static function decimal($str, $places = 2, $digits = null)
+    public static function decimal($value, $places = 2, $digits = null)
     {
-        if ($digits > 0)
-        {
-            // Specific number of digits
-            $digits = '{' . ((int) $digits) . '}';
-        }
-        else
-        {
-            // Any number of digits
-            $digits = '+';
-        }
+        $digits = $digits > 0
+            ? '{' . ((int) $digits) . '}' // 指定位数
+            : '+'; // 任意位数
 
-        // Get the decimal point for the current locale
+        // 获取当前区域的小数点
         list($decimal) = array_values(localeconv());
 
-        return (bool) preg_match('/^[+-]?[0-9]' . $digits . preg_quote($decimal) . '[0-9]{' . ((int) $places) . '}$/D', $str);
+        return (bool) preg_match('/^[+-]?[0-9]' . $digits . preg_quote($decimal) . '[0-9]{' . ((int) $places) . '}$/D', $value);
     }
 
     /**
-     * Checks if a string is a proper hexadecimal HTML color value. The validation
-     * is quite flexible as it does not require an initial "#" and also allows for
-     * the short notation using only three instead of six hexadecimal characters.
+     * 检测是否为合格的颜色表达值
      *
-     * @param   string $str input string
-     * @return  boolean
+     * @param  string $value
+     * @return bool
      */
-    public static function color($str)
+    public static function color($value)
     {
-        return Validator::hexRgbColor()->validate($str);
+        return Validator::hexRgbColor()->validate($value);
     }
 
     /**
      * 比较两个值是否相等
      *
-     * @param $text1
-     * @param $text2
+     * @param  mixed $text1
+     * @param  mixed $text2
      * @return bool
      */
     public static function match($text1, $text2)
@@ -437,12 +365,12 @@ class Valid
     }
 
     /**
-     * Checks if a field matches the value of another field.
+     * 检测数值中的某个字段是否跟指定值匹配
      *
-     * @param   array  $array array of values
-     * @param   string $field field name
-     * @param   string $match field name to match
-     * @return  boolean
+     * @param  array  $array
+     * @param  string $field
+     * @param  string $match 要匹配的值
+     * @return bool
      */
     public static function matches($array, $field, $match)
     {
@@ -450,11 +378,11 @@ class Valid
     }
 
     /**
-     * Check if a number is greater than
+     * 检查一个数字是否大于指定值
      *
-     * @param   string $value
-     * @param   mixed  $compare
-     * @return  bool
+     * @param  string $value
+     * @param  mixed  $compare
+     * @return bool
      */
     public static function gt($value, $compare)
     {
@@ -462,11 +390,11 @@ class Valid
     }
 
     /**
-     * Check if a number is greater than or equal to
+     * 检查一个数字是否大于或等于指定值
      *
-     * @param   string $value
-     * @param   mixed  $compare
-     * @return  bool
+     * @param  string $value
+     * @param  mixed  $compare
+     * @return bool
      */
     public static function gte($value, $compare)
     {
@@ -474,11 +402,11 @@ class Valid
     }
 
     /**
-     * Check if a number is less than
+     * 检查一个数字是否小于指定值
      *
-     * @param   string $value
-     * @param   mixed  $compare
-     * @return  bool
+     * @param  string $value
+     * @param  mixed  $compare
+     * @return bool
      */
     public static function lt($value, $compare)
     {
@@ -486,11 +414,11 @@ class Valid
     }
 
     /**
-     * Check if a number is less than or equal to
+     * 检查一个数字是否小于或等于指定值
      *
-     * @param   string $value
-     * @param   mixed  $compare
-     * @return  bool
+     * @param  string $value
+     * @param  mixed  $compare
+     * @return bool
      */
     public static function lte($value, $compare)
     {
