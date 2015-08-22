@@ -11,9 +11,7 @@ use tourze\Base\Exception\UnknownPropertyException;
 /**
  * Yii2中抽取的Object类，进行了部分修改，使其更适应框架本身
  *
- * @package    tourze\Base
- * @category   Base
- * @author     lzp <25803471@qq.com>
+ * @package tourze\Base
  */
 class Object
 {
@@ -252,7 +250,6 @@ class Object
      *
      * @param $property
      * @param $value
-     *
      * @throws BaseException
      */
     public function toBoolean($property, $value)
@@ -293,7 +290,6 @@ class Object
      *
      * @param $property
      * @param $value
-     *
      * @throws BaseException
      */
     public function toInteger($property, $value)
