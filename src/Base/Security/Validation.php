@@ -22,9 +22,7 @@ class Validation extends Object implements ArrayAccess
 {
 
     /**
-     * 助手类名称
-     *
-     * @var string
+     * @var string 助手类名称
      */
     public static $validHelperClass = 'tourze\Base\Security\Valid';
 
@@ -324,7 +322,7 @@ class Validation extends Object implements ArrayAccess
         {
             $value = Arr::get($this->_data, $field);
 
-            // Bind the field name and value to :field and :value respectively
+            // 绑定当前处理的字段和值
             $this->bind([
                 ':field' => $field,
                 ':value' => $value,
@@ -332,68 +330,60 @@ class Validation extends Object implements ArrayAccess
 
             foreach ($set as $array)
             {
-                // Rules are defined as [$rule, $params]
+                // 格式：[$rule, $params]
                 list($rule, $params) = $array;
 
                 foreach ($params as $key => $param)
                 {
+                    // 替换绑定的变量
                     if (is_string($param) && array_key_exists($param, $this->_bound))
                     {
-                        // Replace with bound value
                         $params[$key] = $this->_bound[$param];
                     }
                 }
 
-                // Default the error name to be the rule (except array and lambda rules)
+                // 默认错误名跟规则名一致，因为一般规则都是字符串表示的
                 $errorName = $rule;
 
+                // 规则是数组，说明传入的是一个callback
                 if (is_array($rule))
                 {
-                    // Allows rule('field', [':model', 'some_rule']);
+                    // 允许rule('field', [':model', 'some_rule']);
                     if (is_string($rule[0]) && array_key_exists($rule[0], $this->_bound))
                     {
-                        // Replace with bound value
                         $rule[0] = $this->_bound[$rule[0]];
                     }
 
-                    // This is an array callback, the method name is the error name
+                    // 把索引为1的值作为错误标记
                     $errorName = $rule[1];
                     $passed = call_user_func_array($rule, $params);
                 }
                 elseif ( ! is_string($rule))
                 {
-                    // This is a lambda function, there is no error name (errors must be added manually)
+                    // 匿名函数不做错误处理，留待内容做处理
                     $errorName = false;
                     $passed = call_user_func_array($rule, $params);
                 }
                 elseif (method_exists(self::$validHelperClass, $rule))
                 {
-                    // Use a method in this object
+                    // 调用校验助手类来完成操作
                     $method = new ReflectionMethod(self::$validHelperClass, $rule);
-
-                    // Call static::$rule($this[$field], $param, ...) with Reflection
                     $passed = $method->invokeArgs(null, $params);
                 }
                 elseif (false === strpos($rule, '::'))
                 {
-                    // Use a function call
+                    // 不符合静态方法调用的规则，那么直接按照函数调用
                     $function = new ReflectionFunction($rule);
-                    // Call $function($this[$field], $param, ...) with Reflection
                     $passed = $function->invokeArgs($params);
                 }
                 else
                 {
-                    // Split the class and method of the rule
+                    // 当做一次静态函数调用
                     list($class, $method) = explode('::', $rule, 2);
-
-                    // Use a static method call
                     $method = new ReflectionMethod($class, $method);
-
-                    // Call $Class::$method($this[$field], $param, ...) with Reflection
                     $passed = $method->invokeArgs(null, $params);
                 }
 
-                // Ignore return values from rules when the field is empty
                 if ( ! in_array($rule, $this->_emptyRules) && ! Valid::notEmpty($value))
                 {
                     continue;
@@ -401,21 +391,18 @@ class Validation extends Object implements ArrayAccess
 
                 if (false === $passed && false !== $errorName)
                 {
-                    // Add the rule to the errors
                     $this->error($field, $errorName, $params);
-
-                    // This field has an error, stop executing rules
                     break;
                 }
                 elseif (isset($this->_errors[$field]))
                 {
-                    // The callback added the error manually, stop checking rules
+                    // 匿名函数自己处理错误信息，这里就不处理了
                     break;
                 }
             }
         }
 
-        // Restore the data to its original form
+        // 还原原来的值
         $this->_data = $original;
 
         return empty($this->_errors);
@@ -495,79 +482,65 @@ class Validation extends Object implements ArrayAccess
                     }
                     elseif (is_object($value))
                     {
-                        // Objects cannot be used in message files
+                        // 消息文件中不能使用对象
                         continue;
                     }
 
-                    // Check if a label for this parameter exists
                     if (isset($this->_labels[$value]))
                     {
-                        // Use the label as the value, eg: related field name for "matches"
+                        // 使用标签值作为值
                         $value = $this->_labels[$value];
-
                         if ($translate)
                         {
-                            if (is_string($translate))
-                            {
-                                // Translate the value using the specified language
-                                $value = __($value, null, $translate);
-                            }
-                            else
-                            {
-                                // Translate the value
-                                $value = __($value);
-                            }
+                            $value = is_string($translate)
+                                ? __($value, null, $translate)
+                                : __($value);
                         }
                     }
 
-                    // Add each parameter as a numbered value, starting from 1
+                    // 绑定参数，从1开始
                     $values[':param' . ($key + 1)] = $value;
                 }
             }
 
+            // 直接读消息文本
             $message = Message::load($file, "{$field}.{$error}");
-            if ($message && is_string($message))
+
+            // 尝试读取字段的默认说明
+            if ( ! $message)
             {
-                // Found a message for this field and error
+                $message = Message::load($file, "{$field}.default");
             }
-            elseif ($message = Message::load($file, "{$field}.default") && is_string($message))
+
+            // 尝试读取这个错误的通用提示
+            if ( ! $message)
             {
-                // Found a default message for this field
+                $message = Message::load($file, $error);
             }
-            elseif ($message = Message::load($file, $error) && is_string($message))
+
+            // 从默认的校验错误列表中读取信息
+            if ( ! $message)
             {
-                // Found a default message for this error
+                $message = Message::load('validation', $error);
             }
-            elseif ($message = Message::load('validation', $error) && is_string($message))
+
+            // 最后都还是不行，那就直接返回
+            if ( ! $message)
             {
-                // Found a default message for this error
-            }
-            else
-            {
-                // No message exists, display the path expected
                 $message = "{$file}.{$field}.{$error}";
             }
 
             if ($translate)
             {
-                if (is_string($translate))
-                {
-                    // Translate the message using specified language
-                    $message = __($message, $values, $translate);
-                }
-                else
-                {
-                    // Translate the message using the default language
-                    $message = __($message, $values);
-                }
+                $message = is_string($translate)
+                    ? __($message, $values, $translate)
+                    : __($message, $values);
             }
             else
             {
-                // Do not translate, just replace the values
                 $message = strtr($message, $values);
             }
 
-            // Set the message for this field
             $messages[$field] = $message;
         }
 
