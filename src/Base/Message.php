@@ -4,6 +4,11 @@ namespace tourze\Base;
 
 use tourze\Base\Helper\Arr;
 
+/**
+ * 默认的消息加载类
+ *
+ * @package tourze\Base
+ */
 class Message
 {
 
