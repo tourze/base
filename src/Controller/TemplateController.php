@@ -12,7 +12,7 @@ use tourze\View\ViewInterface;
  * @category   Controller
  * @author     YwiSax
  */
-abstract class TemplateController extends BaseController
+abstract class TemplateController extends WebController
 {
 
     /**

@@ -49,9 +49,9 @@ abstract class Controller extends Object
     /**
      * 开始处理请求
      *
-     * @throws  HttpException
-     * @throws  Http404Exception
-     * @return  Response
+     * @throws HttpException
+     * @throws Http404Exception
+     * @return Response
      */
     public function execute()
     {

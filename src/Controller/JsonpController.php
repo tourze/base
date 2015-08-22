@@ -9,7 +9,7 @@ use tourze\Controller\Exception\JsonpInvalidParameterException;
  *
  * @package tourze\Controller
  */
-abstract class JsonpController extends Controller
+abstract class JsonpController extends WebController
 {
 
     /**

@@ -6,14 +6,19 @@ use tourze\Http\Response;
 use tourze\Http\Http;
 use tourze\Http\Exception\HttpException;
 
-abstract class BaseController extends Controller
+/**
+ * 最基础的Web控制器
+ *
+ * @package tourze\Controller
+ */
+abstract class WebController extends Controller
 {
 
     /**
      * 跳转的助手方法
      *
-     * @param  string $uri  URI to redirect to
-     * @param  int    $code HTTP Status code to use for the redirect
+     * @param  string $uri  要跳转的URI
+     * @param  int    $code HTTP状态码
      * @throws HttpException
      */
     public function redirect($uri = '', $code = 302)
@@ -22,9 +27,8 @@ abstract class BaseController extends Controller
     }
 
     /**
-     * Checks the browser cache to see the response needs to be returned,
-     * execution will halt and a 304 Not Modified will be sent if the
-     * browser cache is up to date.
+     * 检测请求缓存
+     *
      *     $this->checkCache(sha1($content));
      *
      * @param  string $etag Resource Etag

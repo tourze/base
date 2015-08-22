@@ -7,9 +7,12 @@ namespace tourze\Controller;
  *
  * @package tourze\Controller
  */
-abstract class JsonController extends Controller
+abstract class JsonController extends WebController
 {
 
+    /**
+     * @inheritdoc
+     */
     public function executeAction()
     {
         // 继续执行
