@@ -1,6 +1,7 @@
 <?php
 
 namespace tourze\Base\Helper;
+
 use tourze\Base\Config;
 
 /**
@@ -11,10 +12,17 @@ use tourze\Base\Config;
 class Mime
 {
 
+    /**
+     * 保存MIME信息的配置文件
+     *
+     * @var string
+     */
     public static $configName = 'helper/mime';
 
     /**
-     * @param $file
+     * 根据文件名判断MIME
+     *
+     * @param string $file
      * @return string
      */
     public static function getMimeFromFile($file)
@@ -24,7 +32,9 @@ class Mime
     }
 
     /**
-     * @param      $mime
+     * 根据MIME获得对应的后缀名
+     *
+     * @param  string $mime
      * @return array|string
      */
     public static function getExtensionsFromMime($mime)
@@ -43,7 +53,9 @@ class Mime
     }
 
     /**
-     * @param $ext
+     * 根据扩展名获取对应的MIME类型
+     *
+     * @param string $ext
      * @return string
      */
     public static function getMimeFromExtension($ext)
@@ -54,11 +66,12 @@ class Mime
     }
 
     /**
+     * 根据MIME获取对应的Content-Type
+     *
      * @param string $ext
      * @param string $content
      * @param string $local_file
      * @param string $default
-     *
      * @return string
      */
     public static function determineContentType($ext = '', $content = '', $local_file = '', $default = '')
