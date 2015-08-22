@@ -4,6 +4,7 @@ namespace tourze\Base;
 
 use DateTime;
 use DateTimeZone;
+use tourze\Base\Helper\Arr;
 
 /**
  * 日期助手类
@@ -13,7 +14,7 @@ use DateTimeZone;
 class Date
 {
 
-    // Second amounts for various time increments
+    // 基于秒数的各时间单位
     const YEAR   = 31556926;
     const MONTH  = 2629744;
     const WEEK   = 604800;
@@ -21,181 +22,88 @@ class Date
     const HOUR   = 3600;
     const MINUTE = 60;
 
-    // Available formats for Date::months()
+    // Date::months()中可用的格式
     const MONTHS_LONG  = '%B';
     const MONTHS_SHORT = '%b';
 
-    /**
-     * Default timestamp format for formatted_time
-     *
-     * @var  string
-     */
-    public static $timestamp_format = 'Y-m-d H:i:s';
+    const SPAN_YEARS = 'years';
+
+    const SPAN_MONTHS = 'months';
+
+    const SPAN_WEEKS = 'weeks';
+
+    const SPAN_DAYS = 'days';
+
+    const SPAN_HOURS = 'hours';
+
+    const SPAN_MINUTES = 'minutes';
+
+    const SPAN_SECONDS = 'seconds';
 
     /**
-     * Timezone for formatted_time
+     * 默认时间戳格式
+     *
+     * @var string
+     */
+    public static $timestampFormat = 'Y-m-d H:i:s';
+
+    /**
+     * 默认时区
      *
      * @link http://uk2.php.net/manual/en/timezones.php
-     * @var  string
+     * @var string
      */
     public static $timezone;
 
     /**
-     * Returns the offset (in seconds) between two time zones. Use this to
-     * display dates to users in different time zones.
+     * 返回两个时区之前的偏移值
      *
      *     $seconds = Date::offset('America/Chicago', 'GMT');
      *
-     * [!!] A list of time zones that PHP supports can be found at
-     * <http://php.net/timezones>.
-     *
-     * @param   string $remote timezone that to find the offset of
-     * @param   string $local  timezone used as the baseline
-     * @param   mixed  $now    UNIX timestamp or date string
-     * @return  integer
+     * @see    http://php.net/timezones
+     * @param  string $remote 要查找偏移的时区
+     * @param  string $local  要对比的基础时区
+     * @param  mixed  $now    UNIX时间戳或秒数时间的字符串
+     * @return int
      */
     public static function offset($remote, $local = null, $now = null)
     {
         if ($local === null)
         {
-            // Use the default timezone
             $local = date_default_timezone_get();
         }
 
         if (is_int($now))
         {
-            // Convert the timestamp into a string
             $now = date(DateTime::RFC2822, $now);
         }
 
-        // Create timezone objects
-        $zone_remote = new DateTimeZone($remote);
-        $zone_local = new DateTimeZone($local);
+        $zoneRemote = new DateTimeZone($remote);
+        $zoneLocal = new DateTimeZone($local);
 
-        // Create date objects from timezones
-        $time_remote = new DateTime($now, $zone_remote);
-        $time_local = new DateTime($now, $zone_local);
+        $timeRemote = new DateTime($now, $zoneRemote);
+        $timeLocal = new DateTime($now, $zoneLocal);
 
-        // Find the offset
-        $offset = $zone_remote->getOffset($time_remote) - $zone_local->getOffset($time_local);
+        $offset = $zoneRemote->getOffset($timeRemote) - $zoneLocal->getOffset($timeLocal);
 
         return $offset;
     }
 
     /**
-     * Number of seconds in a minute, incrementing by a step. Typically used as
-     * a shortcut for generating a list that can used in a form.
-     *
-     *     $seconds = Date::seconds(); // 01, 02, 03, ..., 58, 59, 60
-     *
-     * @param   int $step  amount to increment each step by, 1 to 30
-     * @param   int $start start value
-     * @param   int $end   end value
-     * @return  array   A mirrored (foo => foo) array from 1-60.
-     */
-    public static function seconds($step = 1, $start = 0, $end = 60)
-    {
-        // Always integer
-        $step = (int) $step;
-
-        $seconds = [];
-
-        for ($i = $start; $i < $end; $i += $step)
-        {
-            $seconds[$i] = sprintf('%02d', $i);
-        }
-
-        return $seconds;
-    }
-
-    /**
-     * Number of minutes in an hour, incrementing by a step. Typically used as
-     * a shortcut for generating a list that can be used in a form.
-     *
-     *     $minutes = Date::minutes(); // 05, 10, 15, ..., 50, 55, 60
-     *
-     * @uses    Date::seconds
-     * @param   int $step amount to increment each step by, 1 to 30
-     * @return  array   A mirrored (foo => foo) array from 1-60.
-     */
-    public static function minutes($step = 5)
-    {
-        // Because there are the same number of minutes as seconds in this set,
-        // we choose to re-use seconds(), rather than creating an entirely new
-        // function. Shhhh, it's cheating! ;) There are several more of these
-        // in the following methods.
-        return Date::seconds($step);
-    }
-
-    /**
-     * Number of hours in a day. Typically used as a shortcut for generating a
-     * list that can be used in a form.
-     *
-     *     $hours = Date::hours(); // 01, 02, 03, ..., 10, 11, 12
-     *
-     * @param   int $step  amount to increment each step by
-     * @param   boolean $long  use 24-hour time
-     * @param   int $start the hour to start at
-     * @return  array   A mirrored (foo => foo) array from start-12 or start-23.
-     */
-    public static function hours($step = 1, $long = false, $start = null)
-    {
-        // Default values
-        $step = (int) $step;
-        $long = (bool) $long;
-        $hours = [];
-
-        // Set the default start if none was specified.
-        if ($start === null)
-        {
-            $start = ($long === false) ? 1 : 0;
-        }
-
-        $hours = [];
-
-        // 24-hour time has 24 hours, instead of 12
-        $size = ($long === true) ? 23 : 12;
-
-        for ($i = $start; $i <= $size; $i += $step)
-        {
-            $hours[$i] = (string) $i;
-        }
-
-        return $hours;
-    }
-
-    /**
-     * Returns AM or PM, based on a given hour (in 24 hour format).
-     *
-     *     $type = Date::ampm(12); // PM
-     *     $type = Date::ampm(1);  // AM
-     *
-     * @param   int $hour number of the hour
-     * @return  string
-     */
-    public static function ampm($hour)
-    {
-        // Always integer
-        $hour = (int) $hour;
-
-        return ($hour > 11) ? 'PM' : 'AM';
-    }
-
-    /**
-     * Adjusts a non-24-hour number into a 24-hour number.
+     * 将一个非24小时制的时间转换为24小时制
      *
      *     $hour = Date::adjust(3, 'pm'); // 15
      *
-     * @param   int $hour hour to adjust
-     * @param   string  $ampm AM or PM
-     * @return  string
+     * @param  int    $hour   小时
+     * @param  string $format AM/PM
+     * @return string
      */
-    public static function adjust($hour, $ampm)
+    public static function adjust($hour, $format)
     {
         $hour = (int) $hour;
-        $ampm = strtolower($ampm);
+        $format = strtolower($format);
 
-        switch ($ampm)
+        switch ($format)
         {
             case 'am':
                 if ($hour == 12)
@@ -215,35 +123,31 @@ class Date
     }
 
     /**
-     * Number of days in a given month and year. Typically used as a shortcut
-     * for generating a list that can be used in a form.
+     * 返回指定年份和月份的日期列表
      *
      *     Date::days(4, 2010); // 1, 2, 3, ..., 28, 29, 30
      *
-     * @param   int $month number of month
-     * @param   int $year  number of year to check month, defaults to the current year
-     * @return  array   A mirrored (foo => foo) array of the days.
+     * @param  int $month 月份
+     * @param  int $year  年份，默认为今年
+     * @return array
      */
-    public static function days($month, $year = false)
+    public static function days($month, $year = 0)
     {
         static $months;
 
-        if ($year === false)
+        if ( ! $year)
         {
-            // Use the current year by default
             $year = date('Y');
         }
 
-        // Always integers
         $month = (int) $month;
         $year = (int) $year;
 
-        // We use caching for months, because time functions are used
-        if (empty($months[$year][$month]))
+        if ( ! isset($months[$year][$month]))
         {
             $months[$year][$month] = [];
 
-            // Use date to find the number of days in the given month
+            // 直接使用内置方法来查找这个月份有多少天，这样就不用自己去做判断啦
             $total = date('t', mktime(1, 0, 0, $month, 1, $year)) + 1;
 
             for ($i = 1; $i < $total; $i++)
@@ -256,33 +160,29 @@ class Date
     }
 
     /**
-     * Number of months in a year. Typically used as a shortcut for generating
-     * a list that can be used in a form.
-     *
-     * By default a mirrored array of $month_number => $month_number is returned
+     * 返回一年中的12个月份
      *
      *     Date::months();
-     *     // aray(1 => 1, 2 => 2, 3 => 3, ..., 12 => 12)
+     *     // array(1 => 1, 2 => 2, 3 => 3, ..., 12 => 12)
      *
-     * But you can customise this by passing in either Date::MONTHS_LONG
+     * 可以使用Date::MONTHS_LONG来使其返回带月份的格式
      *
      *     Date::months(Date::MONTHS_LONG);
      *     // array(1 => 'January', 2 => 'February', ..., 12 => 'December')
      *
-     * Or Date::MONTHS_SHORT
+     * Date::MONTHS_SHORT返回月份的短格式
      *
      *     Date::months(Date::MONTHS_SHORT);
      *     // array(1 => 'Jan', 2 => 'Feb', ..., 12 => 'Dec')
      *
-     * @uses    Date::hours
-     * @param   string $format The format to use for months
-     * @return  array   An array of months based on the specified format
+     * @param  string $format 月份格式
+     * @return array
      */
     public static function months($format = null)
     {
         $months = [];
 
-        if ($format === Date::MONTHS_LONG OR $format === Date::MONTHS_SHORT)
+        if ($format === Date::MONTHS_LONG || $format === Date::MONTHS_SHORT)
         {
             for ($i = 1; $i <= 12; ++$i)
             {
@@ -291,28 +191,29 @@ class Date
         }
         else
         {
-            $months = Date::hours();
+            $array = Arr::range(1, 12);
+            foreach ($array as $i)
+            {
+                $months[$i] = $i;
+            }
         }
 
         return $months;
     }
 
     /**
-     * Returns an array of years between a starting and ending year. By default,
-     * the the current year - 5 and current year + 5 will be used. Typically used
-     * as a shortcut for generating a list that can be used in a form.
+     * 返回一个年份列表
      *
      *     $years = Date::years(2000, 2010); // 2000, 2001, ..., 2009, 2010
      *
-     * @param   int $start starting year (default is current year - 5)
-     * @param   int $end   ending year (default is current year + 5)
-     * @return  array
+     * @param  int $start 开始年份（默认为当前年份-5）
+     * @param  int $end   结束年份（默认为当前年份+5）
+     * @return array
      */
-    public static function years($start = false, $end = false)
+    public static function years($start = 0, $end = 0)
     {
-        // Default values
-        $start = ($start === false) ? (date('Y') - 5) : (int) $start;
-        $end = ($end === false) ? (date('Y') + 5) : (int) $end;
+        $start = ($start === 0) ? (date('Y') - 5) : (int) $start;
+        $end = ($end === 0) ? (date('Y') + 5) : (int) $end;
 
         $years = [];
 
@@ -325,18 +226,16 @@ class Date
     }
 
     /**
-     * Returns time difference between two timestamps, in human readable format.
-     * If the second timestamp is not given, the current time will be used.
-     * Also consider using [Date::fuzzy_span] when displaying a span.
+     * 返回两个时间之间差别的可读版本
      *
      *     $span = Date::span(60, 182, 'minutes,seconds'); // array('minutes' => 2, 'seconds' => 2)
      *     $span = Date::span(60, 182, 'minutes'); // 2
      *
-     * @param   int $remote timestamp to find the span of
-     * @param   int $local  timestamp to use as the baseline
-     * @param   string  $output formatting string
-     * @return  string   when only a single output is requested
-     * @return  array    associative list of all outputs requested
+     * @param  int    $remote 要查找的时间
+     * @param  int    $local  要比较的时间
+     * @param  string $output 格式化字符串
+     * @return string   当只需要返回一个单一输出时when only a single output is requested
+     * @return array    所有关联信息
      */
     public static function span($remote, $local = null, $output = 'years,months,weeks,days,hours,minutes,seconds')
     {
@@ -365,42 +264,42 @@ class Date
         }
 
         // Calculate timespan (seconds)
-        $timespan = abs($remote - $local);
+        $span = abs($remote - $local);
 
         if (isset($output['years']))
         {
-            $timespan -= Date::YEAR * ($output['years'] = (int) floor($timespan / Date::YEAR));
+            $span -= Date::YEAR * ($output['years'] = (int) floor($span / Date::YEAR));
         }
 
         if (isset($output['months']))
         {
-            $timespan -= Date::MONTH * ($output['months'] = (int) floor($timespan / Date::MONTH));
+            $span -= Date::MONTH * ($output['months'] = (int) floor($span / Date::MONTH));
         }
 
         if (isset($output['weeks']))
         {
-            $timespan -= Date::WEEK * ($output['weeks'] = (int) floor($timespan / Date::WEEK));
+            $span -= Date::WEEK * ($output['weeks'] = (int) floor($span / Date::WEEK));
         }
 
         if (isset($output['days']))
         {
-            $timespan -= Date::DAY * ($output['days'] = (int) floor($timespan / Date::DAY));
+            $span -= Date::DAY * ($output['days'] = (int) floor($span / Date::DAY));
         }
 
         if (isset($output['hours']))
         {
-            $timespan -= Date::HOUR * ($output['hours'] = (int) floor($timespan / Date::HOUR));
+            $span -= Date::HOUR * ($output['hours'] = (int) floor($span / Date::HOUR));
         }
 
         if (isset($output['minutes']))
         {
-            $timespan -= Date::MINUTE * ($output['minutes'] = (int) floor($timespan / Date::MINUTE));
+            $span -= Date::MINUTE * ($output['minutes'] = (int) floor($span / Date::MINUTE));
         }
 
         // Seconds ago, 1
         if (isset($output['seconds']))
         {
-            $output['seconds'] = $timespan;
+            $output['seconds'] = $span;
         }
 
         if (count($output) === 1)
@@ -414,26 +313,21 @@ class Date
     }
 
     /**
-     * Returns the difference between a time and now in a "fuzzy" way.
-     * Displaying a fuzzy time instead of a date is usually faster to read and understand.
+     * 返回两个时间之间差异的文字描述
      *
-     *     $span = Date::fuzzy_span(time() - 10); // "moments ago"
-     *     $span = Date::fuzzy_span(time() + 20); // "in moments"
+     *     $span = Date::fuzzySpan(time() - 10); // "moments ago"
+     *     $span = Date::fuzzySpan(time() + 20); // "in moments"
      *
-     * A second parameter is available to manually set the "local" timestamp,
-     * however this parameter shouldn't be needed in normal usage and is only
-     * included for unit tests
-     *
-     * @param   int $timestamp       "remote" timestamp
-     * @param   int $local_timestamp "local" timestamp, defaults to time()
-     * @return  string
+     * @param  int $timestamp        时间戳
+     * @param  int $compareTimestamp 对比的时间戳，默认是time()
+     * @return string
      */
-    public static function fuzzySpan($timestamp, $local_timestamp = null)
+    public static function fuzzySpan($timestamp, $compareTimestamp = null)
     {
-        $local_timestamp = ($local_timestamp === null) ? time() : (int) $local_timestamp;
+        $compareTimestamp = ($compareTimestamp === null) ? time() : (int) $compareTimestamp;
 
         // Determine the difference in seconds
-        $offset = abs($local_timestamp - $timestamp);
+        $offset = abs($compareTimestamp - $timestamp);
 
         if ($offset <= Date::MINUTE)
         {
@@ -516,31 +410,29 @@ class Date
             $span = 'a long time';
         }
 
-        if ($timestamp <= $local_timestamp)
+        if ($timestamp <= $compareTimestamp)
         {
-            // This is in the past
+            // 过去
             return $span . ' ago';
         }
         else
         {
-            // This in the future
+            // 未来
             return 'in ' . $span;
         }
     }
 
     /**
-     * Converts a UNIX timestamp to DOS format. There are very few cases where
-     * this is needed, but some binary formats use it (eg: zip files.)
-     * Converting the other direction is done using {@link Date::dos2unix}.
+     * 转换UNIX时间戳为DOS时间戳格式
      *
      *     $dos = Date::unix2dos($unix);
      *
-     * @param   int $timestamp UNIX timestamp
-     * @return  integer
+     * @param  int $timestamp UNIX时间戳
+     * @return int
      */
-    public static function unix2dos($timestamp = false)
+    public static function unix2dos($timestamp = 0)
     {
-        $timestamp = ($timestamp === false) ? getdate() : getdate($timestamp);
+        $timestamp = ! $timestamp ? getdate() : getdate($timestamp);
 
         if ($timestamp['year'] < 1980)
         {
@@ -549,24 +441,20 @@ class Date
 
         $timestamp['year'] -= 1980;
 
-        // What voodoo is this? I have no idea... Geert can explain it though,
-        // and that's good enough for me.
         return ($timestamp['year'] << 25 | $timestamp['mon'] << 21 |
             $timestamp['mday'] << 16 | $timestamp['hours'] << 11 |
             $timestamp['minutes'] << 5 | $timestamp['seconds'] >> 1);
     }
 
     /**
-     * Converts a DOS timestamp to UNIX format.There are very few cases where
-     * this is needed, but some binary formats use it (eg: zip files.)
-     * Converting the other direction is done using {@link Date::unix2dos}.
+     * 转换DOS时间戳格式为UNIX格式
      *
      *     $unix = Date::dos2unix($dos);
      *
-     * @param   int $timestamp DOS timestamp
-     * @return  integer
+     * @param  int $timestamp DOS时间戳
+     * @return int
      */
-    public static function dos2unix($timestamp = false)
+    public static function dos2unix($timestamp)
     {
         $sec = 2 * ($timestamp & 0x1f);
         $min = ($timestamp >> 5) & 0x3f;
@@ -579,39 +467,37 @@ class Date
     }
 
     /**
-     * Returns a date/time string with the specified timestamp format
+     * 传入时间描述，返回指定格式的时间戳
      *
-     *     $time = Date::formatted_time('5 minutes ago');
+     *     $time = Date::formatTime('5 minutes ago');
      *
-     * @link    http://www.php.net/manual/datetime.construct
-     * @param   string $datetime_str     datetime string
-     * @param   string $timestamp_format timestamp format
-     * @param   string $timezone         timezone identifier
-     * @return  string
+     * @link   http://www.php.net/manual/datetime.construct
+     * @param  string $datetimeStr     datetime字符串
+     * @param  string $timestampFormat timestamp格式
+     * @param  string $timezone        时区分隔符
+     * @return string
      */
-    public static function formattedTime($datetime_str = 'now', $timestamp_format = null, $timezone = null)
+    public static function formatTime($datetimeStr = 'now', $timestampFormat = null, $timezone = null)
     {
-        $timestamp_format = ($timestamp_format == null) ? Date::$timestamp_format : $timestamp_format;
+        $timestampFormat = ($timestampFormat == null) ? Date::$timestampFormat : $timestampFormat;
         $timezone = ($timezone === null) ? Date::$timezone : $timezone;
 
         $tz = new DateTimeZone($timezone ? $timezone : date_default_timezone_get());
-        $time = new DateTime($datetime_str, $tz);
+        $time = new DateTime($datetimeStr, $tz);
 
         if ($time->getTimeZone()->getName() !== $tz->getName())
         {
             $time->setTimeZone($tz);
         }
 
-        return $time->format($timestamp_format);
+        return $time->format($timestampFormat);
     }
 
     /**
-     * Convert Seconds to time ago mode
+     * 多少分钟前
      *
-     * @access    public
-     * @static
-     * @param    int $date 时间戳
-     * @return    string    字符串
+     * @param  int $date 时间戳
+     * @return string    字符串
      */
     public static function timeAgo($date)
     {
