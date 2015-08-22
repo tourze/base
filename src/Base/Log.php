@@ -1,6 +1,7 @@
 <?php
 
 namespace tourze\Base;
+
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
@@ -23,7 +24,7 @@ class Log
      * 配置日志信息
      * 在正式使用日志功能前要调用该方法
      *
-     * @param   string|array   $config 配置文件路径、或者一个存放配置信息的数组
+     * @param   string|array $config 配置文件路径、或者一个存放配置信息的数组
      */
     public static function configure($config = null)
     {
@@ -31,6 +32,8 @@ class Log
     }
 
     /**
+     * 返回一个日志记录器实例
+     *
      * @return Logger
      */
     public static function instance()
@@ -60,10 +63,10 @@ class Log
     }
 
     /**
-     * 提示信息
+     * Info级别
      *
-     * @param       $log
-     * @param array $context
+     * @param string $log
+     * @param array  $context
      */
     public static function info($log, array $context = [])
     {
@@ -71,10 +74,10 @@ class Log
     }
 
     /**
-     * 提醒信息
+     * Notice级别
      *
-     * @param       $log
-     * @param array $context
+     * @param string $log
+     * @param array  $context
      */
     public static function notice($log, array $context = [])
     {
@@ -84,8 +87,8 @@ class Log
     /**
      * 警告信息
      *
-     * @param       $log
-     * @param array $context
+     * @param string $log
+     * @param array  $context
      */
     public static function warning($log, array $context = [])
     {
@@ -95,8 +98,8 @@ class Log
     /**
      * 错误信息
      *
-     * @param       $log
-     * @param array $context
+     * @param string $log
+     * @param array  $context
      */
     public static function error($log, array $context = [])
     {
@@ -104,10 +107,10 @@ class Log
     }
 
     /**
-     * critical
+     * critical级别
      *
-     * @param       $log
-     * @param array $context
+     * @param string $log
+     * @param array  $context
      */
     public static function critical($log, array $context = [])
     {
@@ -115,10 +118,10 @@ class Log
     }
 
     /**
-     * alert
+     * alert级别
      *
-     * @param       $log
-     * @param array $context
+     * @param string $log
+     * @param array  $context
      */
     public static function alert($log, array $context = [])
     {
@@ -126,10 +129,10 @@ class Log
     }
 
     /**
-     * emergency
+     * emergency级别
      *
-     * @param       $log
-     * @param array $context
+     * @param string $log
+     * @param array  $context
      */
     public static function emergency($log, array $context = [])
     {
