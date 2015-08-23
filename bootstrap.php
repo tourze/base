@@ -5,6 +5,11 @@ use tourze\Base\I18n;
 use tourze\Base\Message;
 use tourze\View\View;
 
+if (is_file(__DIR__ . '/vendor/autoload.php'))
+{
+    require __DIR__ . '/vendor/autoload.php';
+}
+
 // 检测是否在SAE中
 if ( ! defined('IN_SAE'))
 {
