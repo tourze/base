@@ -49,6 +49,15 @@ class Response extends Object implements ResponseInterface
     protected $_message = null;
 
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        $this->message = new Message;
+    }
+
+    /**
      * @param string $name
      * @return mixed
      */
