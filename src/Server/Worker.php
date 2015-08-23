@@ -53,6 +53,7 @@ class Worker extends BaseWorker
             throw new BaseException('The socket name should not be empty.');
         }
 
+        $config['name'] = $name;
         if (substr($socketName, 0, 4) == 'http')
         {
             new Web($config);

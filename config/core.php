@@ -4,7 +4,6 @@ return [
 
     // 默认的web配置
     'web' => [
-        'name'           => 'tourze-web', // WEB名称
         'count'          => 4, // 打开进程数
         'user'           => '', // 使用什么用户打开
         'reloadable'     => true, // 是否支持平滑重启
