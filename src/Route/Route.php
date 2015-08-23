@@ -199,17 +199,17 @@ class Route extends Object implements RouteInterface
     protected $_filters = [];
 
     /**
-     * @var  string  当前URI
+     * @var string  当前URI
      */
     protected $_uri = '';
 
     /**
-     * @var  array
+     * @var array
      */
     protected $_regex = [];
 
     /**
-     * @var  array
+     * @var array 默认参数
      */
     protected $_defaults = [
         'method' => false,
@@ -375,7 +375,7 @@ class Route extends Object implements RouteInterface
         }
 
         // 处理method
-        if ($params['method'])
+        if (isset($params['method']) && $params['method'])
         {
             if (is_array($params['method']))
             {
