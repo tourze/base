@@ -12,15 +12,13 @@ use tourze\Http\Request\RequestClient;
 /**
  * 内部执行的请求
  *
- * @package    Base
- * @category   Base
- * @author     YwiSax
+ * @package tourze\Http\Request\Client
  */
 class InternalClient extends RequestClient
 {
 
     /**
-     * @var    array
+     * @var array
      */
     protected $_previousEnvironment;
 

@@ -27,7 +27,12 @@ abstract class HttpException extends BaseException
     }
 
     /**
-     * @var  int        http status code
+     * @var string
+     */
+    protected $_uri = '';
+
+    /**
+     * @var int HTTP状态码
      */
     protected $_code = 0;
 
@@ -76,11 +81,12 @@ abstract class HttpException extends BaseException
     /**
      * 异常抛出时跳转的地址
      *
-     * @param null $uri
+     * @param string $uri
      * @return $this
      */
-    public function location($uri = null)
+    public function location($uri = '')
     {
+        $this->_uri = $uri;
         return $this;
     }
 

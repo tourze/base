@@ -96,14 +96,7 @@ class Url
 
         if ($protocol instanceof Request)
         {
-            if ( ! $protocol->secure)
-            {
-                list($protocol) = explode('/', strtolower($protocol->protocol));
-            }
-            else
-            {
-                $protocol = 'https';
-            }
+            $protocol = $protocol->secure ? 'https' : 'http';
         }
 
         if ( ! $protocol)

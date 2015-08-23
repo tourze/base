@@ -3,6 +3,8 @@
 namespace tourze\Http;
 
 use Exception;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use tourze\Base\Helper\Mime;
 use tourze\Base\Log;
 use tourze\Base\Object;
@@ -13,111 +15,64 @@ use tourze\Base\Base;
 use tourze\Http\Request\Exception\RequestException;
 
 /**
- * Response wrapper. Created as the result of any [Request] execution
- * or utility method (i.e. Redirect). Implements standard HTTP
- * response format.
+ * 请求响应对象
  *
- * @property   string     protocol
- * @property   string     body
- * @property   int    contentLength
- * @property   int    status
- * @property   Header     header
+ * @package tourze\Http
+ * @property   Message                                  message
+ * @property   int                                      status
+ * @property   int                                      contentLength
+ * @property   string                                   protocol
+ * @property   \Psr\Http\Message\StreamInterface|string body
  */
-class Response extends Object
+class Response extends Object implements ResponseInterface
 {
 
     /**
-     * Factory method to create a new [Response]. Pass properties in using an associative array.
+     * 创建一个响应对象
      *
-     *      // Create a new response
-     *      $response = Response::factory();
-     *      // Create a new response with headers
-     *      $response = Response::factory(['status' => 200]);
-     *
-     * @param   array $config Setup the response object
-     *
-     * @return  $this
+     * @param  array $config 配置信息
+     * @return $this
      */
     public static function factory(array $config = [])
     {
         return new Response($config);
     }
 
-    // HTTP status codes and messages
-    public static $messages = [
-        // Informational 1xx
-        Message::CONTINUES                       => 'Continue',
-        Message::SWITCHING_PROTOCOLS             => 'Switching Protocols',
-
-        // Success 2xx
-        Message::OK                              => 'OK',
-        Message::CREATED                         => 'Created',
-        Message::ACCEPTED                        => 'Accepted',
-        Message::NON_AUTHORITATIVE_INFORMATION   => 'Non-Authoritative Information',
-        Message::NO_CONTENT                      => 'No Content',
-        Message::RESET_CONTENT                   => 'Reset Content',
-        Message::PARTIAL_CONTENT                 => 'Partial Content',
-
-        // Redirection 3xx
-        Message::MULTIPLE_CHOICES                => 'Multiple Choices',
-        Message::MOVED_PERMANENTLY               => 'Moved Permanently',
-        Message::FOUND                           => 'Found',
-        // 1.1
-        Message::SEE_OTHER                       => 'See Other',
-        Message::NOT_MODIFIED                    => 'Not Modified',
-        Message::USE_PROXY                       => 'Use Proxy',
-        // 306 is deprecated but reserved
-        Message::TEMPORARY_REDIRECT              => 'Temporary Redirect',
-
-        // Client Error 4xx
-        Message::BAD_REQUEST                     => 'Bad Request',
-        Message::UNAUTHORIZED                    => 'Unauthorized',
-        Message::PAYMENT_REQUIRED                => 'Payment Required',
-        Message::FORBIDDEN                       => 'Forbidden',
-        Message::NOT_FOUND                       => 'Not Found',
-        Message::METHOD_NOT_ALLOWED              => 'Method Not Allowed',
-        Message::NOT_ACCEPTABLE                  => 'Not Acceptable',
-        Message::PROXY_AUTHENTICATION_REQUIRED   => 'Proxy Authentication Required',
-        Message::REQUEST_TIMEOUT                 => 'Request Timeout',
-        Message::CONFLICT                        => 'Conflict',
-        Message::GONE                            => 'Gone',
-        Message::LENGTH_REQUIRED                 => 'Length Required',
-        Message::PRECONDITION_FAILED             => 'Precondition Failed',
-        Message::REQUEST_ENTITY_TOO_LARGE        => 'Request Entity Too Large',
-        Message::REQUEST_URI_TOO_LONG            => 'Request-URI Too Long',
-        Message::UNSUPPORTED_MEDIA_TYPE          => 'Unsupported Media Type',
-        Message::REQUESTED_RANGE_NOT_SATISFIABLE => 'Requested Range Not Satisfiable',
-        Message::EXPECTATION_FAILED              => 'Expectation Failed',
-
-        // Server Error 5xx
-        Message::INTERNAL_SERVER_ERROR           => 'Internal Server Error',
-        Message::NOT_IMPLEMENTED                 => 'Not Implemented',
-        Message::BAD_GATEWAY                     => 'Bad Gateway',
-        Message::SERVICE_UNAVAILABLE             => 'Service Unavailable',
-        Message::GATEWAY_TIMEOUT                 => 'Gateway Timeout',
-        Message::HTTP_VERSION_NOT_SUPPORTED      => 'HTTP Version Not Supported',
-        Message::BANDWIDTH_LIMIT_EXCEEDED        => 'Bandwidth Limit Exceeded'
-    ];
-
     /**
-     * @var  int     The response http status
+     * @var int The response http status
      */
     protected $_status = 200;
 
     /**
-     * @return Header
+     * @var Message
      */
-    public function getHeader()
+    protected $_message = null;
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function getHeader($name)
     {
-        return $this->_header;
+        return $this->message->getHeader($name);
     }
 
     /**
-     * @param Header $header
+     * @param Message $message
+     * @return Response
      */
-    public function setHeader($header)
+    public function setMessage($message)
     {
-        $this->_header = $header;
+        $this->_message = $message;
+        return $this;
+    }
+
+    /**
+     * @return Message
+     */
+    public function getMessage()
+    {
+        return $this->_message;
     }
 
     protected function getStatus()
@@ -127,7 +82,7 @@ class Response extends Object
 
     protected function setStatus($status)
     {
-        if (array_key_exists($status, self::$messages))
+        if (array_key_exists($status, Message::$text))
         {
             $this->_status = (int) $status;
         }
@@ -138,23 +93,25 @@ class Response extends Object
     }
 
     /**
-     * @var  Header  Headers returned in the response
+     * 读取响应内容
+     *
+     * @return \Psr\Http\Message\StreamInterface|string
      */
-    protected $_header;
-
-    /**
-     * @var  string      相应的内容主体
-     */
-    protected $_body = '';
-
-    protected function getBody()
+    public function getBody()
     {
-        return $this->_body;
+        return $this->message->body;
     }
 
-    protected function setBody($content)
+    /**
+     * 设置响应内容
+     *
+     * @param \Psr\Http\Message\StreamInterface|string $body
+     * @return $this
+     */
+    public function setBody($body)
     {
-        $this->_body = (string) $content;
+        $this->message->body = $body;
+        return $this;
     }
 
     /**
@@ -188,31 +145,6 @@ class Response extends Object
     public static $current = null;
 
     /**
-     * Sets up the response object
-     *
-     * @param   array $config Setup the response object
-     */
-    public function __construct(array $config = [])
-    {
-        $this->header = new Header();
-
-        foreach ($config as $key => $value)
-        {
-            if (property_exists($this, $key))
-            {
-                if ('_header' == $key)
-                {
-                    $this->headers($value);
-                }
-                else
-                {
-                    $this->$key = $value;
-                }
-            }
-        }
-    }
-
-    /**
      * 输出网页内容
      *
      * @return string
@@ -234,39 +166,39 @@ class Response extends Object
      *       // 一次设置多个头信息
      *       $response->headers(['Content-Type' => 'text/html', 'Cache-Control' => 'no-cache']);
      *
-     * @param mixed  $key
+     * @param mixed  $name
      * @param string $value
-     *
      * @return mixed
      */
-    public function headers($key = null, $value = null)
+    public function headers($name = null, $value = null)
     {
-        if (null === $key)
+        if (is_array($name))
         {
-            return $this->_header;
-        }
-        elseif (is_array($key))
-        {
-            $this->_header->exchangeArray($key);
-
+            foreach ($name as $k => $v)
+            {
+                $this->message->withHeader($k, $v);
+            }
             return $this;
+        }
+
+        if (null === $name)
+        {
+            return $this->message->getHeaders();
         }
         elseif (null === $value)
         {
-            return Arr::get((array) $this->_header, $key);
+            return $this->message->getHeaderLine($name);
         }
-        else
-        {
-            $this->_header[$key] = $value;
 
-            return $this;
-        }
+        $this->message->withHeader($name, $value);
+
+        return $this;
     }
 
     /**
      * Returns the length of the body for use with content header
      *
-     * @return  integer
+     * @return  int
      */
     public function getContentLength()
     {
@@ -274,7 +206,8 @@ class Response extends Object
     }
 
     /**
-     * Set and get cookies values for this response.
+     * 设置或者读取cookie
+     *
      *     // Get the cookies set to the response
      *     $cookies = $response->cookie();
      *     // Set a cookie to the response
@@ -283,12 +216,9 @@ class Response extends Object
      *          'expiration' => 12352234
      *     ]);
      *
-     * @param   mixed  $key   cookie name, or array of cookie values
-     * @param   string $value value to set to cookie
-     *
-     * @return  string
-     * @return  void
-     * @return  [Response]
+     * @param  mixed  $key   cookie name, or array of cookie values
+     * @param  string $value value to set to cookie
+     * @return $this|mixed
      */
     public function cookie($key = null, $value = null)
     {
@@ -332,28 +262,25 @@ class Response extends Object
     }
 
     /**
-     * Deletes a cookie set to the response
+     * 删除指定cookie
      *
-     * @param   string $name
-     *
-     * @return  $this
+     * @param  string $name
+     * @return $this
      */
     public function deleteCookie($name)
     {
         unset($this->_cookies[$name]);
-
         return $this;
     }
 
     /**
-     * Deletes all cookies from this response
+     * 清空所有cookie
      *
-     * @return  $this
+     * @return $this
      */
     public function deleteCookies()
     {
         $this->_cookies = [];
-
         return $this;
     }
 
@@ -362,12 +289,96 @@ class Response extends Object
      *
      * @param   boolean  $replace  replace existing headers
      * @param   callback $callback function to handle header output
-     *
      * @return  mixed
      */
     public function sendHeaders($replace = false, $callback = null)
     {
-        return $this->_header->sendHeaders($this, $replace, $callback);
+        $protocol = $this->protocol;
+        $status = $this->status;
+
+        // Create the response header
+        $renderHeaders = [$protocol . ' ' . $status . ' ' . Message::$text[$status]];
+
+        // Get the headers array
+        $headers = $this->headers();
+
+        foreach ($headers as $header => $value)
+        {
+            if (is_array($value))
+            {
+                $value = implode(', ', $value);
+            }
+
+            // 格式化header的key
+            $header = explode('-', $header);
+            foreach ($header as $k => $v)
+            {
+                $header[$k] = ucfirst($v);
+            }
+            $header = implode('-', $header);
+
+            $renderHeaders[] = $header . ': ' . $value;
+        }
+
+        if ( ! isset($headers['content-type']))
+        {
+            $renderHeaders[] = 'Content-Type: ' . Base::$contentType . '; charset=' . Base::$charset;
+        }
+
+        if (Base::$expose && ! isset($headers['x-powered-by']))
+        {
+            $renderHeaders[] = 'X-Powered-By: ' . Base::version();
+        }
+
+        if ($cookies = $this->cookie())
+        {
+            $renderHeaders['Set-Cookie'] = $cookies;
+        }
+
+        if (is_callable($callback))
+        {
+            // Use the callback method to set header
+            return call_user_func($callback, $this, $renderHeaders, $replace);
+        }
+        else
+        {
+            $this->_sendHeadersToPhp($renderHeaders, $replace);
+
+            return $this;
+        }
+    }
+
+    /**
+     * Sends the supplied headers to the PHP output buffer. If cookies
+     * are included in the message they will be handled appropriately.
+     *
+     * @param  array   $headers headers to send to php
+     * @param  boolean $replace replace existing headers
+     * @return $this
+     */
+    protected function _sendHeadersToPhp(array $headers, $replace)
+    {
+        // If the headers have been sent, get out
+        if (headers_sent())
+        {
+            return $this;
+        }
+
+        foreach ($headers as $key => $line)
+        {
+            if ($key == 'Set-Cookie' && is_array($line))
+            {
+                // Send cookies
+                foreach ($line as $name => $value)
+                {
+                    Cookie::set($name, $value['value'], $value['expiration']);
+                }
+                continue;
+            }
+            header($line, $replace);
+        }
+
+        return $this;
     }
 
     /**
@@ -380,22 +391,23 @@ class Response extends Object
      * `boolean` | inline    | Display inline instead of download | `false`
      * `string`  | mime_type | Manual mime type                   | Automatic
      * `boolean` | delete    | Delete the file after sending      | `false`
+     *
      * Download a file that already exists:
-     *     $request->sendFile('media/packages/package.zip');
+     *
+     *     $response->sendFile('media/packages/package.zip');
+     *
      * Download generated content as a file:
-     *     $request->response($content);
-     *     $request->sendFile(true, $filename);
+     *
+     *     $response->body = $content;
+     *     $response->sendFile(true, $filename);
+     *
      * [!!] No further processing can be done after this method is called!
      *
      * @param   string $filename filename with path, or true for the current response
      * @param   string $download downloaded file name
      * @param   array  $options  additional options
-     *
      * @return  void
      * @throws  BaseException
-     * @uses    \tourze\Base\Helper\File::mime_by_ext
-     * @uses    \tourze\Base\Helper\File::mime
-     * @uses    Request::sendHeaders
      */
     public function sendFile($filename, $download = null, array $options = null)
     {
@@ -422,7 +434,7 @@ class Response extends Object
             }
 
             // Force the data to be rendered if
-            $fileData = (string) $this->_body;
+            $fileData = (string) $this->message->body;
 
             // Get the content size
             $size = strlen($fileData);
@@ -482,14 +494,14 @@ class Response extends Object
             }
 
             // Range of bytes being sent
-            $this->_header['content-range'] = 'bytes ' . $start . '-' . $end . '/' . $size;
-            $this->_header['accept-ranges'] = 'bytes';
+            $this->headers('content-range', 'bytes ' . $start . '-' . $end . '/' . $size);
+            $this->headers('accept-ranges', 'bytes');
         }
 
         // Set the headers for a download
-        $this->_header['content-disposition'] = $disposition . '; filename="' . $download . '"';
-        $this->_header['content-type'] = $mime;
-        $this->_header['content-length'] = (string) (($end - $start) + 1);
+        $this->headers('content-disposition', $disposition . '; filename="' . $download . '"');
+        $this->headers('content-type', $mime);
+        $this->headers('content-length', (string) (($end - $start) + 1));
 
         // Send all headers now
         $this->sendHeaders();
@@ -559,6 +571,7 @@ class Response extends Object
 
     /**
      * Renders the HTTP_Interaction to a string, producing
+     *
      *  - Protocol
      *  - Headers
      *  - Body
@@ -567,10 +580,9 @@ class Response extends Object
      */
     public function render()
     {
-        if ( ! $this->_header->offsetExists('content-type'))
+        if ( ! $this->headers('content-type'))
         {
-            // Add the default Content-Type header if required
-            $this->_header['content-type'] = Base::$contentType . '; charset=' . Base::$charset;
+            $this->headers('content-type', Base::$contentType . '; charset=' . Base::$charset);
         }
 
         // Set the content length
@@ -586,7 +598,7 @@ class Response extends Object
         {
             if (extension_loaded('http'))
             {
-                $this->_header['set-cookie'] = http_build_cookie($this->_cookies);
+                $this->headers('set-cookie', http_build_cookie($this->_cookies));
             }
             else
             {
@@ -599,8 +611,7 @@ class Response extends Object
                     $cookies[] = $string;
                 }
 
-                // Create the cookie string
-                $this->_header['set-cookie'] = $cookies;
+                $this->headers('set-cookie', $cookies);
             }
         }
 
@@ -608,10 +619,10 @@ class Response extends Object
             . ' '
             . $this->status
             . ' '
-            . self::$messages[$this->status]
+            . Message::$text[$this->status]
             . "\r\n";
-        $output .= (string) $this->_header;
-        $output .= $this->_body;
+        $output .= $this->message->headerLines;
+        $output .= $this->message->body;
 
         return $output;
     }
@@ -656,7 +667,6 @@ class Response extends Object
      * Calculates the byte range to use with send_file. If HTTP_RANGE does not exist then the complete byte range is returned
      *
      * @param  int $size
-     *
      * @return array
      */
     protected function _calculateByteRange($size)
@@ -699,4 +709,116 @@ class Response extends Object
         ];
     }
 
+    /**
+     * @return string
+     */
+    public function getProtocolVersion()
+    {
+        return $this->message->protocolVersion;
+    }
+
+    /**
+     * @param string $version
+     * @return $this
+     */
+    public function withProtocolVersion($version)
+    {
+        $this->message->withProtocolVersion($version);
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->message->getHeaders();
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function hasHeader($name)
+    {
+        return $this->message->hasHeader($name);
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    public function getHeaderLine($name)
+    {
+        return $this->message->getHeaderLine($name);
+    }
+
+    /**
+     * @param string           $name
+     * @param string|\string[] $value
+     * @return $this
+     */
+    public function withHeader($name, $value)
+    {
+        $this->message->withHeader($name, $value);
+        return $this;
+    }
+
+    /**
+     * @param string           $name
+     * @param string|\string[] $value
+     * @return $this
+     */
+    public function withAddedHeader($name, $value)
+    {
+        $this->message->withAddedHeader($name, $value);
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function withoutHeader($name)
+    {
+        $this->message->withoutHeader($name);
+        return $this;
+    }
+
+    /**
+     * @param \Psr\Http\Message\StreamInterface|string $body
+     * @return $this
+     */
+    public function withBody(StreamInterface $body)
+    {
+        $this->message->withBody($body);
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int    $code
+     * @param string $reasonPhrase
+     * @return $this
+     */
+    public function withStatus($code, $reasonPhrase = '')
+    {
+        $this->status = $code;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReasonPhrase()
+    {
+        return isset(Message::$text[$this->status]) ? Message::$text[$this->status] : '';
+    }
 }

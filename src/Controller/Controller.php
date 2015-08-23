@@ -85,14 +85,9 @@ abstract class Controller extends Object
             $actionSign .= ucfirst($part);
         }
 
-        $actions = [];
-
-        if ($this instanceof Controller && $this instanceof RestInterface)
-        {
-            $actions[] = strtolower($this->request->method) . $actionSign;
-        }
-
-        $actions[] = 'action' . $actionSign;
+        $actions = [
+            'action' . $actionSign
+        ];
 
         $matchAction = false;
         foreach ($actions as $action)

@@ -85,7 +85,7 @@ abstract class Http
             $response->headers('cache-control', 'must-revalidate');
         }
 
-        // Check if we have a matching etag
+        // 检测是否有合适的etag
         if ($request->headers('if-none-match') && (string) $request->headers('if-none-match') === $etag)
         {
             // No need to send data again
@@ -96,25 +96,24 @@ abstract class Http
     }
 
     /**
-     * Parses a HTTP header string into an associative array
+     * 解析header数据为一个关联数组
      *
-     * @param   string $headerString Header string to parse
-     * @return  Header
+     * @param  string $str 要解析的字符串
+     * @return array
      */
-    public static function parseHeaderString($headerString)
+    public static function parseHeaderString($str)
     {
         // If the PECL HTTP extension is loaded
         if (extension_loaded('http'))
         {
             // Use the fast method to parse header string
-            return new Header(http_parse_headers($headerString));
+            return http_parse_headers($str);
         }
 
-        // Otherwise we use the slower PHP parsing
         $headers = [];
 
         // Match all HTTP headers
-        if (preg_match_all('/(\w[^\s:]*):[ ]*([^\r\n]*(?:\r\n[ \t][^\r\n]*)*)/', $headerString, $matches))
+        if (preg_match_all('/(\w[^\s:]*):[ ]*([^\r\n]*(?:\r\n[ \t][^\r\n]*)*)/', $str, $matches))
         {
             // Parse each matched header
             foreach ($matches[0] as $key => $value)
@@ -146,45 +145,35 @@ abstract class Http
             }
         }
 
-        // Return the headers
-        return new Header($headers);
+        return $headers;
     }
 
     /**
-     * Parses the the HTTP request headers and returns an array containing
-     * key value pairs. This method is slow, but provides an accurate
-     * representation of the HTTP request.
+     * 解析请求，并读取其中的HEADER信息
      *
-     *      // Get http headers into the request
-     *      $request->headers = HTTP::requestHeaders();
-     *
-     * @return  Header
+     * @return array
      */
     public static function requestHeaders()
     {
-        // If running on apache server
+        // apache服务器
         if (function_exists('apache_request_headers'))
         {
-            // Return the much faster method
-            return new Header(apache_request_headers());
+            return apache_request_headers();
         }
-        // If the PECL HTTP tools are installed
+
+        // PECL扩展加载了
         elseif (extension_loaded('http'))
         {
-            // Return the much faster method
-            return new Header(http_get_request_headers());
+            return http_get_request_headers();
         }
 
-        // Setup the output
         $headers = [];
 
-        // Parse the content type
         if ( ! empty($_SERVER['CONTENT_TYPE']))
         {
             $headers['content-type'] = $_SERVER['CONTENT_TYPE'];
         }
 
-        // Parse the content length
         if ( ! empty($_SERVER['CONTENT_LENGTH']))
         {
             $headers['content-length'] = $_SERVER['CONTENT_LENGTH'];
@@ -192,22 +181,17 @@ abstract class Http
 
         foreach ($_SERVER as $key => $value)
         {
-            // If there is no HTTP header here, skip
+            // 跳过非HTTP开头的值
             if (strpos($key, 'HTTP_') !== 0)
             {
                 continue;
             }
 
-            // This is a dirty hack to ensure HTTP_X_FOO_BAR becomes x-foo-bar
-            $headers[str_replace([
-                'HTTP_',
-                '_'
-            ], [
-                '',
-                '-'
-            ], $key)] = $value;
+            $key = str_replace(['HTTP_', '_'], ['', '-'], $key);
+            $key = strtolower($key);
+            $headers[$key] = $value;
         }
 
-        return new Header($headers);
+        return $headers;
     }
 }

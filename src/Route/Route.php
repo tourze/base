@@ -12,7 +12,7 @@ use tourze\Route\Exception\RouteNotFoundException;
  * 路由处理类
  *
  * @property  string $identify
- * @property  array $regex
+ * @property  array  $regex
  * @property  string $uri
  * @package   tourze
  * @category  Route
@@ -212,6 +212,7 @@ class Route extends Object implements RouteInterface
      * @var  array
      */
     protected $_defaults = [
+        'method' => false,
         'action' => 'index',
         'host'   => false
     ];
@@ -337,19 +338,21 @@ class Route extends Object implements RouteInterface
     /**
      * 检测路由是否与路由表中的记录有匹配
      *
-     * @param string $uri
-     * @param string $method
+     * @param string $uri    URI
+     * @param string $method URI的请求方法
      * @return array
      */
     public function matches($uri, $method = null)
     {
         $uri = trim($uri, '/');
 
+        // 先校验URI是否正确
         if ( ! preg_match($this->_routeRegex, $uri, $matches))
         {
             return false;
         }
 
+        // 解析参数
         $params = [];
         foreach ($matches as $key => $value)
         {
@@ -361,12 +364,32 @@ class Route extends Object implements RouteInterface
             $params[$key] = $value;
         }
 
+        // 设置默认参数
         foreach ($this->_defaults as $key => $value)
         {
             if ( ! isset($params[$key]) || '' === $params[$key])
             {
                 // 如果没匹配到，那么就设置默认值
                 $params[$key] = $value;
+            }
+        }
+
+        // 处理method
+        if ($params['method'])
+        {
+            if (is_array($params['method']))
+            {
+                if ( ! in_array($method, $params['method']))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if ($params['method'] != $method)
+                {
+                    return false;
+                }
             }
         }
 
