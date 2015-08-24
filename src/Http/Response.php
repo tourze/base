@@ -358,8 +358,7 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * Sends the supplied headers to the PHP output buffer. If cookies
-     * are included in the message they will be handled appropriately.
+     * 发送header信息
      *
      * @param  array   $headers headers to send to php
      * @param  boolean $replace replace existing headers
@@ -367,8 +366,7 @@ class Response extends Object implements ResponseInterface
      */
     protected function _sendHeadersToPhp(array $headers, $replace)
     {
-        // If the headers have been sent, get out
-        if (headers_sent())
+        if (Http::headersSent())
         {
             return $this;
         }

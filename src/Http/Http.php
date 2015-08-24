@@ -6,6 +6,7 @@ use tourze\Base\Base;
 use tourze\Base\Helper\Url;
 use tourze\Http\Exception\Http304Exception;
 use tourze\Server\Protocol\Http as ServerHttp;
+use Workerman\Protocols\HttpCache;
 
 /**
  * 包含了一些http操作相关的基础信息和助手方法
@@ -124,6 +125,45 @@ abstract class Http
     public static function headerRemove($name)
     {
         ServerHttp::headerRemove($name);
+    }
+
+    /**
+     * 检测当前是否发送了header信息
+     *
+     * @param string $file
+     * @param int    $line
+     * @return bool
+     */
+    public static function headersSent($file = null, $line = null)
+    {
+        if (PHP_SAPI != 'cli')
+        {
+            return headers_sent($file, $line);
+        }
+
+        return ! empty(HttpCache::$header);
+    }
+
+    /**
+     * 获取当前已经发送的header列表
+     *
+     * @return array
+     */
+    public static function headersList()
+    {
+        if (PHP_SAPI != 'cli')
+        {
+            return headers_list();
+        }
+
+        $headers = HttpCache::$header;
+        foreach ($headers as $k => $v)
+        {
+            $headers[$k] = is_array($v)
+                ? implode(', ', $v)
+                : $v;
+        }
+        return $headers;
     }
 
     /**
