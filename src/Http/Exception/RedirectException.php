@@ -19,10 +19,10 @@ abstract class RedirectException extends ExpectedException
 {
 
     /**
-     * Specifies the URI to redirect to.
+     * 跳转到指定URI
      *
-     * @param   string $uri
-     * @return  $this
+     * @param  string $uri
+     * @return $this
      */
     public function location($uri = null)
     {
@@ -33,7 +33,6 @@ abstract class RedirectException extends ExpectedException
 
         if (false === strpos($uri, '://'))
         {
-            // Make the URI into a URL
             $uri = Url::site($uri, true, ! empty(Base::$indexFile));
         }
 

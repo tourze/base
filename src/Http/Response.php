@@ -294,11 +294,11 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * Sends the response status and all set headers.
+     * 发送当前保存的header信息
      *
-     * @param   boolean  $replace  replace existing headers
-     * @param   callback $callback function to handle header output
-     * @return  mixed
+     * @param  boolean  $replace  replace existing headers
+     * @param  callback $callback function to handle header output
+     * @return $this
      */
     public function sendHeaders($replace = false, $callback = null)
     {

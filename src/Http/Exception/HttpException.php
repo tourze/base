@@ -5,7 +5,13 @@ namespace tourze\Http\Exception;
 use Exception;
 use tourze\Base\Exception\BaseException;
 use tourze\Http\Request;
+use tourze\Http\Response;
 
+/**
+ * 基础的HTTP异常类
+ *
+ * @package tourze\Http\Exception
+ */
 abstract class HttpException extends BaseException
 {
 
@@ -37,9 +43,14 @@ abstract class HttpException extends BaseException
     protected $_code = 0;
 
     /**
-     * @var  Request    Request instance that triggered this exception.
+     * @var  Request  Request instance that triggered this exception.
      */
     protected $_request;
+
+    /**
+     * @var Response Response对象
+     */
+    protected $_response;
 
     /**
      * Creates a new translated exception.
@@ -51,6 +62,10 @@ abstract class HttpException extends BaseException
     public function __construct($message = null, array $variables = null, Exception $previous = null)
     {
         parent::__construct($message, $variables, $this->_code, $previous);
+
+        // 准备一个response对象
+        $this->_response = Response::factory();
+        $this->_response->status = $this->_code;
     }
 
     /**

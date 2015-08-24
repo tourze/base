@@ -2,10 +2,9 @@
 
 namespace tourze\Http;
 
-use tourze\Base\Exception\BaseException;
+use tourze\Base\Base;
+use tourze\Base\Helper\Url;
 use tourze\Http\Exception\Http304Exception;
-use tourze\Http\Exception\HttpException;
-use tourze\Http\Exception\RedirectException;
 use tourze\Server\Protocol\Http as ServerHttp;
 
 /**
@@ -41,25 +40,33 @@ abstract class Http
      *
      * @param  string $uri  要跳转的URI
      * @param  int    $code 跳转时使用的http状态码
-     * @throws HttpException
-     * @throws BaseException
      */
     public static function redirect($uri = '', $code = 302)
     {
-        $e = HttpException::factory($code);
-        if ( ! $e instanceof RedirectException)
+        if (false === strpos($uri, '://'))
         {
-            throw new BaseException("Invalid redirect code ':code'", [
-                ':code' => $code,
-            ]);
+            $uri = Url::site($uri, true, ! empty(Base::$indexFile));
         }
-        throw $e->location($uri);
+
+        $response = new Response;
+        $response->status = $code;
+
+        $lastTime = gmdate("D, d M Y H:i:s", time()) . ' GMT+0800';
+        $response->headers('Cache-Control', 'no-cache');
+        $response->headers('Last Modified', $lastTime);
+        $response->headers('Last Fetched', $lastTime);
+        $response->headers('Expires', 'Thu Jan 01 1970 08:00:00 GMT+0800');
+        $response->headers('Location', $uri);
+
+        echo $response
+            ->sendHeaders(true)
+            ->body;
+
+        Http::end();
     }
 
     /**
-     * Checks the browser cache to see the response needs to be returned,
-     * execution will halt and a 304 Not Modified will be sent if the
-     * browser cache is up to date.
+     * 检查请求缓存。如果缓存存在的话，那么返回“304 Not Modified”
      *
      * @param  Request  $request  Request
      * @param  Response $response Response
