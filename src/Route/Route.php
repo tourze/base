@@ -14,9 +14,7 @@ use tourze\Route\Exception\RouteNotFoundException;
  * @property  string $identify
  * @property  array  $regex
  * @property  string $uri
- * @package   tourze
- * @category  Route
- * @author    YwiSax
+ * @package tourze\Route
  */
 class Route extends Object implements RouteInterface
 {
@@ -84,14 +82,30 @@ class Route extends Object implements RouteInterface
      *             'controller' => 'welcome',
      *         ]);
      *
-     * @param  string $name  路由名称
-     * @param  string $uri   URI规则
-     * @param  array  $regex 匹配规则
-     * @return Route
+     * @param string $name  路由名称
+     * @param string $uri   URI规则
+     * @param array  $regex 匹配规则
+     * @param bool   $force
      */
-    public static function set($name, $uri = null, $regex = null)
+    public static function set($name, $uri = null, $regex = null, $force = false)
     {
-        return Route::$_routes[$name] = new Route($uri, $regex, $name);
+        if (isset(self::$_routes[$name]) && ! $force)
+        {
+            return;
+        }
+        self::$_routes[$name] = new Route($uri, $regex, $name);
+    }
+
+    /**
+     * 强制替换指定路由，如果不存在的话，那就新增
+     *
+     * @param string $name
+     * @param string $uri
+     * @param array  $regex
+     */
+    public static function replace($name, $uri = null, $regex = null)
+    {
+        self::set($name, $uri, $regex, true);
     }
 
     /**
@@ -113,6 +127,17 @@ class Route extends Object implements RouteInterface
         }
 
         return Route::$_routes[$name];
+    }
+
+    /**
+     * 检测指定路由是否存在
+     *
+     * @param string $name
+     * @return bool
+     */
+    public static function exists($name)
+    {
+        return isset(self::$_routes[$name]);
     }
 
     /**
