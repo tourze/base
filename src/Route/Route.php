@@ -108,7 +108,7 @@ class Route extends Object implements RouteInterface
     public static function replace($name, $uri = null, $regex = null)
     {
         return self::set($name, $uri, $regex, true);
-
+    }
 
     /**
      * 获取指定的路由信息
