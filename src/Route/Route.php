@@ -86,14 +86,15 @@ class Route extends Object implements RouteInterface
      * @param string $uri   URI规则
      * @param array  $regex 匹配规则
      * @param bool   $force
+     * @return static
      */
     public static function set($name, $uri = null, $regex = null, $force = false)
     {
         if (isset(self::$_routes[$name]) && ! $force)
         {
-            return;
+            return self::$_routes[$name];
         }
-        self::$_routes[$name] = new Route($uri, $regex, $name);
+        return self::$_routes[$name] = new Route($uri, $regex, $name);
     }
 
     /**
@@ -102,11 +103,12 @@ class Route extends Object implements RouteInterface
      * @param string $name
      * @param string $uri
      * @param array  $regex
+     * @return static
      */
     public static function replace($name, $uri = null, $regex = null)
     {
-        self::set($name, $uri, $regex, true);
-    }
+        return self::set($name, $uri, $regex, true);
+
 
     /**
      * 获取指定的路由信息
