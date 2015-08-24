@@ -3,6 +3,7 @@
 namespace tourze\Base\Helper;
 
 use tourze\Base\Exception\HelperException;
+use tourze\Http\Http;
 
 /**
  * Cookie助手类
@@ -103,7 +104,7 @@ class Cookie
         // Add the salt to the cookie value
         $value = Cookie::salt($name, $value) . '~' . $value;
 
-        return setcookie($name, $value, $expired, Cookie::$path, Cookie::$domain, Cookie::$secure, Cookie::$httpOnly);
+        return Http::setCookie($name, $value, $expired, Cookie::$path, Cookie::$domain, Cookie::$secure, Cookie::$httpOnly);
     }
 
     /**
@@ -117,7 +118,7 @@ class Cookie
     public static function delete($name)
     {
         unset($_COOKIE[$name]);
-        return setcookie($name, null, -86400, Cookie::$path, Cookie::$domain, Cookie::$secure, Cookie::$httpOnly);
+        return Http::setCookie($name, null, -86400, Cookie::$path, Cookie::$domain, Cookie::$secure, Cookie::$httpOnly);
     }
 
     /**

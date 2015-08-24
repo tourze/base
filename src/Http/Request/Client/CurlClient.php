@@ -9,23 +9,18 @@ use tourze\Http\Request;
 use tourze\Http\Request\Exception\RequestException;
 
 /**
- * [ExternalClient] Curl driver performs external requests using the
- * php-curl extension. This is the default driver for all external requests.
+ * 用CURL实现的外部请求
  *
- * @package    Base
- * @category   Base
- * @author     YwiSax
+ * @package tourze\Http\Request\Client
  */
 class CurlClient extends ExternalClient
 {
 
     /**
-     * Sends the HTTP message [Request] to a remote server and processes
-     * the response.
+     * 发送HTTP请求，并处理返回数据
      *
      * @param   Request  $request response to send
      * @param   Response $response
-     *
      * @return  Response
      * @throws  RequestException
      * @throws  BaseException
@@ -48,6 +43,10 @@ class CurlClient extends ExternalClient
             $httpHeaders = [];
             foreach ($headers as $key => $value)
             {
+                if (is_array($value))
+                {
+                    $value = implode(', ', $value);
+                }
                 $httpHeaders[] = $key . ': ' . $value;
             }
             $options[CURLOPT_HTTPHEADER] = $httpHeaders;
@@ -59,14 +58,6 @@ class CurlClient extends ExternalClient
             $options[CURLOPT_COOKIE] = http_build_query($cookies, null, '; ');
         }
 
-        // Get any existing response headers
-        $responseHeader = $response->headers();
-
-        // Implement the standard parsing parameters
-        $options[CURLOPT_HEADERFUNCTION] = [
-            $responseHeader,
-            'parseHeaderString'
-        ];
         $this->_options[CURLOPT_RETURNTRANSFER] = true;
         $this->_options[CURLOPT_HEADER] = false;
 
@@ -114,10 +105,10 @@ class CurlClient extends ExternalClient
     }
 
     /**
-     * Sets the appropriate curl request options.
+     * 设置CURL请求选项
      *
      * @param Request $request
-     * @param array       $options
+     * @param array   $options
      * @return array
      */
     public function _setCurlRequestMethod(Request $request, array $options)

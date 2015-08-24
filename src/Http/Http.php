@@ -6,6 +6,7 @@ use tourze\Base\Exception\BaseException;
 use tourze\Http\Exception\Http304Exception;
 use tourze\Http\Exception\HttpException;
 use tourze\Http\Exception\RedirectException;
+use tourze\Server\Protocol\Http as ServerHttp;
 
 /**
  * 包含了一些http操作相关的基础信息和助手方法
@@ -96,56 +97,74 @@ abstract class Http
     }
 
     /**
-     * 解析header数据为一个关联数组
+     * 注意，不要直接使用php自带的header，而要使用这个方法
      *
-     * @param  string $str 要解析的字符串
-     * @return array
+     * @param string    $content
+     * @param bool|true $replace
+     * @param int       $httpResponseCode
+     * @return bool
      */
-    public static function parseHeaderString($str)
+    public static function header($content, $replace = true, $httpResponseCode = 0)
     {
-        // If the PECL HTTP extension is loaded
-        if (extension_loaded('http'))
-        {
-            // Use the fast method to parse header string
-            return http_parse_headers($str);
-        }
+        return ServerHttp::header($content, $replace, $httpResponseCode);
+    }
 
-        $headers = [];
+    /**
+     * 作用等于php自带的[header_remove]
+     *
+     * @param string $name
+     */
+    public static function headerRemove($name)
+    {
+        ServerHttp::headerRemove($name);
+    }
 
-        // Match all HTTP headers
-        if (preg_match_all('/(\w[^\s:]*):[ ]*([^\r\n]*(?:\r\n[ \t][^\r\n]*)*)/', $str, $matches))
-        {
-            // Parse each matched header
-            foreach ($matches[0] as $key => $value)
-            {
-                // If the header has not already been set
-                if ( ! isset($headers[$matches[1][$key]]))
-                {
-                    // Apply the header directly
-                    $headers[$matches[1][$key]] = $matches[2][$key];
-                }
-                // Otherwise there is an existing entry
-                else
-                {
-                    // If the entry is an array
-                    if (is_array($headers[$matches[1][$key]]))
-                    {
-                        // Apply the new entry to the array
-                        $headers[$matches[1][$key]][] = $matches[2][$key];
-                    }
-                    // Otherwise create a new array with the entries
-                    else
-                    {
-                        $headers[$matches[1][$key]] = [
-                            $headers[$matches[1][$key]],
-                            $matches[2][$key],
-                        ];
-                    }
-                }
-            }
-        }
+    /**
+     * 写cookie，注意不要直接使用[setcookie]函数
+     *
+     * @param string     $name
+     * @param string     $value
+     * @param int        $maxAge
+     * @param string     $path
+     * @param string     $domain
+     * @param bool|false $secure
+     * @param bool|false $httpOnly
+     * @return bool
+     */
+    public static function setCookie($name, $value = '', $maxAge = 0, $path = '', $domain = '', $secure = false, $httpOnly = false)
+    {
+        return ServerHttp::setcookie($name, $value, $maxAge, $path, $domain, $secure, $httpOnly);
+    }
 
-        return $headers;
+    /**
+     * 替代php自带的[session_start]函数
+     *
+     * @return bool
+     */
+    public static function sessionStart()
+    {
+        return ServerHttp::sessionStart();
+    }
+
+    /**
+     * 替代php自带的[session_write_close]函数
+     *
+     * @return bool
+     */
+    public static function sessionWriteClose()
+    {
+        return ServerHttp::sessionWriteClose();
+    }
+
+    /**
+     * 代替php的exit和die
+     *
+     * @param string $msg
+     * @throws \Exception
+     */
+    public static function end($msg = '')
+    {
+        ServerHttp::end($msg);
     }
 
     /**

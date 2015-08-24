@@ -384,7 +384,7 @@ class Response extends Object implements ResponseInterface
                 }
                 continue;
             }
-            header($line, $replace);
+            Http::header($line, $replace);
         }
 
         return $this;
@@ -574,8 +574,8 @@ class Response extends Object implements ResponseInterface
             }
         }
 
-        // Stop execution
-        exit;
+        // 停止执行
+        Http::end();
     }
 
     /**

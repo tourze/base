@@ -4,6 +4,7 @@ namespace tourze\Base;
 
 use Exception;
 use tourze\Base\Exception\BaseException;
+use tourze\Http\Http;
 
 /**
  * 基础类，包含一些最基础和常用的操作：
@@ -179,8 +180,7 @@ class Base extends Object
     {
         if (isset($_REQUEST['GLOBALS']) || isset($_FILES['GLOBALS']))
         {
-            echo "Global variable overload attack detected! Request aborted.\n";
-            exit(1);
+            Http::end("Global variable overload attack detected! Request aborted.\n");
         }
 
         $globalVars = array_keys($GLOBALS);
