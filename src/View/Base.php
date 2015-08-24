@@ -35,7 +35,10 @@ abstract class Base
      */
     public static function addPath($path)
     {
-        self::$_viewPaths[] = $path;
+        if ( ! isset(self::$_viewPaths[$path]))
+        {
+            self::$_viewPaths[$path] = $path;
+        }
     }
 
     /**

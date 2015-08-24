@@ -29,7 +29,10 @@ class Message
      */
     public static function addPath($path)
     {
-        self::$_messagePaths[] = $path;
+        if ( ! isset(self::$_messagePaths[$path]))
+        {
+            self::$_messagePaths[$path] = $path;
+        }
     }
 
     /**

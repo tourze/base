@@ -50,7 +50,10 @@ class I18n
      */
     public static function addPath($path)
     {
-        self::$_i18nPaths[] = $path;
+        if ( ! isset(self::$_i18nPaths[$path]))
+        {
+            self::$_i18nPaths[$path] = $path;
+        }
     }
 
     /**

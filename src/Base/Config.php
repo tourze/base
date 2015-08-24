@@ -20,7 +20,7 @@ class Config extends VendorConfig
     /**
      * @var array 允许从其中加载配置文件
      */
-    public static $configPaths = [];
+    protected static $_configPaths = [];
 
     /**
      * 增加配置加载目录
@@ -29,7 +29,10 @@ class Config extends VendorConfig
      */
     public static function addPath($path)
     {
-        self::$configPaths[] = $path;
+        if ( ! isset(self::$_configPaths[$path]))
+        {
+            self::$_configPaths[$path] = $path;
+        }
     }
 
     /**
@@ -55,7 +58,7 @@ class Config extends VendorConfig
         $finalPath = [];
         foreach ($path as $_path)
         {
-            foreach (self::$configPaths as $includePath)
+            foreach (self::$_configPaths as $includePath)
             {
                 // 检测和包含带下面后缀的文件
                 $files = [
