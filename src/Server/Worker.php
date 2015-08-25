@@ -54,6 +54,7 @@ class Worker extends BaseWorker
         }
 
         $config['name'] = $name;
+        // 根据socketName来判断，如果是http的话，有单独的处理
         if (substr($socketName, 0, 4) == 'http')
         {
             new Web($config);
