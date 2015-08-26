@@ -583,7 +583,7 @@ class Response extends Object implements ResponseInterface
      *  - Headers
      *  - Body
      *
-     * @return  string
+     * @return string
      */
     public function render()
     {
@@ -717,7 +717,7 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getProtocolVersion()
     {
@@ -725,8 +725,7 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * @param string $version
-     * @return $this
+     * {@inheritdoc}
      */
     public function withProtocolVersion($version)
     {
@@ -735,7 +734,7 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getHeaders()
     {
@@ -743,8 +742,7 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * @param string $name
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasHeader($name)
     {
@@ -752,8 +750,7 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * @param string $name
-     * @return string
+     * {@inheritdoc}
      */
     public function getHeaderLine($name)
     {
@@ -761,9 +758,7 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * @param string           $name
-     * @param string|\string[] $value
-     * @return $this
+     * {@inheritdoc}
      */
     public function withHeader($name, $value)
     {
@@ -772,9 +767,7 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * @param string           $name
-     * @param string|\string[] $value
-     * @return $this
+     * {@inheritdoc}
      */
     public function withAddedHeader($name, $value)
     {
@@ -783,8 +776,7 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * @param string $name
-     * @return $this
+     * {@inheritdoc}
      */
     public function withoutHeader($name)
     {
@@ -793,8 +785,7 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * @param \Psr\Http\Message\StreamInterface|string $body
-     * @return $this
+     * {@inheritdoc}
      */
     public function withBody(StreamInterface $body)
     {
@@ -803,7 +794,7 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
     public function getStatusCode()
     {
@@ -811,9 +802,7 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * @param int    $code
-     * @param string $reasonPhrase
-     * @return $this
+     * {@inheritdoc}
      */
     public function withStatus($code, $reasonPhrase = '')
     {
@@ -822,7 +811,7 @@ class Response extends Object implements ResponseInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getReasonPhrase()
     {

@@ -433,9 +433,7 @@ class Message extends Object implements MessageInterface
     }
 
     /**
-     * 读取body
-     *
-     * @return StreamInterface|string
+     * {@inheritdoc}
      */
     public function getBody()
     {

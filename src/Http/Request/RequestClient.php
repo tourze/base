@@ -11,9 +11,7 @@ use tourze\Http\Request\Exception\ClientRecursionException;
 /**
  * 请求的具体实现类，支持两种请求方式，一种是内部请求，一种是外部请求
  *
- * @package    Base
- * @category   Base
- * @author     YwiSax
+ * @package tourze\Http\Request
  */
 abstract class RequestClient
 {
@@ -84,10 +82,10 @@ abstract class RequestClient
      * no headers are sent.
      *     $request->execute();
      *
-     * @param   Request $request
-     * @return  Response
-     * @throws  ClientRecursionException
-     * @throws  Exception\RequestException
+     * @param  Request $request
+     * @return Response
+     * @throws ClientRecursionException
+     * @throws Exception\RequestException
      */
     public function execute(Request $request)
     {
@@ -144,9 +142,9 @@ abstract class RequestClient
      * the URI resource identified.
      * This method must be implemented by all clients.
      *
-     * @param   Request  $request request to execute by client
-     * @param   Response $response
-     * @return  Response
+     * @param  Request  $request request to execute by client
+     * @param  Response $response
+     * @return Response
      */
     abstract public function executeRequest(Request $request, Response $response);
 
@@ -223,6 +221,7 @@ abstract class RequestClient
      * the response as required.
      * By default, the [RequestClient::onHeaderLocation] callback is assigned
      * to the Location header to support automatic redirect following.
+     *
      *     $client->headerCallbacks([
      *         'Location' => 'RequestClient::onHeaderLocation',
      *         'WWW-Authenticate' => function($request, $response, $client) {return $new_response;},
@@ -286,6 +285,7 @@ abstract class RequestClient
     /**
      * Getter/Setter for the callbackParams array, which allows additional
      * application-specific parameters to be shared with callbacks.
+     *
      *     // Set full array
      *     $client->callbackParams(['foo'=>'bar']);
      *     // Set single key
