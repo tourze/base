@@ -546,7 +546,8 @@ class Route extends Object implements RouteInterface
             ];
         };
 
-        list($uri) = $compile($this->_uri, true);
+        $result = $compile($this->_uri, true);
+        $uri = $result ? array_shift($uri) : $uri;
 
         // 过滤URI中的重复斜杆
         $uri = preg_replace('#//+#', '/', rtrim($uri, '/'));

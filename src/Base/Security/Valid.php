@@ -335,8 +335,7 @@ class Valid
             ? '{' . ((int) $digits) . '}' // 指定位数
             : '+'; // 任意位数
 
-        // 获取当前区域的小数点
-        list($decimal) = array_values(localeconv());
+        $decimal = array_shift(array_values(localeconv()));
 
         return (bool) preg_match('/^[+-]?[0-9]' . $digits . preg_quote($decimal) . '[0-9]{' . ((int) $places) . '}$/D', $value);
     }

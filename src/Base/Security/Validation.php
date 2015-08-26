@@ -331,7 +331,8 @@ class Validation extends Object implements ArrayAccess
             foreach ($set as $array)
             {
                 // 格式：[$rule, $params]
-                list($rule, $params) = $array;
+                $rule = array_shift($array);
+                $params = array_shift($array);
 
                 foreach ($params as $key => $param)
                 {
@@ -379,7 +380,9 @@ class Validation extends Object implements ArrayAccess
                 else
                 {
                     // 当做一次静态函数调用
-                    list($class, $method) = explode('::', $rule, 2);
+                    $temp = explode('::', $rule, 2);
+                    $class = array_shift($temp);
+                    $method = array_shift($temp);
                     $method = new ReflectionMethod($class, $method);
                     $passed = $method->invokeArgs(null, $params);
                 }
@@ -451,7 +454,8 @@ class Validation extends Object implements ArrayAccess
 
         foreach ($this->_errors as $field => $set)
         {
-            list($error, $params) = $set;
+            $error = array_shift($set);
+            $params = array_shift($set);
 
             $label = $this->_labels[$field];
 

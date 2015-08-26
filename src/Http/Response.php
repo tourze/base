@@ -244,10 +244,9 @@ class Response extends Object implements ResponseInterface
         // Handle the set cookie calls
         if (is_array($key))
         {
-            reset($key);
-            while (list($_key, $_value) = each($key))
+            foreach ($key as $k => $v)
             {
-                $this->cookie($_key, $_value);
+                $this->cookie($k, $v);
             }
         }
         else
@@ -490,7 +489,9 @@ class Response extends Object implements ResponseInterface
         $disposition = empty($options['inline']) ? 'attachment' : 'inline';
 
         // Calculate byte range to download.
-        list($start, $end) = $this->_calculateByteRange($size);
+        $temp = $this->_calculateByteRange($size);
+        $start = array_shift($temp);
+        $end = array_shift($temp);
 
         if ( ! empty($options['resumable']))
         {
