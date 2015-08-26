@@ -4,12 +4,12 @@ namespace tourze\Http\Exception;
 
 use tourze\Http\Message;
 
-class Http300Exception extends RedirectException
+class Http204Exception extends RedirectException
 {
 
     /**
      * @var int
      */
-    protected $_code = Message::MULTIPLE_CHOICES;
+    protected $_code = Message::NO_CONTENT;
 
 }

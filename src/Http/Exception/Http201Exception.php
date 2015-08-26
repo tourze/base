@@ -8,7 +8,7 @@ class Http201Exception extends RedirectException
 {
 
     /**
-     * @var   int    HTTP 201 Created
+     * @var int
      */
     protected $_code = Message::CREATED;
 

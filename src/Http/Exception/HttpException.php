@@ -12,17 +12,16 @@ use tourze\Http\Response;
  *
  * @package tourze\Http\Exception
  */
-abstract class HttpException extends BaseException
+class HttpException extends BaseException
 {
 
     /**
      * Creates an HTTP_Exception of the specified type.
      *
-     * @param   int   $code      the http status code
+     * @param   int       $code      the http status code
      * @param   string    $message   status message, custom content to display with error
      * @param   array     $variables translation variables
      * @param   Exception $previous
-     *
      * @return  HttpException
      */
     public static function factory($code, $message = null, array $variables = null, Exception $previous = null)
@@ -55,13 +54,18 @@ abstract class HttpException extends BaseException
     /**
      * Creates a new translated exception.
      *
-     * @param   string    $message   status message, custom content to display with error
-     * @param   array     $variables translation variables
-     * @param   Exception $previous
+     * @param string    $message   status message, custom content to display with error
+     * @param array     $variables translation variables
+     * @param int       $code
+     * @param Exception $previous
      */
-    public function __construct($message = null, array $variables = null, Exception $previous = null)
+    public function __construct($message = "", array $variables = null, $code = 0, Exception $previous = null)
     {
-        parent::__construct($message, $variables, $this->_code, $previous);
+        if ( ! $code)
+        {
+            $code = $this->_code;
+        }
+        parent::__construct($message, $variables, $code, $previous);
 
         // 准备一个response对象
         $this->_response = Response::factory();
@@ -69,10 +73,9 @@ abstract class HttpException extends BaseException
     }
 
     /**
-     * Store the Request that triggered this exception.
+     * 保存当前请求对象
      *
      * @param   Request $request Request object that triggered this exception.
-     *
      * @return  HttpException
      */
     public function request(Request $request = null)

@@ -765,7 +765,7 @@ class Request extends Object implements RequestInterface
 
         if ( ! $this->route instanceof Route)
         {
-            $e = HttpException::factory(404, 'Unable to find a route to match the URI: :uri', [
+            $e = HttpException::factory(Message::NOT_FOUND, 'Unable to find a route to match the URI: :uri', [
                 ':uri' => $this->uri,
             ]);
             $e->request($this);
