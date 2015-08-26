@@ -36,13 +36,10 @@ class HttpClient extends ExternalClient
      */
     public function __construct(array $params = [])
     {
-        // Check that PECL HTTP supports requests
         if ( ! http_support(HTTP_SUPPORT_REQUESTS))
         {
             throw new RequestException('Need HTTP request support!');
         }
-
-        // Carry on
         parent::__construct($params);
     }
 
