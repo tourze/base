@@ -12,50 +12,55 @@ use tourze\Http\Request;
 use tourze\Http\Request\Exception\RequestException;
 
 /**
- * [ExternalClient] HTTP driver performs external requests using the
- * php-http extension. To use this driver, ensure the following is completed
- * before executing an external request- ideally in the application bootstrap.
+ * 基于PEAR HTTP扩展实现的外部请求类
  *
- * @example
- *             // In application bootstrap
- *             ExternalClient::$client = 'HttpClient';
- * @package    Base
- * @category   Base
- * @author     YwiSax
+ * @property array options
+ * @package tourze\Http\Request\Client
  */
 class HttpClient extends ExternalClient
 {
 
     /**
-     * Creates a new `RequestClient` object,
-     * allows for dependency injection.
-     *
-     * @param   array $params Params
-     *
-     * @throws  RequestException
+     * {@inheritdoc}
      */
-    public function __construct(array $params = [])
+    public function __construct($args = [])
     {
         if ( ! http_support(HTTP_SUPPORT_REQUESTS))
         {
             throw new RequestException('Need HTTP request support!');
         }
-        parent::__construct($params);
+        parent::__construct($args);
     }
 
     /**
-     * @var     array     curl options
-     * @link    http://www.php.net/manual/function.curl-setopt
+     * @var  array curl配置项
+     * @link http://www.php.net/manual/function.curl-setopt
      */
     protected $_options = [];
 
     /**
-     * Sends the HTTP message [Request] to a remote server and processes
-     * the response.
+     * @param array $options
+     * @return HttpClient
+     */
+    public function setOptions($options)
+    {
+        $this->_options = $options;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->_options;
+    }
+
+    /**
+     * 发送HTTP信息
      *
      * @param  Request  $request response to send
      * @param  Response $response
-     *
      * @return Response
      * @throws RequestException
      * @throws BaseException
@@ -79,7 +84,7 @@ class HttpClient extends ExternalClient
         if ($this->_options)
         {
             // Set custom options
-            $httpRequest->setOptions($this->_options);
+            $httpRequest->setOptions($this->options);
         }
 
         // Set headers

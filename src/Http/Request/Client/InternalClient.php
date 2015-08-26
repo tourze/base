@@ -5,6 +5,7 @@ namespace tourze\Http\Request\Client;
 use ReflectionClass;
 use tourze\Base\Exception\BaseException;
 use tourze\Http\Exception\HttpException;
+use tourze\Http\Message;
 use tourze\Http\Response;
 use tourze\Http\Request;
 use tourze\Http\Request\RequestClient;
@@ -51,7 +52,7 @@ class InternalClient extends RequestClient
         {
             if ( ! class_exists($className))
             {
-                throw HttpException::factory(404, 'The requested URL :uri was not found on this server.', [
+                throw HttpException::factory(Message::NOT_FOUND, 'The requested URL :uri was not found on this server.', [
                     ':uri' => $request->uri
                 ])->request($request);
             }
