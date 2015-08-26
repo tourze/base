@@ -487,13 +487,12 @@ class Route extends Object implements RouteInterface
         }
 
         /**
-         * Recursively compiles a portion of a URI specification by replacing
-         * the specified parameters and any optional parameters that are needed.
+         * 匿名函数，用于循环替换路由参数
          *
-         * @param   string  $portion  Part of the URI specification
-         * @param   boolean $required Whether or not parameters are required (initially)
-         * @return  array Tuple of the compiled portion and whether or not it contained specified parameters
-         * @throws  BaseException
+         * @param  string  $portion  URI定义部分
+         * @param  boolean $required 参数是否必须的
+         * @return array 返回保存参数的数组
+         * @throws BaseException
          */
         $compile = function ($portion, $required) use (&$compile, $defaults, $params)
         {
@@ -504,44 +503,31 @@ class Route extends Object implements RouteInterface
             {
                 if ('<' === $matches[0][0])
                 {
-                    // Parameter, unwrapped
                     $param = $matches[1];
 
                     if (isset($params[$param]))
                     {
-                        // This portion is required when a specified
-                        // parameter does not match the default
                         $required = ($required || ! isset($defaults[$param]) || $params[$param] !== $defaults[$param]);
-
-                        // Add specified parameter to this result
                         return $params[$param];
                     }
 
-                    // Add default parameter to this result
+                    // 直接返回参数默认值
                     if (isset($defaults[$param]))
                     {
                         return $defaults[$param];
                     }
 
-                    // This portion is missing a parameter
                     $missing[] = $param;
                 }
                 else
                 {
-                    // Group, unwrapped
                     $result = $compile($matches[2], false);
 
                     if ($result[1])
                     {
-                        // This portion is required when it contains a group
-                        // that is required
                         $required = true;
-
-                        // Add required groups to this result
                         return $result[0];
                     }
-
-                    // Do not add optional groups to this result
                 }
 
                 return null;
