@@ -18,11 +18,6 @@ class InternalClient extends RequestClient
 {
 
     /**
-     * @var array
-     */
-    protected $_previousEnvironment;
-
-    /**
      * 处理请求
      *
      *     $request->execute();
@@ -40,7 +35,6 @@ class InternalClient extends RequestClient
         $controller = $request->controller;
         $className = $controller . $className;
 
-
         // 目录
         $directory = $request->directory;
         if ($directory)
@@ -49,7 +43,7 @@ class InternalClient extends RequestClient
             $className = $directory . $className;
         }
 
-        // 保存状态
+        // 保存请求状态
         $previous = Request::$current;
         Request::$current = $request;
 
@@ -79,23 +73,18 @@ class InternalClient extends RequestClient
 
             if ( ! $response instanceof Response)
             {
-                // Controller failed to return a Response.
                 throw new BaseException('Controller failed to return a Response');
             }
         }
         catch (HttpException $e)
         {
-            // Store the request context in the Exception
             if (null === $e->request())
             {
                 $e->request($request);
             }
-
-            // Get the response via the Exception
             $response = $e->getResponse();
         }
 
-        // Restore the previous request
         Request::$current = $previous;
 
         return $response;
