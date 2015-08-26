@@ -5,7 +5,6 @@ namespace tourze\Http;
 use tourze\Base\Base;
 use tourze\Base\Helper\Url;
 use tourze\Http\Exception\Http304Exception;
-use tourze\Server\Protocol\Http as ServerHttp;
 use Workerman\Protocols\HttpCache;
 
 /**
@@ -114,7 +113,13 @@ abstract class Http
      */
     public static function header($content, $replace = true, $httpResponseCode = 0)
     {
-        return ServerHttp::header($content, $replace, $httpResponseCode);
+        // 这样的写法其实很难看。。。
+        if (class_exists('tourze\Server\Protocol\Http'))
+        {
+            return call_user_func_array(['tourze\Server\Protocol\Http', 'header'], [$content, $replace, $httpResponseCode]);
+        }
+        header($content, $replace, $httpResponseCode);
+        return true;
     }
 
     /**
@@ -124,7 +129,13 @@ abstract class Http
      */
     public static function headerRemove($name)
     {
-        ServerHttp::headerRemove($name);
+        // 这样的写法其实很难看。。。
+        if (class_exists('tourze\Server\Protocol\Http'))
+        {
+            call_user_func_array(['tourze\Server\Protocol\Http', 'headerRemove'], [$name]);
+            return;
+        }
+        header_remove($name);
     }
 
     /**
@@ -180,7 +191,13 @@ abstract class Http
      */
     public static function setCookie($name, $value = '', $maxAge = 0, $path = '', $domain = '', $secure = false, $httpOnly = false)
     {
-        return ServerHttp::setcookie($name, $value, $maxAge, $path, $domain, $secure, $httpOnly);
+        // 这样的写法其实很难看。。。
+        if (class_exists('tourze\Server\Protocol\Http'))
+        {
+            return call_user_func_array(['tourze\Server\Protocol\Http', 'setcookie'], [$name, $value, $maxAge, $path, $domain, $secure, $httpOnly]);
+        }
+
+        return setcookie($name, $value, $maxAge, $path, $domain, $secure, $httpOnly);
     }
 
     /**
@@ -190,7 +207,13 @@ abstract class Http
      */
     public static function sessionStart()
     {
-        return ServerHttp::sessionStart();
+        // 这样的写法其实很难看。。。
+        if (class_exists('tourze\Server\Protocol\Http'))
+        {
+            return call_user_func_array(['tourze\Server\Protocol\Http', 'sessionStart'], []);
+        }
+
+        return session_start();
     }
 
     /**
@@ -200,18 +223,32 @@ abstract class Http
      */
     public static function sessionWriteClose()
     {
-        return ServerHttp::sessionWriteClose();
+        // 这样的写法其实很难看。。。
+        if (class_exists('tourze\Server\Protocol\Http'))
+        {
+            return call_user_func_array(['tourze\Server\Protocol\Http', 'sessionWriteClose'], []);
+        }
+
+        session_write_close();
+        return true;
     }
 
     /**
      * 代替php的exit和die
      *
      * @param string $msg
-     * @throws \Exception
      */
     public static function end($msg = '')
     {
-        ServerHttp::end($msg);
+        // 这样的写法其实很难看。。。
+        if (class_exists('tourze\Server\Protocol\Http'))
+        {
+            call_user_func_array(['tourze\Server\Protocol\Http', 'end'], [$msg]);
+            return;
+        }
+
+        echo $msg;
+        exit;
     }
 
     /**
