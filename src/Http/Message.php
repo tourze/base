@@ -29,10 +29,6 @@ class Message extends Object implements MessageInterface
      */
     const SWITCHING_PROTOCOLS = 101;
 
-    //.........................................................................
-    //. Success/Status (2xx)
-    //.........................................................................
-
     /**
      * @var int
      */
@@ -62,10 +58,6 @@ class Message extends Object implements MessageInterface
      */
     const PARTIAL_CONTENT = 206;
 
-    //.........................................................................
-    //. Redirection (3xx)
-    //.........................................................................
-
     /**
      * @var int
      */
@@ -94,10 +86,6 @@ class Message extends Object implements MessageInterface
      * @var int
      */
     const TEMPORARY_REDIRECT = 307;
-
-    //.........................................................................
-    //. Client Errors (4xx)
-    //.........................................................................
 
     /**
      * @var int
@@ -171,10 +159,6 @@ class Message extends Object implements MessageInterface
      * @var int
      */
     const EXPECTATION_FAILED = 417;
-
-    //.........................................................................
-    //. Server Errors (5xx)
-    //.........................................................................
 
     /**
      * @var int
@@ -342,18 +326,7 @@ class Message extends Object implements MessageInterface
     }
 
     /**
-     * Retrieves a message header value by the given case-insensitive name.
-     *
-     * This method returns an array of all the header values of the given
-     * case-insensitive header name.
-     *
-     * If the header does not appear in the message, this method MUST return an
-     * empty array.
-     *
-     * @param string $name Case-insensitive header field name.
-     * @return string[] An array of string values as provided for the given
-     *                     header. If the header does not appear in the message, this method MUST
-     *                     return an empty array.
+     * {@inheritdoc}
      */
     public function getHeader($name)
     {
@@ -361,23 +334,7 @@ class Message extends Object implements MessageInterface
     }
 
     /**
-     * Retrieves a comma-separated string of the values for a single header.
-     *
-     * This method returns all of the header values of the given
-     * case-insensitive header name as a string concatenated together using
-     * a comma.
-     *
-     * NOTE: Not all header values may be appropriately represented using
-     * comma concatenation. For such headers, use getHeader() instead
-     * and supply your own delimiter when concatenating.
-     *
-     * If the header does not appear in the message, this method MUST return
-     * an empty string.
-     *
-     * @param string $name Case-insensitive header field name.
-     * @return string A string of values as provided for the given header
-     *                     concatenated together using a comma. If the header does not appear in
-     *                     the message, this method MUST return an empty string.
+     * {@inheritdoc}
      */
     public function getHeaderLine($name)
     {
@@ -423,19 +380,7 @@ class Message extends Object implements MessageInterface
     }
 
     /**
-     * Return an instance with the provided value replacing the specified header.
-     *
-     * While header names are case-insensitive, the casing of the header will
-     * be preserved by this function, and returned from getHeaders().
-     *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * new and/or updated header and value.
-     *
-     * @param string          $name  Case-insensitive header field name.
-     * @param string|string[] $value Header value(s).
-     * @return self
-     * @throws \InvalidArgumentException for invalid header names or values.
+     * {@inheritdoc}
      */
     public function withHeader($name, $value)
     {
@@ -449,20 +394,7 @@ class Message extends Object implements MessageInterface
     }
 
     /**
-     * Return an instance with the specified header appended with the given value.
-     *
-     * Existing values for the specified header will be maintained. The new
-     * value(s) will be appended to the existing list. If the header did not
-     * exist previously, it will be added.
-     *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * new header and/or value.
-     *
-     * @param string          $name  Case-insensitive header field name to add.
-     * @param string|string[] $value Header value(s).
-     * @return self
-     * @throws \InvalidArgumentException for invalid header names or values.
+     * {@inheritdoc}
      */
     public function withAddedHeader($name, $value)
     {
@@ -488,16 +420,7 @@ class Message extends Object implements MessageInterface
     }
 
     /**
-     * Return an instance without the specified header.
-     *
-     * Header resolution MUST be done without case-sensitivity.
-     *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that removes
-     * the named header.
-     *
-     * @param string $name Case-insensitive header field name to remove.
-     * @return self
+     * {@inheritdoc}
      */
     public function withoutHeader($name)
     {
@@ -532,27 +455,12 @@ class Message extends Object implements MessageInterface
     }
 
     /**
-     * Return an instance with the specified message body.
-     *
-     * The body MUST be a StreamInterface object.
-     *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that has the
-     * new body stream.
-     *
-     * @param StreamInterface $body Body.
-     * @return self
-     * @throws \InvalidArgumentException When the body is not valid.
+     * {@inheritdoc}
      */
     public function withBody(StreamInterface $body)
     {
         return new self([
             'body' => $body
         ]);
-    }
-
-    public function render()
-    {
-
     }
 }
