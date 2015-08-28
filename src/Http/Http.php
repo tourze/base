@@ -178,13 +178,13 @@ abstract class Http
     /**
      * 写cookie，注意不要直接使用[setcookie]函数
      *
-     * @param string     $name
-     * @param string     $value
-     * @param int        $maxAge
-     * @param string     $path
-     * @param string     $domain
-     * @param bool|false $secure
-     * @param bool|false $httpOnly
+     * @param string $name
+     * @param string $value
+     * @param int    $maxAge
+     * @param string $path
+     * @param string $domain
+     * @param bool   $secure
+     * @param bool   $httpOnly
      * @return bool
      */
     public static function setCookie($name, $value = '', $maxAge = 0, $path = '', $domain = '', $secure = false, $httpOnly = false)
