@@ -2,6 +2,7 @@
 
 namespace tourze\Base\Helper;
 
+use finfo;
 use tourze\Base\Config;
 
 /**
@@ -89,7 +90,7 @@ class Mime
 
         if (class_exists('finfo'))
         {
-            $file_info = new \finfo(FILEINFO_MIME_TYPE);
+            $file_info = new finfo(FILEINFO_MIME_TYPE);
             if ( ! empty($content))
             {
                 $mime = $file_info->buffer($content);

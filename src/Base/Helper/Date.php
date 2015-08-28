@@ -24,6 +24,7 @@ class Date
 
     // Date::months()中可用的格式
     const MONTHS_LONG  = '%B';
+
     const MONTHS_SHORT = '%b';
 
     const SPAN_YEARS = 'years';
