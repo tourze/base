@@ -10,9 +10,7 @@ use Workerman\Protocols\HttpCache;
 /**
  * 包含了一些http操作相关的基础信息和助手方法
  *
- * @package    Base
- * @category   HTTP
- * @author     YwiSax
+ * @package tourze\Http
  */
 abstract class Http
 {
