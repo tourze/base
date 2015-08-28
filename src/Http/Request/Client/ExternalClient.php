@@ -5,73 +5,19 @@ namespace tourze\Http\Request\Client;
 use Exception;
 use tourze\Base\Helper\Arr;
 use tourze\Base\Base;
+use tourze\Http\Http;
 use tourze\Http\Response;
 use tourze\Http\Request;
 use tourze\Http\Request\Exception\RequestException;
 use tourze\Http\Request\RequestClient;
 
 /**
- * [Request_Client_External] provides a wrapper for all external request
- * processing. This class should be extended by all drivers handling external
- * requests.
- * Supported out of the box:
- *  - Curl (default)
- *  - PECL HTTP
- *  - Streams
- * To select a specific external driver to use as the default driver, set the
- * following property within the Application bootstrap. Alternatively, the
- * client can be injected into the request object.
+ * 获取指定地址的外部请求
  *
- * @example
- *             // In application bootstrap
- *             Request_Client_External::$client = 'Request_Client_Stream';
- *             // Add client to request
- *             $request = Request::factory('http://some.host.tld/foo/bar')
- *             ->client(Request_Client_External::factory('Request_Client_HTTP));
- * @package    Base
- * @category   Base
- * @author     YwiSax
+ * @package tourze\Http\Request\Client
  */
-abstract class ExternalClient extends RequestClient
+class ExternalClient extends RequestClient
 {
-
-    /**
-     * Use:
-     *  - CurlClient (default)
-     *  - HttpClient
-     *
-     * @var     string    defines the external client to use by default
-     */
-    public static $client = 'tourze\Http\Request\Client\CurlClient';
-
-    /**
-     * Factory method to create a new ExternalClient object based on
-     * the client name passed, or defaulting to ExternalClient::$client
-     * by default.
-     * ExternalClient::$client can be set in the application bootstrap.
-     *
-     * @param   array  $params parameters to pass to the client
-     * @param   string $client external client to use
-     *
-     * @return  ExternalClient
-     * @throws  RequestException
-     */
-    public static function factory(array $params = [], $client = null)
-    {
-        if (null === $client)
-        {
-            $client = ExternalClient::$client;
-        }
-
-        $client = new $client($params);
-
-        if ( ! $client instanceof ExternalClient)
-        {
-            throw new RequestException('Selected client is not a ExternalClient object.');
-        }
-
-        return $client;
-    }
 
     /**
      * @var     array     curl options
@@ -92,19 +38,17 @@ abstract class ExternalClient extends RequestClient
      * no headers are sent.
      *     $request->execute();
      *
-     * @param   Request  $request  A request object
-     * @param   Response $response A response object
-     *
-     * @return  Response
-     * @throws  Exception
+     * @param  Request  $request  A request object
+     * @param  Response $response A response object
+     * @return Response
+     * @throws Exception
      */
     public function executeRequest(Request $request, Response $response)
     {
-        // Store the current active request and replace current with new request
         $previous = Request::$current;
         Request::$current = $request;
 
-        // Resolve the POST fields
+        // 如果post数据了
         if ($post = $request->post())
         {
             $request->body = http_build_query($post, null, '&');
@@ -165,14 +109,112 @@ abstract class ExternalClient extends RequestClient
     }
 
     /**
-     * Sends the HTTP message [Request] to a remote server and processes
-     * the response.
+     * 发送HTTP请求，并处理返回数据
      *
-     * @param   Request  $request  Request to send
-     * @param   Response $response Response to send
-     *
+     * @param   Request  $request response to send
+     * @param   Response $response
      * @return  Response
+     * @throws  RequestException
      */
-    abstract protected function _sendMessage(Request $request, Response $response);
+    public function _sendMessage(Request $request, Response $response)
+    {
+        $options = [];
+        // Set the request method
+        $options = $this->_setCurlRequestMethod($request, $options);
+
+        // Set the request body. This is perfectly legal in CURL even
+        // if using a request other than POST. PUT does support this method
+        // and DOES NOT require writing data to disk before putting it, if
+        // reading the PHP docs you may have got that impression. SdF
+        $options[CURLOPT_POSTFIELDS] = $request->body;
+
+        // Process headers
+        if ($headers = $request->headers())
+        {
+            $httpHeaders = [];
+            foreach ($headers as $key => $value)
+            {
+                if (is_array($value))
+                {
+                    $value = implode(', ', $value);
+                }
+                $httpHeaders[] = $key . ': ' . $value;
+            }
+            $options[CURLOPT_HTTPHEADER] = $httpHeaders;
+        }
+
+        // Process cookies
+        if ($cookies = $request->cookie())
+        {
+            $options[CURLOPT_COOKIE] = http_build_query($cookies, null, '; ');
+        }
+
+        $this->_options[CURLOPT_RETURNTRANSFER] = true;
+        $this->_options[CURLOPT_HEADER] = false;
+
+        // Apply any additional options set to
+        $options += $this->_options;
+        $uri = $request->uri;
+        if ($query = $request->query())
+        {
+            $uri .= '?' . http_build_query($query, null, '&');
+        }
+
+        // Open a new remote connection
+        $curl = curl_init($uri);
+        // Set connection options
+        if ( ! curl_setopt_array($curl, $options))
+        {
+            throw new RequestException('Failed to set CURL options, check CURL documentation: :url', [
+                ':url' => 'http://php.net/curl_setopt_array'
+            ]);
+        }
+
+        // Get the response body
+        $body = curl_exec($curl);
+        // Get the response information
+        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        if (false === $body)
+        {
+            $error = curl_error($curl);
+        }
+        // Close the connection
+        curl_close($curl);
+
+        if (isset($error))
+        {
+            throw new RequestException('Error fetching remote :url [ status :code ] :error', [
+                ':url'   => $request->url(),
+                ':code'  => $code,
+                ':error' => $error
+            ]);
+        }
+        $response->status = $code;
+        $response->body = $body;
+
+        return $response;
+    }
+
+    /**
+     * 设置CURL请求选项
+     *
+     * @param Request $request
+     * @param array   $options
+     * @return array
+     */
+    public function _setCurlRequestMethod(Request $request, array $options)
+    {
+        switch ($request->method)
+        {
+            case Http::POST:
+                $options[CURLOPT_POST] = true;
+                break;
+            default:
+                $options[CURLOPT_CUSTOMREQUEST] = $request->method;
+                break;
+        }
+
+        return $options;
+    }
 
 }

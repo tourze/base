@@ -578,7 +578,7 @@ class Request extends Object implements RequestInterface
             }
 
             $this->external = true;
-            $this->client = ExternalClient::factory($clientParams);
+            $this->client = new ExternalClient($clientParams);
         }
         else
         {
@@ -972,21 +972,17 @@ class Request extends Object implements RequestInterface
     {
         if (is_array($key))
         {
-            // Act as a setter, replace all fields
             $this->_post = $key;
             return $this;
         }
         if (null === $key)
         {
-            // Act as a getter, all fields
             return $this->_post;
         }
         elseif (null === $value)
         {
-            // Act as a getter, single field
             return Arr::path($this->_post, $key);
         }
-        // Act as a setter, single field
         $this->_post[$key] = $value;
 
         return $this;
