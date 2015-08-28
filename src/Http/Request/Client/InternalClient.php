@@ -87,7 +87,6 @@ class InternalClient extends RequestClient
         }
 
         Request::$current = $previous;
-
         return $response;
     }
 

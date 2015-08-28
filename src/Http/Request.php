@@ -285,7 +285,7 @@ class Request extends Object implements RequestInterface
     }
 
     /**
-     * @var  string  method: GET, POST, PUT, DELETE, HEAD, etc
+     * @var string 请求方法，GET、POST或其他
      */
     protected $_method = 'GET';
 
