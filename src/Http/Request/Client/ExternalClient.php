@@ -5,7 +5,6 @@ namespace tourze\Http\Request\Client;
 use Exception;
 use Requests;
 use tourze\Base\Base;
-use tourze\Http\Http;
 use tourze\Http\Response;
 use tourze\Http\Request;
 use tourze\Http\Request\Exception\RequestException;
@@ -75,19 +74,8 @@ class ExternalClient extends RequestClient
                 $url .= '?' . http_build_query($query, null, '&');
             }
 
-            switch ($request->method)
-            {
-                case Http::GET:
-                    $result = Requests::get($url, $sendHeaders);
-                    break;
-                case Http::POST:
-                    $result = Requests::post($url, $sendHeaders, $request->body);
-                    break;
-                default:
-                    // 默认情况
-                    $result = Requests::request($url, $sendHeaders, $request->body, $request->method);
-            }
-
+            // 执行请求
+            $result = Requests::request($url, $sendHeaders, $request->body, $request->method);
             if ( ! $result->success)
             {
                 throw new RequestException('Error fetching remote :url [ status :code ]', [
@@ -96,6 +84,10 @@ class ExternalClient extends RequestClient
                 ]);
             }
 
+            foreach ($result->headers as $k => $v)
+            {
+                $response->headers($k, $v);
+            }
             $response->status = $result->status_code;
             $response->body = $result->body;
         }

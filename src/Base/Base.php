@@ -24,21 +24,6 @@ class Base extends Object
     const VERSION = 'beta';
 
     /**
-     * @const  string  文件缓存的格式
-     */
-    const FILE_CACHE = ":header \n\n// :name\n\n:data\n";
-
-    /**
-     * @var string
-     */
-    public static $profileEntry = '_debug';
-
-    /**
-     * @var bool|mixed  调试密码
-     */
-    public static $profilePassword = false;
-
-    /**
      * @var string 时区
      */
     public static $timezone = 'PRC';
