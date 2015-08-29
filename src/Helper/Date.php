@@ -264,7 +264,6 @@ class Date
             $local = time();
         }
 
-        // Calculate timespan (seconds)
         $span = abs($remote - $local);
 
         if (isset($output['years']))

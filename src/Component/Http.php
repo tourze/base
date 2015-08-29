@@ -35,7 +35,7 @@ class Http
     }
 
     /**
-     * 写cookie，注意不要直接使用[setcookie]函数
+     * 写cookie
      *
      * @param string $name
      * @param string $value
