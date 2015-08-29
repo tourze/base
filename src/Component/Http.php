@@ -50,4 +50,60 @@ class Http
     {
         return setcookie($name, $value, $maxAge, $path, $domain, $secure, $httpOnly);
     }
+
+    /**
+     * 开始会话
+     *
+     * @return bool
+     */
+    public function sessionStart()
+    {
+        return session_start();
+    }
+
+    /**
+     * 结束会话
+     */
+    public function sessionWriteClose()
+    {
+        session_write_close();
+    }
+
+    /**
+     * 输出头部信息
+     *
+     * @param string    $string
+     * @param bool|true $replace
+     * @param null      $httpResponseCode
+     */
+    public function header($string, $replace = true, $httpResponseCode = null)
+    {
+        header($string, $replace, $httpResponseCode);
+    }
+
+    /**
+     * @param string $name
+     */
+    public function headerRemove($name = null)
+    {
+        header_remove($name);
+    }
+
+    /**
+     * @return array
+     */
+    public function headersList()
+    {
+        return headers_list();
+    }
+
+    /**
+     * @param string $file
+     * @param string $line
+     * @return bool
+     */
+    public function headersSent(&$file = null, &$line = null)
+    {
+       return headers_sent($file, $line);
+    }
 }
