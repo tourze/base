@@ -62,6 +62,28 @@ class Http
     }
 
     /**
+     * 返回会话ID
+     *
+     * @param mixed $id
+     * @return string
+     */
+    public function sessionID($id = null)
+    {
+        return session_id($id);
+    }
+
+    /**
+     * 重新返回一个会话ID
+     *
+     * @param bool|false $deleteOldSession
+     * @return bool
+     */
+    public function sessionRegenerateID($deleteOldSession = false)
+    {
+        return session_regenerate_id($deleteOldSession);
+    }
+
+    /**
      * 结束会话
      */
     public function sessionWriteClose()
