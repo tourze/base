@@ -10,9 +10,7 @@
     }
   ],
   "require": {
-    "psr/http-message": "^1.0",
     "filp/whoops": "^1.1",
-    "workerman/workerman": "^3.1",
     "monolog/monolog": "~1.13",
     "doctrine/inflector": "~1.0",
     "hassankhan/config": "0.8.*",
@@ -21,15 +19,14 @@
     "respect/validation": "^0.9.3",
     "egulias/email-validator": "^1.2",
     "symfony/filesystem": "^2.7",
-    "symfony/var-dumper": "^2.7",
-    "rmccue/requests": "^1.6"
+    "symfony/var-dumper": "^2.7"
   },
   "require-dev": {
     "phpunit/phpunit": "^4.7"
   },
   "autoload": {
     "psr-4": {
-      "tourze\\": "src/"
+      "tourze\\Base\\": "src/"
     },
     "files": [
       "functions.php",
