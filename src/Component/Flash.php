@@ -11,7 +11,7 @@ use tourze\Base\Component;
 /**
  * Flash组件
  *
- * @package tourze\Session
+ * @package tourze\Base\Component
  */
 class Flash extends Component implements ArrayAccess, IteratorAggregate, Countable
 {

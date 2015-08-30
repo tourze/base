@@ -7,7 +7,7 @@ use tourze\Base\Component;
 /**
  * 日志记录组件
  *
- * @package tourze\Base
+ * @package tourze\Base\Component
  */
 class Log extends Component
 {

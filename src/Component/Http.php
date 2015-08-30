@@ -10,7 +10,7 @@ use tourze\Base\Helper\Url;
 /**
  * 基础的HTTP组件
  *
- * @package tourze\Base
+ * @package tourze\Base\Component
  */
 class Http extends Component
 {
