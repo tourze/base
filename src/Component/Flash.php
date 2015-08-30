@@ -200,6 +200,4 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     {
         return count($this->getMessages());
     }
-
-
 }
