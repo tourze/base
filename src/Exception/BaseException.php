@@ -3,7 +3,7 @@
 namespace tourze\Base\Exception;
 
 use Exception;
-use tourze\Base\Log;
+use tourze\Base\Base;
 
 /**
  * 最基础的异常类，使用[I18n]来做异常信息的翻译
@@ -68,8 +68,11 @@ class BaseException extends Exception implements ExceptionInterface
      */
     public static function log(Exception $e)
     {
-        $error = self::text($e);
-        Log::error($error);
+        Base::getLog()->error($e->getMessage(), [
+            'code' => $e->getCode(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ]);
     }
 
     /**

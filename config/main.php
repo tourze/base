@@ -10,6 +10,13 @@ return [
             'call' => [
             ],
         ],
+        'log' => [
+            'class' => 'tourze\Base\Component\Log',
+            'params' => [
+            ],
+            'call' => [
+            ],
+        ],
     ],
 
 ];

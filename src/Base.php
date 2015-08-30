@@ -316,4 +316,15 @@ class Base extends Object
     {
         return self::get('http');
     }
+
+    /**
+     * 获取日志组件
+     *
+     * @return \tourze\Base\Component\Log
+     * @throws \tourze\Base\Exception\ComponentNotFoundException
+     */
+    public static function getLog()
+    {
+        return self::get('log');
+    }
 }
