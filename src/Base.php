@@ -41,11 +41,6 @@ class Base extends Object
     public static $isWindows = false;
 
     /**
-     * @var  boolean  魔法引号是否开启
-     */
-    public static $magicQuotes = false;
-
-    /**
      * @var  boolean  是否启用了PHP安全模式
      */
     public static $safeMode = false;
@@ -152,9 +147,6 @@ class Base extends Object
         {
             mb_internal_encoding(self::$charset);
         }
-
-        // 小于5.4时需要判断这个
-        self::$magicQuotes = (version_compare(PHP_VERSION, '5.4') < 0 && get_magic_quotes_gpc());
 
         $_GET = Security::sanitize($_GET);
         $_POST = Security::sanitize($_POST);

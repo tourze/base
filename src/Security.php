@@ -25,10 +25,7 @@ class Security
         }
         elseif (is_string($value))
         {
-            if (true === Base::$magicQuotes)
-            {
-                $value = stripslashes($value);
-            }
+            $value = stripslashes($value);
             if (false !== strpos($value, "\r"))
             {
                 $value = str_replace([
