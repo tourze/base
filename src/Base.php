@@ -338,4 +338,15 @@ class Base extends Object
     {
         return self::get('session');
     }
+
+    /**
+     * 获取日志组件
+     *
+     * @return \tourze\Base\Component\Flash
+     * @throws \tourze\Base\Exception\ComponentNotFoundException
+     */
+    public static function getFlash()
+    {
+        return self::get('flash');
+    }
 }

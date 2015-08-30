@@ -24,6 +24,13 @@ return [
             'call' => [
             ],
         ],
+        'flash' => [
+            'class' => 'tourze\Base\Component\Flash',
+            'params' => [
+            ],
+            'call' => [
+            ],
+        ],
     ],
 
 ];
