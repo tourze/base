@@ -257,9 +257,14 @@ class Base extends Object
     {
         if ( ! isset(self::$components[$name]))
         {
-            throw new ComponentNotFoundException('The requested component [:component] not found.', [
-                ':component' => $name,
-            ]);
+            // 检查配置表是否有记录
+            if ( ! $config = Config::load('main')->get('component.' . $name))
+            {
+                throw new ComponentNotFoundException('The requested component [:component] not found.', [
+                    ':component' => $name,
+                ]);
+            }
+            self::set($name, $config);
         }
 
         return self::$components[$name];
@@ -273,18 +278,12 @@ class Base extends Object
      * @throws \tourze\Base\Exception\ComponentClassNotFoundException
      * @throws \tourze\Base\Exception\ComponentNotFoundException
      */
-    public static function set($name, array $config = null)
+    public static function set($name, array $config)
     {
-        // 如果没config，那么尝试从配置文件中读取
-        if ( ! $config)
-        {
-            $config = Config::load('main')->get('component.' . $name);
-        }
-
         // 还是没有，那么抛出异常
         if ( ! $config)
         {
-            throw new ComponentNotFoundException('The requested component [:component] not found.', [
+            throw new ComponentNotFoundException('The requested component [:component] missing config.', [
                 ':component' => $name,
             ]);
         }
