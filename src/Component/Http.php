@@ -3,6 +3,7 @@
 namespace tourze\Base\Component;
 
 use tourze\Base\Base;
+use tourze\Base\Component;
 use tourze\Base\Helper\Arr;
 use tourze\Base\Helper\Url;
 
@@ -11,7 +12,7 @@ use tourze\Base\Helper\Url;
  *
  * @package tourze\Base
  */
-class Http
+class Http extends Component
 {
 
     // HTTP方法列表

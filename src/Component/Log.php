@@ -2,12 +2,14 @@
 
 namespace tourze\Base\Component;
 
+use tourze\Base\Component;
+
 /**
  * 日志记录组件
  *
  * @package tourze\Base
  */
-class Log
+class Log extends Component
 {
 
     /**
