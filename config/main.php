@@ -17,6 +17,13 @@ return [
             'call' => [
             ],
         ],
+        'session' => [
+            'class' => 'tourze\Base\Component\Session',
+            'params' => [
+            ],
+            'call' => [
+            ],
+        ],
     ],
 
 ];

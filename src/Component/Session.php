@@ -2,6 +2,7 @@
 
 namespace tourze\Base\Component;
 
+use tourze\Base\Base;
 use tourze\Base\Component;
 use tourze\Base\Helper\Arr;
 
@@ -12,6 +13,15 @@ use tourze\Base\Helper\Arr;
  */
 class Session extends Component
 {
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        Base::getHttp()->sessionStart();
+    }
 
     /**
      * 读取指定会话的值

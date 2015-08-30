@@ -327,4 +327,15 @@ class Base extends Object
     {
         return self::get('log');
     }
+
+    /**
+     * 获取日志组件
+     *
+     * @return \tourze\Base\Component\Session
+     * @throws \tourze\Base\Exception\ComponentNotFoundException
+     */
+    public static function getSession()
+    {
+        return self::get('session');
+    }
 }
