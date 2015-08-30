@@ -47,6 +47,16 @@ class Session extends Component
     }
 
     /**
+     * 移除指定会话key
+     *
+     * @param string $name
+     */
+    public function remove($name)
+    {
+        unset($_SESSION[$name]);
+    }
+
+    /**
      * 清空会话数据
      *
      * @return bool
