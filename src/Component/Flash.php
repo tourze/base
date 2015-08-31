@@ -18,6 +18,11 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
 {
 
     /**
+     * @inheritdoc
+     */
+    public $persistence = false;
+
+    /**
      * @var array
      */
     public $settings = [
