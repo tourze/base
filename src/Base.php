@@ -138,7 +138,14 @@ class Base extends Object
         $_POST = Security::sanitize($_POST);
         $_COOKIE = Security::sanitize($_COOKIE);
 
-        // 处理组件实例，如果为不持久化的话，那就直接剔除
+        self::cleanComponents();
+    }
+
+    /**
+     * 清理组件实例，将非持久化的，可删除的组件实例删除
+     */
+    public static function cleanComponents()
+    {
         foreach (self::$components as $name => $component)
         {
             if ( ! $component->persistence)
