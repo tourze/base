@@ -3,6 +3,7 @@
 namespace tourze\Base\Component;
 
 use ArrayAccess;
+use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use tourze\Base\Base;
@@ -27,9 +28,9 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
      * @var array
      */
     public $messages = [
-        'prev' => [], //flash messages from prev request (loaded when middleware called)
-        'next' => [], //flash messages for next request
-        'now'  => [] //flash messages for current request
+        'prev' => [],
+        'next' => [],
+        'now'  => [],
     ];
 
     /**
@@ -144,7 +145,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * Array Access: Offset Exists
+     * 检查指定key是否存在
      *
      * @param mixed $offset
      * @return bool
@@ -152,12 +153,11 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     public function offsetExists($offset)
     {
         $messages = $this->getMessages();
-
         return isset($messages[$offset]);
     }
 
     /**
-     * Array Access: Offset Get
+     * 读取指定key
      *
      * @param mixed $offset
      * @return mixed|null
@@ -165,12 +165,11 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     public function offsetGet($offset)
     {
         $messages = $this->getMessages();
-
         return isset($messages[$offset]) ? $messages[$offset] : null;
     }
 
     /**
-     * Array Access: Offset Set
+     * 设置指定key
      *
      * @param mixed $offset
      * @param mixed $value
@@ -181,7 +180,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * Array Access: Offset Unset
+     * 删除指定key
      *
      * @param mixed $offset
      */
@@ -191,19 +190,18 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * Iterator Aggregate: Get Iterator
+     * 获取一个迭代器
      *
-     * @return \ArrayIterator
+     * @return ArrayIterator
      */
     public function getIterator()
     {
         $messages = $this->getMessages();
-
-        return new \ArrayIterator($messages);
+        return new ArrayIterator($messages);
     }
 
     /**
-     * Countable: Count
+     * 返回消息总条数
      */
     public function count()
     {
