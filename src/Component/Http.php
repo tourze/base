@@ -419,7 +419,12 @@ class Http extends Component
      */
     public function sessionStart()
     {
-        return session_start();
+        if (session_status() == PHP_SESSION_NONE)
+        {
+            return session_start();
+        }
+
+        return false;
     }
 
     /**

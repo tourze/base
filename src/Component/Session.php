@@ -20,6 +20,14 @@ class Session extends Component
     public function init()
     {
         parent::init();
+        $this->start();
+    }
+
+    /**
+     * 开始会话
+     */
+    public function start()
+    {
         Base::getHttp()->sessionStart();
     }
 
