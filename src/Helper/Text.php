@@ -165,7 +165,7 @@ class Text
      * @param string $pool
      * @return string
      */
-    public static function random($length = 20, $pool = '')
+    public static function random($length = 20, $pool = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')
     {
         $factory = new RandomFactory;
         $generator = $factory->getGenerator(new RandomStrength(RandomStrength::MEDIUM));
