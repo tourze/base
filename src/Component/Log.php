@@ -35,8 +35,9 @@ class Log extends Component
     public function debug($log, array $context = [])
     {
         $this->logs['debug'][] = [
-            'log'     => $log,
-            'context' => $context,
+            'log'       => $log,
+            'context'   => $context,
+            'timestamp' => time(),
         ];
     }
 
@@ -49,8 +50,9 @@ class Log extends Component
     public function info($log, array $context = [])
     {
         $this->logs['info'][] = [
-            'log'     => $log,
-            'context' => $context,
+            'log'       => $log,
+            'context'   => $context,
+            'timestamp' => time(),
         ];
     }
 
@@ -63,8 +65,9 @@ class Log extends Component
     public function notice($log, array $context = [])
     {
         $this->logs['notice'][] = [
-            'log'     => $log,
-            'context' => $context,
+            'log'       => $log,
+            'context'   => $context,
+            'timestamp' => time(),
         ];
     }
 
@@ -77,8 +80,9 @@ class Log extends Component
     public function warning($log, array $context = [])
     {
         $this->logs['warning'][] = [
-            'log'     => $log,
-            'context' => $context,
+            'log'       => $log,
+            'context'   => $context,
+            'timestamp' => time(),
         ];
     }
 
@@ -105,8 +109,9 @@ class Log extends Component
     public function critical($log, array $context = [])
     {
         $this->logs['critical'][] = [
-            'log'     => $log,
-            'context' => $context,
+            'log'       => $log,
+            'context'   => $context,
+            'timestamp' => time(),
         ];
     }
 
@@ -119,8 +124,9 @@ class Log extends Component
     public function alert($log, array $context = [])
     {
         $this->logs['alert'][] = [
-            'log'     => $log,
-            'context' => $context,
+            'log'       => $log,
+            'context'   => $context,
+            'timestamp' => time(),
         ];
     }
 
@@ -133,8 +139,9 @@ class Log extends Component
     public function emergency($log, array $context = [])
     {
         $this->logs['emergency'][] = [
-            'log'     => $log,
-            'context' => $context,
+            'log'       => $log,
+            'context'   => $context,
+            'timestamp' => time(),
         ];
     }
 }
