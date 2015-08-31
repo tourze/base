@@ -307,6 +307,18 @@ class Base extends Object
     }
 
     /**
+     * 删除指定的组件
+     *
+     * @param string $name
+     * @return \tourze\Base\Component
+     */
+    public static function reload($name)
+    {
+        unset(self::$components[$name]);
+        return self::get($name);
+    }
+
+    /**
      * 获取HTTP组件
      *
      * @return \tourze\Base\Component\Http
