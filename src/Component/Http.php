@@ -303,6 +303,8 @@ class Http extends Component
      */
     public static function requestHeaders()
     {
+        Base::getLog()->info(__METHOD__ . ' parse requested headers');
+
         // apache服务器
         if (function_exists('apache_request_headers'))
         {
@@ -350,6 +352,8 @@ class Http extends Component
      */
     public function end($msg = '')
     {
+        Base::getLog()->notice(__METHOD__ . ' exit process');
+
         echo $msg;
         exit;
     }
@@ -361,6 +365,9 @@ class Http extends Component
      */
     public function code($code = null)
     {
+        Base::getLog()->info(__METHOD__ . ' response status code', [
+            'code' => $code,
+        ]);
         $text = Arr::get(self::$text, $code, false);
         if ( ! $text)
         {
@@ -378,6 +385,11 @@ class Http extends Component
      */
     public function redirect($uri = '', $code = 302)
     {
+        Base::getLog()->info(__METHOD__ . ' redirect page', [
+            'url'  => $uri,
+            'code' => $code,
+        ]);
+
         if (false === strpos($uri, '://'))
         {
             $uri = Url::site($uri, true, ! empty(Base::$indexFile));
@@ -409,6 +421,15 @@ class Http extends Component
      */
     public function setCookie($name, $value = '', $maxAge = 0, $path = '', $domain = '', $secure = false, $httpOnly = false)
     {
+        Base::getLog()->info(__METHOD__ . ' set cookie', [
+            'name'      => $name,
+            'value'     => $value,
+            'expire'    => $maxAge,
+            'path'      => $path,
+            'domain'    => $domain,
+            'secure'    => $secure,
+            'http_only' => $httpOnly
+        ]);
         return setcookie($name, $value, $maxAge, $path, $domain, $secure, $httpOnly);
     }
 
@@ -419,11 +440,11 @@ class Http extends Component
      */
     public function sessionStart()
     {
+        Base::getLog()->info(__METHOD__ . ' call to session start');
         if (session_status() == PHP_SESSION_NONE)
         {
             return session_start();
         }
-
         return false;
     }
 
@@ -435,6 +456,9 @@ class Http extends Component
      */
     public function sessionID($id = null)
     {
+        Base::getLog()->info(__METHOD__ . ' get session id', [
+            'id' => $id,
+        ]);
         return session_id($id);
     }
 
@@ -446,6 +470,7 @@ class Http extends Component
      */
     public function sessionRegenerateID($deleteOldSession = false)
     {
+        Base::getLog()->info(__METHOD__ . ' regenerate session id');
         return session_regenerate_id($deleteOldSession);
     }
 
@@ -454,6 +479,7 @@ class Http extends Component
      */
     public function sessionWriteClose()
     {
+        Base::getLog()->info(__METHOD__ . ' call session write close');
         session_write_close();
     }
 
@@ -462,10 +488,15 @@ class Http extends Component
      *
      * @param string    $string
      * @param bool|true $replace
-     * @param null      $httpResponseCode
+     * @param null|int  $httpResponseCode
      */
     public function header($string, $replace = true, $httpResponseCode = null)
     {
+        Base::getLog()->info(__METHOD__ . ' response header', [
+            'header'  => $string,
+            'replace' => $replace,
+            'code'    => $httpResponseCode
+        ]);
         header($string, $replace, $httpResponseCode);
     }
 
@@ -474,6 +505,9 @@ class Http extends Component
      */
     public function headerRemove($name = null)
     {
+        Base::getLog()->info(__METHOD__ . ' remove header', [
+            'name'  => $name,
+        ]);
         header_remove($name);
     }
 
@@ -482,6 +516,7 @@ class Http extends Component
      */
     public function headersList()
     {
+        Base::getLog()->info(__METHOD__ . ' fetch header list');
         return headers_list();
     }
 
@@ -492,6 +527,10 @@ class Http extends Component
      */
     public function headersSent(&$file = null, &$line = null)
     {
+        Base::getLog()->info(__METHOD__ . ' fetch sent header list', [
+            'file' => $file,
+            'line' => $line,
+        ]);
         return headers_sent($file, $line);
     }
 }

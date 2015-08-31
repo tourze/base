@@ -36,16 +36,6 @@ class Base extends Object
     public static $locale = 'en_US.utf-8';
 
     /**
-     * @var  boolean  是否运行在windows系统下
-     */
-    public static $isWindows = false;
-
-    /**
-     * @var  boolean  是否启用了PHP安全模式
-     */
-    public static $safeMode = false;
-
-    /**
      * @var  string   默认输出的内容类型
      */
     public static $contentType = 'text/html';
@@ -96,12 +86,12 @@ class Base extends Object
     public static $expose = false;
 
     /**
-     * @var Component[]
+     * @var Component[] 组件缓存列表
      */
     public static $components = [];
 
     /**
-     * 初始化
+     * 单次请求的初始化
      *
      * @throws BaseException
      * @return void
@@ -119,14 +109,6 @@ class Base extends Object
             ini_set('unserialize_callback_func', 'spl_autoload_call');
         }
 
-        /**
-         * 当输入字符的编码是无效的，或者字符代码不存在于输出的字符编码中时，可以为其指定一个替代字符。
-         *
-         * @link http://www.php.net/manual/function.mb-substitute-character.php
-         */
-        mb_substitute_character('none');
-
-        // Start an output buffer
         ob_start();
 
         /**
@@ -139,18 +121,32 @@ class Base extends Object
          */
         setlocale(LC_ALL, self::$locale);
 
-        self::$isWindows = ('\\' === DIRECTORY_SEPARATOR);
-
-        self::$safeMode = (bool) ini_get('safe_mode');
-
         if (function_exists('mb_internal_encoding'))
         {
             mb_internal_encoding(self::$charset);
         }
 
+        /**
+         * 当输入字符的编码是无效的，或者字符代码不存在于输出的字符编码中时，可以为其指定一个替代字符。
+         *
+         * @link http://www.php.net/manual/function.mb-substitute-character.php
+         */
+        mb_substitute_character('none');
+
+        // 确保输入的数据安全
         $_GET = Security::sanitize($_GET);
         $_POST = Security::sanitize($_POST);
         $_COOKIE = Security::sanitize($_COOKIE);
+
+        // 处理组件实例，如果为不持久化的话，那就直接剔除
+        foreach (self::$components as $name => $component)
+        {
+            if ( ! $component->persistence)
+            {
+                self::$components[$name] = null;
+                unset(self::$components[$name]);
+            }
+        }
     }
 
     /**

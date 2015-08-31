@@ -44,10 +44,10 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * Set flash message for subsequent request
+     * 设置flash数据
      *
-     * @param  string $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed  $value
      */
     public function flash($key, $value)
     {
@@ -56,10 +56,13 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * Get all flash messages
+     * 获取完整的flash数据
+     *
+     * @return array
      */
     public function data()
     {
+        Base::getLog()->info(__METHOD__ . ' fetch all flash data');
         $result = $this->getMessages();
         $this->save();
 
@@ -67,38 +70,41 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * Now
-     *
-     * Specify a flash message for a given key to be shown for the current request
+     * 直接设置当前请求的flash数据
      *
      * @param  string $key
      * @param  string $value
      */
     public function now($key, $value)
     {
+        Base::getLog()->info(__METHOD__ . ' set flash at current request', [
+            'key'   => $key,
+            'value' => $value,
+        ]);
         $this->messages['now'][(string) $key] = $value;
     }
 
     /**
-     * Set
+     * 设置flash数据，会在下次请求时展示
      *
-     * Specify a flash message for a given key to be shown for the next request
-     *
-     * @param  string $key
-     * @param  string $value
+     * @param string $key
+     * @param string $value
      */
     public function set($key, $value)
     {
+        Base::getLog()->info(__METHOD__ . ' set flash', [
+            'key'   => $key,
+            'value' => $value,
+        ]);
         $this->messages['next'][(string) $key] = $value;
     }
 
     /**
-     * Keep
-     *
-     * Retain flash messages from the previous request for the next request
+     * 保留住当前数据
      */
     public function keep()
     {
+        Base::getLog()->info(__METHOD__ . ' keep flash');
         foreach ($this->messages['prev'] as $key => $val)
         {
             $this->messages['next'][$key] = $val;
@@ -106,31 +112,34 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * Save
+     * 保存Flash数据
      */
     public function save()
     {
+        Base::getLog()->info(__METHOD__ . ' save flash');
         Base::getSession()->set($this->settings['key'], $this->messages['next']);
     }
 
     /**
-     * Load messages from previous request if available
+     * 初始化和加载消息列表，默认会加载上次请求保存的消息
      */
     public function loadMessages()
     {
-        if ($value = Session::instance()->get($this->settings['key']))
+        Base::getLog()->info(__METHOD__ . ' load flash messages');
+        if ($value = Base::getSession()->get($this->settings['key']))
         {
             $this->messages['prev'] = $value;
         }
     }
 
     /**
-     * Return array of flash messages to be shown for the current request
+     * 返回请求的消息
      *
      * @return array
      */
     public function getMessages()
     {
+        Base::getLog()->info(__METHOD__ . ' get flash messages');
         return array_merge($this->messages['prev'], $this->messages['now']);
     }
 

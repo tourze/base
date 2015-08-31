@@ -17,6 +17,11 @@ class Session extends Component
     /**
      * @inheritdoc
      */
+    public $persistence = false;
+
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
