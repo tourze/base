@@ -28,6 +28,7 @@ class Session extends Component
      */
     public function start()
     {
+        Base::getLog()->info(__METHOD__ . ' session start');
         Base::getHttp()->sessionStart();
     }
 
@@ -40,6 +41,10 @@ class Session extends Component
      */
     public function get($name, $default = null)
     {
+        Base::getLog()->info(__METHOD__ . ' get session', [
+            'name'    => $name,
+            'default' => $default,
+        ]);
         return Arr::get($_SESSION, $name, $default);
     }
 
@@ -51,6 +56,10 @@ class Session extends Component
      */
     public function set($name, $value)
     {
+        Base::getLog()->info(__METHOD__ . ' set session', [
+            'name'  => $name,
+            'value' => $value,
+        ]);
         $_SESSION[$name] = $value;
     }
 
@@ -61,6 +70,9 @@ class Session extends Component
      */
     public function remove($name)
     {
+        Base::getLog()->info(__METHOD__ . ' remove session', [
+            'name' => $name,
+        ]);
         unset($_SESSION[$name]);
     }
 
@@ -71,6 +83,7 @@ class Session extends Component
      */
     public function destroy()
     {
+        Base::getLog()->info(__METHOD__ . ' destroy session');
         return session_destroy();
     }
 }
