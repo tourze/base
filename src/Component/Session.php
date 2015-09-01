@@ -38,6 +38,17 @@ class Session extends Component
     }
 
     /**
+     * 返回当前会话ID
+     *
+     * @param string $id
+     * @return string
+     */
+    public function id($id = null)
+    {
+        return session_id($id);
+    }
+
+    /**
      * 读取指定会话的值
      *
      * @param string $name
