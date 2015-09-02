@@ -72,12 +72,13 @@ class Mime
      * 根据扩展名获取对应的MIME类型
      *
      * @param string $ext
+     * @param string $default
      * @return string
      */
-    public static function getMimeFromExtension($ext)
+    public static function getMimeFromExtension($ext, $default = 'application/octet-stream')
     {
         self::initMimeTypes();
-        return Arr::get(self::$mimeTypes, $ext, 'application/octet-stream');
+        return Arr::get(self::$mimeTypes, $ext, $default);
     }
 
     /**
