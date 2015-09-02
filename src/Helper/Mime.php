@@ -21,6 +21,22 @@ class Mime
     public static $configName = 'helper/mime';
 
     /**
+     * @var array 保存一个包含了后缀和对应mime的数组
+     */
+    public static $mimeTypes = [];
+
+    /**
+     * 初始化，和更新数据数组
+     */
+    public static function initMimeTypes()
+    {
+        if (empty(self::$mimeTypes))
+        {
+            self::$mimeTypes = Config::load(self::$configName)->asArray();
+        }
+    }
+
+    /**
      * 根据文件名判断MIME
      *
      * @param string $file
@@ -40,16 +56,15 @@ class Mime
      */
     public static function getExtensionsFromMime($mime)
     {
-        $mimeTypes = Config::load(self::$configName)->asArray();
+        self::initMimeTypes();
 
-        foreach ($mimeTypes as $ext => $mimeType)
+        foreach (self::$mimeTypes as $ext => $mimeType)
         {
             if ($mime == $mimeType)
             {
                 return $ext;
             }
         }
-
         return '';
     }
 
@@ -61,9 +76,8 @@ class Mime
      */
     public static function getMimeFromExtension($ext)
     {
-        $mimeTypes = Config::load(self::$configName)->asArray();
-
-        return Arr::get($mimeTypes, $ext, 'application/octet-stream');
+        self::initMimeTypes();
+        return Arr::get(self::$mimeTypes, $ext, 'application/octet-stream');
     }
 
     /**
@@ -77,7 +91,7 @@ class Mime
      */
     public static function determineContentType($ext = '', $content = '', $local_file = '', $default = '')
     {
-        $mimeTypes = Config::load(self::$configName)->asArray();
+        self::initMimeTypes();
 
         $defaultMime = 'application/octet-stream';
 
@@ -90,14 +104,14 @@ class Mime
 
         if (class_exists('finfo'))
         {
-            $file_info = new finfo(FILEINFO_MIME_TYPE);
+            $fileInfo = new finfo(FILEINFO_MIME_TYPE);
             if ( ! empty($content))
             {
-                $mime = $file_info->buffer($content);
+                $mime = $fileInfo->buffer($content);
             }
             elseif ( ! empty($local_file))
             {
-                $mime = $file_info->file($local_file);
+                $mime = $fileInfo->file($local_file);
             }
         }
 
@@ -117,7 +131,7 @@ class Mime
             }
             else
             {
-                $mime = Arr::get($mimeTypes, $ext);
+                $mime = Arr::get(self::$mimeTypes, $ext);
             }
         }
         if (empty($mime))
