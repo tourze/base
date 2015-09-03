@@ -303,7 +303,7 @@ class Http extends Component
      */
     public static function requestHeaders()
     {
-        Base::getLog()->info(__METHOD__ . ' parse requested headers');
+        Base::getLog()->debug(__METHOD__ . ' parse requested headers');
 
         // apache服务器
         if (function_exists('apache_request_headers'))
@@ -365,7 +365,7 @@ class Http extends Component
      */
     public function code($code = null)
     {
-        Base::getLog()->info(__METHOD__ . ' response status code', [
+        Base::getLog()->debug(__METHOD__ . ' response status code', [
             'code' => $code,
         ]);
         $text = Arr::get(self::$text, $code, false);
@@ -385,7 +385,7 @@ class Http extends Component
      */
     public function redirect($uri = '', $code = 302)
     {
-        Base::getLog()->info(__METHOD__ . ' redirect page', [
+        Base::getLog()->debug(__METHOD__ . ' redirect page', [
             'url'  => $uri,
             'code' => $code,
         ]);
@@ -421,7 +421,7 @@ class Http extends Component
      */
     public function setCookie($name, $value = '', $maxAge = 0, $path = '', $domain = '', $secure = false, $httpOnly = false)
     {
-        Base::getLog()->info(__METHOD__ . ' set cookie', [
+        Base::getLog()->debug(__METHOD__ . ' set cookie', [
             'name'      => $name,
             'value'     => $value,
             'expire'    => $maxAge,
@@ -440,7 +440,7 @@ class Http extends Component
      */
     public function sessionStart()
     {
-        Base::getLog()->info(__METHOD__ . ' call to session start');
+        Base::getLog()->debug(__METHOD__ . ' call to session start');
         if (session_status() == PHP_SESSION_NONE)
         {
             return session_start();
@@ -456,7 +456,7 @@ class Http extends Component
      */
     public function sessionID($id = null)
     {
-        Base::getLog()->info(__METHOD__ . ' get session id', [
+        Base::getLog()->debug(__METHOD__ . ' get session id', [
             'id' => $id,
         ]);
         return session_id($id);
@@ -470,7 +470,7 @@ class Http extends Component
      */
     public function sessionRegenerateID($deleteOldSession = false)
     {
-        Base::getLog()->info(__METHOD__ . ' regenerate session id');
+        Base::getLog()->debug(__METHOD__ . ' regenerate session id');
         return session_regenerate_id($deleteOldSession);
     }
 
@@ -479,7 +479,7 @@ class Http extends Component
      */
     public function sessionWriteClose()
     {
-        Base::getLog()->info(__METHOD__ . ' call session write close');
+        Base::getLog()->debug(__METHOD__ . ' call session write close');
         session_write_close();
     }
 
@@ -492,7 +492,7 @@ class Http extends Component
      */
     public function header($string, $replace = true, $httpResponseCode = null)
     {
-        Base::getLog()->info(__METHOD__ . ' response header', [
+        Base::getLog()->debug(__METHOD__ . ' response header', [
             'header'  => $string,
             'replace' => $replace,
             'code'    => $httpResponseCode
@@ -505,7 +505,7 @@ class Http extends Component
      */
     public function headerRemove($name = null)
     {
-        Base::getLog()->info(__METHOD__ . ' remove header', [
+        Base::getLog()->debug(__METHOD__ . ' remove header', [
             'name'  => $name,
         ]);
         header_remove($name);
@@ -516,7 +516,7 @@ class Http extends Component
      */
     public function headersList()
     {
-        Base::getLog()->info(__METHOD__ . ' fetch header list');
+        Base::getLog()->debug(__METHOD__ . ' fetch header list');
         return headers_list();
     }
 
@@ -527,7 +527,7 @@ class Http extends Component
      */
     public function headersSent(&$file = null, &$line = null)
     {
-        Base::getLog()->info(__METHOD__ . ' fetch sent header list', [
+        Base::getLog()->debug(__METHOD__ . ' fetch sent header list', [
             'file' => $file,
             'line' => $line,
         ]);

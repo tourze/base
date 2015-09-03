@@ -68,7 +68,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
      */
     public function data()
     {
-        Base::getLog()->info(__METHOD__ . ' fetch all flash data');
+        Base::getLog()->debug(__METHOD__ . ' fetch all flash data');
         $result = $this->getMessages();
         $this->save();
 
@@ -83,7 +83,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
      */
     public function now($key, $value)
     {
-        Base::getLog()->info(__METHOD__ . ' set flash at current request', [
+        Base::getLog()->debug(__METHOD__ . ' set flash at current request', [
             'key'   => $key,
             'value' => $value,
         ]);
@@ -98,7 +98,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
      */
     public function set($key, $value)
     {
-        Base::getLog()->info(__METHOD__ . ' set flash', [
+        Base::getLog()->debug(__METHOD__ . ' set flash', [
             'key'   => $key,
             'value' => $value,
         ]);
@@ -110,7 +110,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
      */
     public function keep()
     {
-        Base::getLog()->info(__METHOD__ . ' keep flash');
+        Base::getLog()->debug(__METHOD__ . ' keep flash');
         foreach ($this->messages['prev'] as $key => $val)
         {
             $this->messages['next'][$key] = $val;
@@ -122,7 +122,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
      */
     public function save()
     {
-        Base::getLog()->info(__METHOD__ . ' save flash');
+        Base::getLog()->debug(__METHOD__ . ' save flash');
         Base::getSession()->set($this->settings['key'], $this->messages['next']);
     }
 
@@ -131,7 +131,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
      */
     public function loadMessages()
     {
-        Base::getLog()->info(__METHOD__ . ' load flash messages');
+        Base::getLog()->debug(__METHOD__ . ' load flash messages');
         if ($value = Base::getSession()->get($this->settings['key']))
         {
             $this->messages['prev'] = $value;
@@ -145,7 +145,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
      */
     public function getMessages()
     {
-        Base::getLog()->info(__METHOD__ . ' get flash messages');
+        Base::getLog()->debug(__METHOD__ . ' get flash messages');
         return array_merge($this->messages['prev'], $this->messages['now']);
     }
 
