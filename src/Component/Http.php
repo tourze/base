@@ -527,7 +527,7 @@ class Http extends Component
      */
     public function headersSent(&$file = null, &$line = null)
     {
-        Base::getLog()->debug(__METHOD__ . ' fetch sent header list', [
+        Base::getLog()->debug(__METHOD__ . ' check if header sent', [
             'file' => $file,
             'line' => $line,
         ]);
