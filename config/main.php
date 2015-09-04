@@ -3,41 +3,47 @@
 return [
 
     'component' => [
-        'http' => [
-            'class' => 'tourze\Base\Component\Http',
+        'http'    => [
+            'class'  => 'tourze\Base\Component\Http',
             'params' => [
             ],
-            'call' => [
+            'call'   => [
             ],
         ],
-        'log' => [
-            'class' => 'tourze\Base\Component\Log',
+        'log'     => [
+            'class'  => 'tourze\Base\Component\Log',
             'params' => [
             ],
-            'call' => [
+            'call'   => [
             ],
         ],
         'session' => [
-            'class' => 'tourze\Base\Component\Session',
+            'class'  => 'tourze\Base\Component\Session',
             'params' => [
             ],
-            'call' => [
+            'call'   => [
             ],
         ],
-        'flash' => [
-            'class' => 'tourze\Base\Component\Flash',
+        'flash'   => [
+            'class'  => 'tourze\Base\Component\Flash',
             'params' => [
             ],
-            'call' => [
+            'call'   => [
             ],
         ],
-        'cache' => [
-            'class' => 'tourze\Base\Component\Cache',
+        'cache'   => [
+            'class'  => 'tourze\Base\Component\Cache',
             'params' => [
             ],
-            'call' => [
+            'call'   => [
+            ],
+        ],
+        'mail'    => [
+            'class'  => 'tourze\Base\Component\Mail',
+            'params' => [
+            ],
+            'call'   => [
             ],
         ],
     ],
-
 ];

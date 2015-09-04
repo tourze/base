@@ -300,4 +300,15 @@ class Base extends Object
     {
         return self::get('cache');
     }
+
+    /**
+     * 获取邮件组件
+     *
+     * @return \tourze\Base\Component\Mail
+     * @throws \tourze\Base\Exception\ComponentNotFoundException
+     */
+    public static function getMail()
+    {
+        return self::get('mail');
+    }
 }
