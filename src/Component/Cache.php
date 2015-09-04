@@ -3,15 +3,21 @@
 namespace tourze\Base\Component;
 
 use tourze\Base\Component;
+use tourze\Base\Helper\Arr;
 
 /**
- * 默认缓存组件，不做任何事
+ * 默认缓存组件，使用内存来做缓存
  *
  * @property int expired
  * @package tourze\Base\Component
  */
 class Cache extends Component
 {
+
+    /**
+     * @var array 保存缓存的容器
+     */
+    protected $_storage = [];
 
     /**
      * @var int 默认过期时间
@@ -38,11 +44,28 @@ class Cache extends Component
      * 读取指定key的缓存
      *
      * @param string $name
+     * @param mixed  $default
      * @return mixed
      */
-    public function get($name)
+    public function get($name, $default = null)
     {
-        return null;
+        if ( ! isset($this->_storage[$name]))
+        {
+            return $default;
+        }
+
+        $data = Arr::get($this->_storage, $name);
+
+        // 判断过期时间
+        $expired = Arr::get($data, 'expired');
+        if (time() > $expired)
+        {
+            $this->remove($name);
+            return $default;
+        }
+
+        $value = Arr::get($data, 'value');
+        return $value;
     }
 
     /**
@@ -55,6 +78,10 @@ class Cache extends Component
      */
     public function set($name, $value, $expired = null)
     {
+        $this->_storage[$name] = [
+            'value'   => $value,
+            'expired' => time() + $expired,
+        ];
         return true;
     }
 
@@ -66,6 +93,7 @@ class Cache extends Component
      */
     public function remove($name)
     {
+        unset($this->_storage[$name]);
         return true;
     }
 }
