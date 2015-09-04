@@ -35,35 +35,4 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals($result, Base::load($path));
     }
-
-    public function providerCache()
-    {
-        return [
-            ['foo', 'bar~', null, null],
-            ['foo1', 'bar1', 2, 1],
-            ['foo2', ['test3', 1234], 2, 1],
-        ];
-    }
-
-    /**
-     * 检测cache方法是否正确
-     *
-     * @dataProvider providerCache
-     * @param string $name
-     * @param mixed  $data
-     * @param int    $expired
-     * @param int    $sleep sleep参数，用于调试过期时间是否正确
-     */
-    public function testCache($name, $data, $expired, $sleep = 0)
-    {
-        // 写，然后读
-        Base::cache($name, $data, $expired);
-        if ($sleep)
-        {
-            sleep($sleep);
-        }
-        $result = Base::cache($name);
-
-        $this->assertEquals($data, $result);
-    }
 }

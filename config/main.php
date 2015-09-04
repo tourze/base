@@ -31,6 +31,13 @@ return [
             'call' => [
             ],
         ],
+        'cache' => [
+            'class' => 'tourze\Base\Component\Cache',
+            'params' => [
+            ],
+            'call' => [
+            ],
+        ],
     ],
 
 ];

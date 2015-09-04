@@ -2,7 +2,6 @@
 
 namespace tourze\Base;
 
-use Exception;
 use tourze\Base\Exception\BaseException;
 use tourze\Base\Exception\ComponentClassNotFoundException;
 use tourze\Base\Exception\ComponentNotFoundException;
@@ -64,11 +63,6 @@ class Base extends Object
      * @var  string  缺省文件名称
      */
     public static $indexFile = false;
-
-    /**
-     * @var array 日志配置信息
-     */
-    public static $logConfig = null;
 
     /**
      * @var  string  文件缓存使用的目录
@@ -167,75 +161,6 @@ class Base extends Object
     public static function load($file)
     {
         return include $file;
-    }
-
-    /**
-     * 一个简单的内置缓存类
-     *
-     *     // 写缓存
-     *     self::cache('foo', 'hello, world');
-     *     // 读取缓存
-     *     $foo = self::cache('foo');
-     *
-     * @throws  BaseException
-     * @param   string $name    缓存名
-     * @param   mixed  $data    缓存数据
-     * @param   int    $expired 缓存生效时间（单位：秒）
-     * @return  mixed|boolean
-     */
-    public static function cache($name, $data = null, $expired = null)
-    {
-        $file = sha1($name) . '.txt';
-        $dir = self::$cacheDir . DIRECTORY_SEPARATOR . $file[0] . $file[1] . DIRECTORY_SEPARATOR;
-
-        if (null === $expired)
-        {
-            $expired = self::$cacheLife;
-        }
-
-        // 读取数据
-        if (null === $data)
-        {
-            if (is_file($dir . $file))
-            {
-                $result = unserialize(file_get_contents($dir . $file));
-                if (isset($result['data']) && isset($result['expired']))
-                {
-                    // 过期
-                    if (time() <= $result['expired'])
-                    {
-                        return $result['data'];
-                    }
-                }
-                @unlink($dir . $file);
-            }
-
-            // 查找不到内存
-            return null;
-        }
-
-        // 下面就是保存缓存的逻辑了
-
-        // 自动创建目录
-        if ( ! is_dir($dir))
-        {
-            mkdir($dir, 0777, true);
-            chmod($dir, 0777);
-        }
-
-        $result = [
-            'data'    => $data,
-            'expired' => time() + $expired,
-        ];
-        $result = serialize($result);
-        try
-        {
-            return (bool) file_put_contents($dir . $file, $result, LOCK_EX);
-        }
-        catch (Exception $e)
-        {
-            return false;
-        }
     }
 
     /**
@@ -344,7 +269,7 @@ class Base extends Object
     }
 
     /**
-     * 获取日志组件
+     * 获取会话组件
      *
      * @return \tourze\Base\Component\Session
      * @throws \tourze\Base\Exception\ComponentNotFoundException
@@ -355,7 +280,7 @@ class Base extends Object
     }
 
     /**
-     * 获取日志组件
+     * 获取Flash组件
      *
      * @return \tourze\Base\Component\Flash
      * @throws \tourze\Base\Exception\ComponentNotFoundException
@@ -363,5 +288,16 @@ class Base extends Object
     public static function getFlash()
     {
         return self::get('flash');
+    }
+
+    /**
+     * 获取缓存组件
+     *
+     * @return \tourze\Base\Component\Cache
+     * @throws \tourze\Base\Exception\ComponentNotFoundException
+     */
+    public static function getCache()
+    {
+        return self::get('cache');
     }
 }
