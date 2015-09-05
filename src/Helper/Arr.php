@@ -2,7 +2,6 @@
 
 namespace tourze\Base\Helper;
 
-use ArrayObject;
 use Closure;
 use Traversable;
 
