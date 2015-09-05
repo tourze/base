@@ -17,7 +17,7 @@ class Cache extends Component
     /**
      * @var array 保存缓存的容器
      */
-    protected $_storage = [];
+    protected $_cache = [];
 
     /**
      * @var int 默认过期时间
@@ -49,12 +49,12 @@ class Cache extends Component
      */
     public function get($name, $default = null)
     {
-        if ( ! isset($this->_storage[$name]))
+        if ( ! isset($this->_cache[$name]))
         {
             return $default;
         }
 
-        $data = Arr::get($this->_storage, $name);
+        $data = Arr::get($this->_cache, $name);
 
         // 判断过期时间
         $expired = Arr::get($data, 'expired');
@@ -78,7 +78,7 @@ class Cache extends Component
      */
     public function set($name, $value, $expired = null)
     {
-        $this->_storage[$name] = [
+        $this->_cache[$name] = [
             'value'   => $value,
             'expired' => time() + $expired,
         ];
@@ -93,7 +93,7 @@ class Cache extends Component
      */
     public function remove($name)
     {
-        unset($this->_storage[$name]);
+        unset($this->_cache[$name]);
         return true;
     }
 }
