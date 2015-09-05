@@ -9,15 +9,13 @@ use Traversable;
 /**
  * 数组助手类
  *
- * @package    Base
- * @category   Helpers
- * @author     YwiSax
+ * @package tourze\Base\Helper
  */
 class Arr
 {
 
     /**
-     * @var  string  `path()`使用的分隔符
+     * @var string `path()`使用的分隔符
      */
     public static $delimiter = '.';
 
@@ -52,7 +50,7 @@ class Arr
      *     Arr::isArray(Db::instance());
      *
      * @param  mixed $value 要检查的值
-     * @return boolean
+     * @return bool
      */
     public static function isArray($value)
     {
@@ -256,10 +254,10 @@ class Arr
      *     // 从$_GET中读取sorting
      *     $sorting = Arr::get($_GET, 'sorting');
      *
-     * @param array|ArrayObject $array        要读取的数组
-     * @param string            $key          索引值
-     * @param mixed             $defaultValue 默认返回值
-     * @param bool              $emptyNull    如果设置为true，而且结果是空字符串，此时返回null
+     * @param array  $array        要读取的数组
+     * @param string $key          索引值
+     * @param mixed  $defaultValue 默认返回值
+     * @param bool   $emptyNull    如果设置为true，而且结果是空字符串，此时返回null
      * @return mixed
      */
     public static function get(array $array, $key, $defaultValue = null, $emptyNull = false)
@@ -274,8 +272,8 @@ class Arr
     /**
      * 查看目标是否有指定的key
      *
-     * @param array|ArrayObject $array 要检查的数组
-     * @param string            $key   要检查的值
+     * @param array  $array 要检查的数组
+     * @param string $key   要检查的值
      * @return bool
      */
     public static function has(array $array, $key)
@@ -432,9 +430,9 @@ class Arr
      *     // 输出
      *     ['name' => 'mary', 'children' => ['fred', 'paul', 'sally', 'jane']]
      *
-     * @param   array $array1     初始数组
-     * @param   array $array2,... 要合并的数组
-     * @return  array
+     * @param  array $array1     初始数组
+     * @param  array $array2,... 要合并的数组
+     * @return array
      */
     public static function merge($array1, $array2)
     {
@@ -549,35 +547,29 @@ class Arr
      *     $result = call_user_func_array($func, $params);
      *
      * @param  string $str callback字符串
-     * @return array   function, params
+     * @return array  function, params
      */
     public static function callback($str)
     {
-        // Overloaded as parts are found
         $params = null;
 
         // command[param,param]
         if (preg_match('/^([^\(]*+)\((.*)\)$/', $str, $match))
         {
-            // command
             $command = $match[1];
-
             if ($match[2] !== '')
             {
-                // param,param
                 $params = preg_split('/(?<!\\\\),/', $match[2]);
                 $params = str_replace('\,', ',', $params);
             }
         }
         else
         {
-            // command
             $command = $str;
         }
 
         if (false !== strpos($command, '::'))
         {
-            // Create a static method callable command
             $command = explode('::', $command, 2);
         }
 
@@ -634,11 +626,11 @@ class Arr
      *
      *     Arr::mix($object, ['foo' => 'bar'], true);
      *
-     * @copyright   https://github.com/akira-cn/JKit
-     * @param       mixed   $obj      被copy到的对象
-     * @param       array   $hash     关联数组
-     * @param       boolean $override 是否覆盖对象上已有属性
-     * @return      mixed    被copy到的对象
+     * @copyright  https://github.com/akira-cn/JKit
+     * @param  mixed $obj      被copy到的对象
+     * @param  array $hash     关联数组
+     * @param  bool  $override 是否覆盖对象上已有属性
+     * @return mixed    被copy到的对象
      */
     public static function mix($obj, $hash, $override = false)
     {

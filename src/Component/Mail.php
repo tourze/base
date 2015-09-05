@@ -2,6 +2,7 @@
 
 namespace tourze\Base\Component;
 
+use tourze\Base\Base;
 use tourze\Base\Component;
 
 /**
@@ -111,6 +112,13 @@ class Mail extends Component
      */
     public function send($to = null, $subject = null, $message = null, $from = null)
     {
+        Base::getLog()->debug(__METHOD__ . ' call send mail method', [
+            'to'      => $to,
+            'subject' => $subject,
+            'message' => $message,
+            'from'    => $from,
+        ]);
+
         if ($to === null)
         {
             $to = $this->to;
@@ -133,7 +141,17 @@ class Mail extends Component
             $to = implode(', ', $to);
         }
 
+        Base::getLog()->debug(__METHOD__ . ' prepare to send mail', [
+            'to'      => $to,
+            'subject' => $subject,
+            'message' => $message,
+            'from'    => $from,
+        ]);
+
         $result = @mail($to, $subject, $message, 'From: ' . $from);
+        Base::getLog()->debug(__METHOD__ . ' send mail result', [
+            'result' => $result,
+        ]);
 
         $this->to = null;
         $this->subject = null;

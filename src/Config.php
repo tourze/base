@@ -50,6 +50,8 @@ class Config extends VendorConfig
         }
 
         $cacheKey = md5(json_encode($path));
+
+        // 如果有缓存并且可以不重新加载，那么就直接返回
         if ( ! $reload && isset(self::$_pathCache[$cacheKey]))
         {
             return self::$_pathCache[$cacheKey];

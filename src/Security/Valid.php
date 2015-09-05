@@ -90,7 +90,7 @@ class Valid
      *
      * @param  string $value
      * @param  int    $length 最大长度
-     * @return boolean
+     * @return bool
      */
     public static function maxLength($value, $length)
     {
@@ -180,8 +180,8 @@ class Valid
     /**
      * 是否为合格的IP地址
      *
-     * @param  string  $value        IP地址
-     * @param  boolean $allowPrivate 是否允许私有IP地址
+     * @param  string $value        IP地址
+     * @param  bool   $allowPrivate 是否允许私有IP地址
      * @return bool
      */
     public static function ip($value, $allowPrivate = true)
@@ -238,8 +238,8 @@ class Valid
     /**
      * 检测字符串是否只包含了字母或数字
      *
-     * @param  string  $value
-     * @param  boolean $utf8 UTF8兼容
+     * @param  string $value
+     * @param  bool   $utf8 UTF8兼容
      * @return bool
      */
     public static function alphaNumeric($value, $utf8 = false)
@@ -257,8 +257,8 @@ class Valid
     /**
      * 检测字符串是否只包含了字母、数字、下划线或破折号
      *
-     * @param  string  $value
-     * @param  boolean $utf8 UTF8兼容
+     * @param  string $value
+     * @param  bool   $utf8 UTF8兼容
      * @return bool
      */
     public static function alphaDash($value, $utf8 = false)

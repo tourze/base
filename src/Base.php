@@ -20,7 +20,7 @@ class Base extends Object
 {
 
     /**
-     * @const  string  当前框架版本
+     * @const string 当前框架版本
      */
     const VERSION = 'beta';
 
@@ -35,17 +35,17 @@ class Base extends Object
     public static $locale = 'en_US.utf-8';
 
     /**
-     * @var  string   默认输出的内容类型
+     * @var string 默认输出的内容类型
      */
     public static $contentType = 'text/html';
 
     /**
-     * @var  string  输入输出编码
+     * @var string 输入输出编码
      */
     public static $charset = 'utf-8';
 
     /**
-     * @var string  当前服务器名称
+     * @var string 当前服务器名称
      */
     public static $serverName = '';
 
@@ -55,27 +55,17 @@ class Base extends Object
     public static $hostNames = [];
 
     /**
-     * @var  string  当前应用所在路径，相对于web根目录
+     * @var string 当前应用所在路径，相对于web根目录
      */
     public static $baseUrl = '/';
 
     /**
-     * @var  string  缺省文件名称
+     * @var string 缺省文件名称
      */
     public static $indexFile = false;
 
     /**
-     * @var  string  文件缓存使用的目录
-     */
-    public static $cacheDir;
-
-    /**
-     * @var  int  自带缓存的默认生命周期
-     */
-    public static $cacheLife = 60;
-
-    /**
-     * @var  boolean  自定义X-Powered-By
+     * @var bool 自定义X-Powered-By
      */
     public static $expose = false;
 
@@ -88,7 +78,6 @@ class Base extends Object
      * 单次请求的初始化
      *
      * @throws BaseException
-     * @return void
      */
     public function init()
     {

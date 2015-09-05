@@ -8,9 +8,7 @@ use tourze\Base\Base;
 /**
  * 最基础的异常类，使用[I18n]来做异常信息的翻译
  *
- * @package    Base
- * @category   Exceptions
- * @author     YwiSax
+ * @package tourze\Base\Exception
  */
 class BaseException extends Exception implements ExceptionInterface
 {

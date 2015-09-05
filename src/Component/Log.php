@@ -6,6 +6,7 @@ use tourze\Base\Component;
 
 /**
  * 日志记录组件
+ * [!!] 此LOG组件对自身操作不做记录
  *
  * @package tourze\Base\Component
  */

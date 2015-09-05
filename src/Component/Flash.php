@@ -131,7 +131,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
      */
     public function loadMessages()
     {
-        Base::getLog()->debug(__METHOD__ . ' load flash messages');
+        Base::getLog()->debug(__METHOD__ . ' load flash messages from session');
         if ($value = Base::getSession()->get($this->settings['key']))
         {
             $this->messages['prev'] = $value;

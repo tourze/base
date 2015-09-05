@@ -211,7 +211,7 @@ class Object
      * 检查setter是否存在
      *
      * @param string $name 属性名
-     * @return boolean
+     * @return bool
      */
     public function __isset($name)
     {
@@ -320,9 +320,9 @@ class Object
     /**
      * 是否存在指定的属性
      *
-     * @param  string  $name      属性名
-     * @param  boolean $checkVars 是否检查成员变量
-     * @return boolean
+     * @param  string $name      属性名
+     * @param  bool   $checkVars 是否检查成员变量
+     * @return bool
      * @see canGetProperty()
      * @see canSetProperty()
      */
@@ -334,9 +334,9 @@ class Object
     /**
      * 检查指定的属性是否可读
      *
-     * @param  string  $name      属性名
-     * @param  boolean $checkVars 是否检查成员变量
-     * @return boolean
+     * @param  string $name      属性名
+     * @param  bool   $checkVars 是否检查成员变量
+     * @return bool
      * @see canSetProperty()
      */
     public function canGetProperty($name, $checkVars = true)
@@ -347,9 +347,9 @@ class Object
     /**
      * 检查指定的属性是否可写
      *
-     * @param string  $name      属性名
-     * @param boolean $checkVars 是否检查成员变量
-     * @return boolean
+     * @param string $name      属性名
+     * @param bool   $checkVars 是否检查成员变量
+     * @return bool
      * @see canGetProperty()
      */
     public function canSetProperty($name, $checkVars = true)
@@ -361,7 +361,7 @@ class Object
      * 检查对象是否有指定方法
      *
      * @param string $name 方法名
-     * @return boolean 方法是否定义
+     * @return bool 方法是否定义
      */
     public function hasMethod($name)
     {

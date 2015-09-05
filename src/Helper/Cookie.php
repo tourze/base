@@ -8,9 +8,7 @@ use tourze\Base\Exception\HelperException;
 /**
  * Cookie助手类
  *
- * @package    Base
- * @category   Helpers
- * @author     YwiSax
+ * @package tourze\Base\Helper
  */
 class Cookie
 {
@@ -133,8 +131,7 @@ class Cookie
      */
     public static function salt($name, $value)
     {
-        // Determine the user agent
-        $agent = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : 'unknown';
+        $agent = strtolower(Arr::get($_SERVER, 'HTTP_USER_AGENT', 'unknown'));
 
         return sha1($agent . $name . $value . Cookie::$salt);
     }

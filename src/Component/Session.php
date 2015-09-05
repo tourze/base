@@ -45,6 +45,7 @@ class Session extends Component
      */
     public function id($id = null)
     {
+        Base::getLog()->debug(__METHOD__ . ' get session id');
         return session_id($id);
     }
 

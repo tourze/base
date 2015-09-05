@@ -292,7 +292,7 @@ class Http extends Component
     ];
 
     /**
-     * @var  string  默认HTTP协议
+     * @var string 默认HTTP协议
      */
     public $protocol = 'HTTP/1.1';
 

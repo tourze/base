@@ -1,15 +1,14 @@
 <?php
 
-namespace tourze\Base;
+namespace tourze\Base\Helper;
 
 use DateTime;
 use DateTimeZone;
-use tourze\Base\Helper\Arr;
 
 /**
  * 日期助手类
  *
- * @package tourze\Base
+ * @package tourze\Base\Helper
  */
 class Date
 {
@@ -23,7 +22,7 @@ class Date
     const MINUTE = 60;
 
     // Date::months()中可用的格式
-    const MONTHS_LONG  = '%B';
+    const MONTHS_LONG = '%B';
 
     const MONTHS_SHORT = '%b';
 

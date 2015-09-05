@@ -8,9 +8,7 @@ use tourze\Base\Security\Validation;
 /**
  * 校验异常
  *
- * @package    Base
- * @category   Exceptions
- * @author     YwiSax
+ * @package tourze\Base\Exception
  */
 class ValidationException extends BaseException
 {

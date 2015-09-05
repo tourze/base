@@ -14,9 +14,7 @@ class Mime
 {
 
     /**
-     * 保存MIME信息的配置文件
-     *
-     * @var string
+     * @var string 保存MIME信息的配置文件
      */
     public static $configName = 'helper/mime';
 
@@ -125,7 +123,6 @@ class Mime
             (0 === strcasecmp('text/x-java', $mime))
         )
         {
-            // need further guidance on these, as they are sometimes incorrect
             if (0 === strcasecmp('dfpkg', $ext))
             {
                 $mime = 'application/zip';

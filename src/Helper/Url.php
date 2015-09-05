@@ -6,11 +6,9 @@ use tourze\Base\Exception\HelperException;
 use tourze\Base\Base;
 
 /**
- * URL助手类.
+ * URL助手类
  *
- * @package    Base
- * @category   Helpers
- * @author     YwiSax
+ * @package tourze\Base\Helper
  */
 class Url
 {

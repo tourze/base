@@ -3,7 +3,9 @@
 namespace tourze\Base\Exception;
 
 /**
- * 异常接口
+ * 异常类接口
+ *
+ * @package tourze\Base\Exception
  */
 interface ExceptionInterface
 {

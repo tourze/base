@@ -9,9 +9,7 @@ use SecurityLib\Strength as RandomStrength;
 /**
  * 文本助手类
  *
- * @package    Base
- * @category   Helpers
- * @author     YwiSax
+ * @package tourze\Base\Helper
  */
 class Text
 {
@@ -88,10 +86,10 @@ class Text
      *
      *     $text = Text::limitChars($text);
      *
-     * @param  string  $str           要限制的字符
-     * @param  int     $limit         限制长度
-     * @param  string  $endChar       结尾字符
-     * @param  boolean $preserveWords 激活或禁用字符保护
+     * @param  string $str           要限制的字符
+     * @param  int    $limit         限制长度
+     * @param  string $endChar       结尾字符
+     * @param  bool   $preserveWords 激活或禁用字符保护
      * @return string
      */
     public static function limitChars($str, $limit = 100, $endChar = null, $preserveWords = false)
