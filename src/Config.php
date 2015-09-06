@@ -23,6 +23,16 @@ class Config extends VendorConfig
     protected static $_configPaths = [];
 
     /**
+     * 返回当前已经添加到得配置路径
+     *
+     * @return array
+     */
+    public static function getPaths()
+    {
+        return self::$_configPaths;
+    }
+
+    /**
      * 增加配置加载目录
      *
      * @param $path
