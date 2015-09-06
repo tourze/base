@@ -2,12 +2,14 @@
 
 namespace tourze\Base;
 
+use PHPUnit_Framework_TestCase;
+
 /**
  * Base测试用例
  *
  * @package tourze\Base
  */
-class SecurityTest extends \PHPUnit_Framework_TestCase
+class SecurityTest extends PHPUnit_Framework_TestCase
 {
 
     public function providerSanitize()
