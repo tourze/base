@@ -27,11 +27,17 @@ class Arr
      *     // false
      *     Arr::isAssoc(['foo', 'bar']);
      *
-     * @param  array $array 要检查的数组
+     * @param  mixed $array 要检查的数组
      * @return bool
      */
-    public static function isAssoc(array $array)
+    public static function isAssoc($array)
     {
+        // 如果不是个规则数组，那就直接返回false
+        if ( ! is_array($array))
+        {
+            return false;
+        }
+
         $keys = array_keys($array);
         return array_keys($keys) !== $keys;
     }
@@ -67,20 +73,20 @@ class Arr
      * 使用路径格式来读取一个数组值
      *
      *     // $array['foo']['bar']
-     *     $value = self::path($array, 'foo.bar');
+     *     $value = Arr::path($array, 'foo.bar');
      *
      * 这里也可以使用通配符“*”
      *
      *     // 返回所有三级的color
-     *     $colors = self::path($array, 'theme.*.color');
+     *     $colors = Arr::path($array, 'theme.*.color');
      *     // 跟上面一样效果
-     *     $colors = self::path($array, ['theme', '*', 'color']);
+     *     $colors = Arr::path($array, ['theme', '*', 'color']);
      *
      * @param  array  $array     要搜索的数组
      * @param  mixed  $path      path值，或者数组
      * @param  mixed  $default   默认返回值
      * @param  string $delimiter 自定义分隔符
-     * @return  mixed
+     * @return mixed
      */
     public static function path($array, $path, $default = null, $delimiter = null)
     {
@@ -230,6 +236,9 @@ class Arr
      */
     public static function range($step = 10, $max = 100)
     {
+        $step = intval($step);
+        $max = intval($max);
+
         if ($step < 1)
         {
             return [];
@@ -271,37 +280,13 @@ class Arr
     /**
      * 查看目标是否有指定的key
      *
-     * @param array  $array 要检查的数组
+     * @param mixed  $array 要检查的数组
      * @param string $key   要检查的值
      * @return bool
      */
-    public static function has(array $array, $key)
+    public static function has($array, $key)
     {
         return is_array($array) && array_key_exists($key, $array);
-    }
-
-    /**
-     * 保证数组中每个值都经callback处理一次
-     *
-     * @param array            $array
-     * @param callable|Closure $callback
-     * @return array
-     */
-    public static function clean($array = null, $callback = null)
-    {
-        $result = (empty($array) ? [] : (! is_array($array) ? [$array] : $array));
-
-        if (null === $callback || ! is_callable($callback))
-        {
-            return $result;
-        }
-
-        $finalResult = [];
-        foreach ($result as $item)
-        {
-            $finalResult[] = call_user_func($callback, $item);
-        }
-        return $finalResult;
     }
 
     /**
@@ -314,45 +299,40 @@ class Arr
      *     $data = ['level1' => ['level2a' => 'value 1', 'level2b' => 'value 2']];
      *     Arr::extract($data, ['level1.level2a', 'password']);
      *
+     * [!!] 注意，这个方法跟[Arr::get]是有区别的。[Arr::get]不支持path方式读取。
+     *
      * @param  array $array   要读取的数组
-     * @param  array $paths   键值或path列表
+     * @param  array $paths   键值或path列表，如果这个参数是个关联数组，那么数组中的值会作为该key的默认值
      * @param  mixed $default 默认值
      * @return array
      */
-    public static function extract($array, array $paths, $default = null)
+    public static function extract($array, $paths, $default = null)
     {
         $found = [];
-        foreach ($paths as $path)
+
+        if ( ! is_array($paths))
         {
-            self::setPath($found, $path, self::path($array, $path, $default));
+            $paths = [$paths];
+        }
+
+        // 如果paths不是个关联数组，那么就生成个值做为key，默认值作为值的新数组
+        if ( ! self::isAssoc($paths))
+        {
+            $paths = array_values($paths);
+            $newPaths = [];
+            foreach ($paths as $path)
+            {
+                $newPaths[$path] = $default;
+            }
+            $paths = $newPaths;
+        }
+
+        foreach ($paths as $path => $pathDefault)
+        {
+            self::setPath($found, $path, self::path($array, $path, $pathDefault));
         }
 
         return $found;
-    }
-
-    /**
-     * 从一个包含若干个数组的数组中读取一个指定key
-     *
-     *     // 获取所有id
-     *     $ids = Arr::pluck($result, 'id');
-     *
-     * @param  array  $array 包含若干个数组的数组
-     * @param  string $key   键名
-     * @return array
-     */
-    public static function pluck($array, $key)
-    {
-        $values = [];
-
-        foreach ($array as $row)
-        {
-            if (isset($row[$key]))
-            {
-                $values[] = $row[$key];
-            }
-        }
-
-        return $values;
     }
 
     /**
@@ -378,13 +358,13 @@ class Arr
      * 跟 [array_map](http://php.net/array_map) 类似的函数，差异在于这个函数只能处理单个数组
      *
      *     // 数组中的每个元素都执行一次strip_tags
-     *     $array = Arr::map('strip_tags', $array);
+     *     $array = Arr::map($array, 'strip_tags');
      *
      *     // 数组中的每个元素都$this->filter过滤一次
-     *     $array = Arr::map([[$this,'filter']], $array);
+     *     $array = Arr::map($array, [[$this,'filter']]);
      *
      *     // 数组中的每个元素都执行strip_tags和$this->filter
-     *     $array = Arr::map(['strip_tags', [$this,'filter']), $array];
+     *     $array = Arr::map($array, ['strip_tags', [$this,'filter'])];
      *
      * @param  array    $array     要映射的数组
      * @param  callable $callbacks 包含了callback的数组，或者一个函数
@@ -403,6 +383,15 @@ class Arr
             {
                 if (is_array($callbacks))
                 {
+                    // 如果callbacks变量的第一个参数是object，那么久按照另外的逻辑处理
+                    if (is_object(Arr::get($callbacks, 0)))
+                    {
+                        $callbacks = [
+                            [Arr::get($callbacks, 0), Arr::get($callbacks, 1)]
+                        ];
+                        // 后面的参数暂时忽略了
+                    }
+                    // 继续正常逻辑走
                     foreach ($callbacks as $cb)
                     {
                         $array[$key] = call_user_func($cb, $array[$key]);
@@ -420,6 +409,7 @@ class Arr
 
     /**
      * array_merge的强化版本。注意这个方法跟 [array_merge_recursive](http://php.net/array_merge_recursive) 是有区别的。
+     * 如果要合并的项是数组，那么合并数组，否则使用后者的值来代替前者。
      *
      *     $john = ['name' => 'john', 'children' => ['fred', 'paul', 'sally', 'jane']];
      *     $mary = ['name' => 'mary', 'children' => ['jane']];
@@ -501,84 +491,6 @@ class Arr
     }
 
     /**
-     * 使用后面的数组来覆盖前面的数组内容
-     *
-     *     $a1 = ['name' => 'john', 'mood' => 'happy', 'food' => 'bacon'];
-     *     $a2 = ['name' => 'jack', 'food' => 'tacos', 'drink' => 'beer'];
-     *
-     *     $array = Arr::overwrite($a1, $a2);
-     *
-     *     // 输出
-     *     ['name' => 'jack', 'mood' => 'happy', 'food' => 'tacos']
-     *
-     * @param  array $array1 主数组
-     * @param  array $array2 覆盖源
-     * @return array
-     */
-    public static function overwrite($array1, $array2)
-    {
-        foreach (array_intersect_key($array2, $array1) as $key => $value)
-        {
-            $array1[$key] = $value;
-        }
-
-        if (func_num_args() > 2)
-        {
-            foreach (array_slice(func_get_args(), 2) as $array2)
-            {
-                foreach (array_intersect_key($array2, $array1) as $key => $value)
-                {
-                    $array1[$key] = $value;
-                }
-            }
-        }
-
-        return $array1;
-    }
-
-    /**
-     * 创建一个有效的callback和对应参数
-     *
-     *     // 获取调用的函数名和参数
-     *     list($func, $params) = self::callback('Foo::bar(apple,orange)');
-     *
-     *     // 执行并获取结果
-     *     $result = call_user_func_array($func, $params);
-     *
-     * @param  string $str callback字符串
-     * @return array  function, params
-     */
-    public static function callback($str)
-    {
-        $params = null;
-
-        // command[param,param]
-        if (preg_match('/^([^\(]*+)\((.*)\)$/', $str, $match))
-        {
-            $command = $match[1];
-            if ($match[2] !== '')
-            {
-                $params = preg_split('/(?<!\\\\),/', $match[2]);
-                $params = str_replace('\,', ',', $params);
-            }
-        }
-        else
-        {
-            $command = $str;
-        }
-
-        if (false !== strpos($command, '::'))
-        {
-            $command = explode('::', $command, 2);
-        }
-
-        return [
-            $command,
-            $params
-        ];
-    }
-
-    /**
      * 转换一个多维数组为一维数组
      *
      *     $array = ['set' => ['one' => 'something'], 'two' => 'other'];
@@ -586,7 +498,7 @@ class Arr
      *     $array = Arr::flatten($array);
      *
      *     // 输出
-     *     [('one' => 'something', 'two' => 'other'];
+     *     ['one' => 'something', 'two' => 'other'];
      *
      * [!!] 键名会被忽略
      *
@@ -618,70 +530,5 @@ class Arr
         }
 
         return $flat;
-    }
-
-    /**
-     * 将关联数组的属性-值copy到对象上去
-     *
-     *     Arr::mix($object, ['foo' => 'bar'], true);
-     *
-     * @copyright  https://github.com/akira-cn/JKit
-     * @param  mixed $obj      被copy到的对象
-     * @param  array $hash     关联数组
-     * @param  bool  $override 是否覆盖对象上已有属性
-     * @return mixed    被copy到的对象
-     */
-    public static function mix($obj, $hash, $override = false)
-    {
-        foreach ($hash as $key => $value)
-        {
-            if ($override || ! isset($obj->{$key}))
-            {
-                $obj->{$key} = $value;
-            }
-        }
-
-        return $obj;
-    }
-
-
-    /**
-     * 删除所有空值的数据
-     *
-     * @param array $input
-     * @return array
-     */
-    public static function removeEmpty(array $input)
-    {
-        if ( ! is_array($input) || empty($input))
-        {
-            return [];
-        }
-        foreach ($input as $key => $value)
-        {
-            if (is_string($value) && $value == '')
-            {
-                unset($input[$key]);
-            }
-        }
-
-        return $input;
-    }
-
-    /**
-     * 删除所有为null的数据
-     *
-     * @param array $array
-     * @return array
-     */
-    public static function removeNull(array & $array)
-    {
-        foreach ($array as $key => $value)
-        {
-            if (null === $value)
-            {
-                unset($array[$key]);
-            }
-        }
     }
 }
