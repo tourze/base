@@ -2,23 +2,25 @@
 
 namespace tourze\Base;
 
+use PHPUnit_Framework_TestCase;
+
 /**
  * Base测试用例
  *
  * @package tourze\Base
  */
-class BaseTest extends \PHPUnit_Framework_TestCase
+class BaseTest extends PHPUnit_Framework_TestCase
 {
 
     public function providerLoad()
     {
         return [
-            [__DIR__ . '/../data/test_array.php', [
+            [__DIR__ . '/data/test_array.php', [
                 'key1' => 'TEST',
                 'key2' => '5566'
             ]],
-            [__DIR__ . '/../data/test_array1.php', [
-                'ey1' => 0,
+            [__DIR__ . '/data/test_array1.php', [
+                'key1' => 0,
                 'key2' => null
             ]],
         ];
