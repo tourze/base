@@ -23,7 +23,7 @@ class Config extends VendorConfig
     protected static $_configPaths = [];
 
     /**
-     * 返回当前已经添加到得配置路径
+     * 返回当前已经添加到的配置路径
      *
      * @return array
      */

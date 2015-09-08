@@ -23,6 +23,16 @@ class Message
     protected static $_messagePaths = [];
 
     /**
+     * 返回当前已经添加到的配置路径
+     *
+     * @return array
+     */
+    public static function getPaths()
+    {
+        return self::$_messagePaths;
+    }
+
+    /**
      * 增加加载路径
      *
      * @param $path

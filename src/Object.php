@@ -3,8 +3,6 @@
 namespace tourze\Base;
 
 use Doctrine\Common\Inflector\Inflector;
-use Exception;
-use tourze\Base\Exception\BaseException;
 use tourze\Base\Exception\InvalidCallException;
 use tourze\Base\Exception\UnknownPropertyException;
 
