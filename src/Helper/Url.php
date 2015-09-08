@@ -23,11 +23,8 @@ class Url extends HelperBase implements HelperInterface
      */
     public static function detectUri()
     {
-        if ( ! empty($_SERVER['PATH_INFO']))
-        {
-            $uri = $_SERVER['PATH_INFO'];
-        }
-        else
+        // 如果PATH_INFO读不到，那么就从其他途径读
+        if ( ! $uri = Arr::get($_SERVER, 'PATH_INFO'))
         {
             // REQUEST_URI和PHP_SELF会包含当前脚本路径
             if (isset($_SERVER['REQUEST_URI']))
