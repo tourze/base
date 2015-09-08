@@ -3,7 +3,8 @@
 namespace tourze\Base\Helper;
 
 use Doctrine\Common\Inflector\Inflector;
-use phpSec\Crypt\Rand;
+use RandomLib\Factory as RandomFactory;
+use SecurityLib\Strength as RandomStrength;
 
 /**
  * 文本助手类
@@ -164,8 +165,15 @@ class Text extends HelperBase implements HelperInterface
      */
     public static function random($length = 20, $pool = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')
     {
-        $obj = new Rand;
-        return $obj->str($length, $pool);
+        // 如果pool只有一位
+        if (self::length($pool) == 1)
+        {
+            return str_repeat($pool, $length);
+        }
+
+        $factory = new RandomFactory;
+        $generator = $factory->getGenerator(new RandomStrength(RandomStrength::MEDIUM));
+        return $generator->generateString($length, $pool);
     }
 
     /**
@@ -240,56 +248,6 @@ class Text extends HelperBase implements HelperInterface
         }
 
         return substr($word, 0, $i);
-    }
-
-    /**
-     * 返回字节数的可读形式
-     *
-     *     echo Text::bytes(filesize($file));
-     *
-     * @param  int    $bytes  字节数
-     * @param  string $unit   单元
-     * @param  string $format 返回字符串的格式
-     * @param  bool   $si     是否使用SI前缀或IEC
-     * @return string
-     */
-    public static function bytes($bytes, $unit = null, $format = null, $si = true)
-    {
-        $format = (null === $format) ? '%01.2f %s' : (string) $format;
-
-        // IEC前缀（二进制）
-        if (false == $si || false !== strpos($unit, 'i'))
-        {
-            $units = [
-                'B',
-                'KiB',
-                'MiB',
-                'GiB',
-                'TiB',
-                'PiB'
-            ];
-            $mod = 1024;
-        }
-        // SI前缀（十进制）
-        else
-        {
-            $units = [
-                'B',
-                'kB',
-                'MB',
-                'GB',
-                'TB',
-                'PB'
-            ];
-            $mod = 1000;
-        }
-
-        if (false === ($power = array_search((string) $unit, $units)))
-        {
-            $power = ($bytes > 0) ? floor(log($bytes, $mod)) : 0;
-        }
-
-        return sprintf($format, $bytes / pow($mod, $power), $units[$power]);
     }
 
     /**
@@ -458,7 +416,7 @@ class Text extends HelperBase implements HelperInterface
     }
 
     /**
-     * 检查指定字符串是否包含另外一个字符串
+     * 检查指定字符串是否包含另外一个字符串，该函数大小写敏感
      *
      * @param  string       $haystack
      * @param  string|array $needle

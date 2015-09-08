@@ -16,12 +16,56 @@ class Mime extends HelperBase implements HelperInterface
     /**
      * @var string 保存MIME信息的配置文件
      */
-    public static $configName = 'helper/mime';
+    protected static $configName = 'helper/mime';
 
     /**
      * @var array 保存一个包含了后缀和对应mime的数组
      */
-    public static $mimeTypes = [];
+    protected static $mimeTypes = [];
+
+    /**
+     * 设置当前要加载的configName
+     *
+     * @param string $configName
+     */
+    public static function setConfigName($configName)
+    {
+        if (self::$configName != $configName)
+        {
+            self::$mimeTypes = [];
+        }
+        self::$configName = $configName;
+    }
+
+    /**
+     * 获取当前要加载的配置名
+     *
+     * @return string
+     */
+    public static function getConfigName()
+    {
+        return self::$configName;
+    }
+
+    /**
+     * 设置mime数组
+     *
+     * @param array $mimeTypes
+     */
+    public static function setMimeTypes($mimeTypes)
+    {
+        self::$mimeTypes = $mimeTypes;
+    }
+
+    /**
+     * 获取当前加载到得mime数组
+     *
+     * @return array
+     */
+    public static function getMimeTypes()
+    {
+        return self::$mimeTypes;
+    }
 
     /**
      * 初始化，和更新数据数组
@@ -30,7 +74,7 @@ class Mime extends HelperBase implements HelperInterface
     {
         if (empty(self::$mimeTypes))
         {
-            self::$mimeTypes = Config::load(self::$configName)->asArray();
+            self::setMimeTypes(Config::load(self::getConfigName())->asArray());
         }
     }
 
@@ -48,22 +92,34 @@ class Mime extends HelperBase implements HelperInterface
 
     /**
      * 根据MIME获得对应的后缀名
+     * [!!] 注意，因为存在多个后缀对应一个MIME，所以返回的结果不一定是你要的
      *
-     * @param  string $mime
+     * @param string $mime
+     * @param bool   $all
      * @return array|string
      */
-    public static function getExtensionsFromMime($mime)
+    public static function getExtensionsFromMime($mime, $all = false)
     {
         self::initMimeTypes();
+
+        $result = $all ? [] : '';
 
         foreach (self::$mimeTypes as $ext => $mimeType)
         {
             if ($mime == $mimeType)
             {
-                return $ext;
+                if ($all)
+                {
+                    $result[] = $ext;
+                }
+                else
+                {
+                    $result = $ext;
+                    break;
+                }
             }
         }
-        return '';
+        return $result;
     }
 
     /**
