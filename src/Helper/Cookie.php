@@ -10,7 +10,7 @@ use tourze\Base\Exception\HelperException;
  *
  * @package tourze\Base\Helper
  */
-class Cookie
+class Cookie extends HelperBase implements HelperInterface
 {
 
     /**

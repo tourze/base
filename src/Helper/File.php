@@ -10,7 +10,7 @@ use Traversable;
  *
  * @package tourze\Base\Helper
  */
-class File
+class File extends HelperBase implements HelperInterface
 {
 
     /**

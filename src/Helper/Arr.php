@@ -2,7 +2,6 @@
 
 namespace tourze\Base\Helper;
 
-use Closure;
 use Traversable;
 
 /**
@@ -10,7 +9,7 @@ use Traversable;
  *
  * @package tourze\Base\Helper
  */
-class Arr
+class Arr extends HelperBase implements HelperInterface
 {
 
     /**

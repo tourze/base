@@ -3,15 +3,14 @@
 namespace tourze\Base\Helper;
 
 use Doctrine\Common\Inflector\Inflector;
-use RandomLib\Factory as RandomFactory;
-use SecurityLib\Strength as RandomStrength;
+use phpSec\Crypt\Rand;
 
 /**
  * 文本助手类
  *
  * @package tourze\Base\Helper
  */
-class Text
+class Text extends HelperBase implements HelperInterface
 {
 
     /**
@@ -165,10 +164,8 @@ class Text
      */
     public static function random($length = 20, $pool = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890')
     {
-        $factory = new RandomFactory;
-        $generator = $factory->getGenerator(new RandomStrength(RandomStrength::MEDIUM));
-
-        return $generator->generateString($length, $pool);
+        $obj = new Rand;
+        return $obj->str($length, $pool);
     }
 
     /**

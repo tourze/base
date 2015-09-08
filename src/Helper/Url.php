@@ -10,7 +10,7 @@ use tourze\Base\Base;
  *
  * @package tourze\Base\Helper
  */
-class Url
+class Url extends HelperBase implements HelperInterface
 {
 
     /**
@@ -18,7 +18,7 @@ class Url
      *
      *     $uri = Uri::detectUri();
      *
-     * @return string  URI
+     * @return string URI
      * @throws HelperException
      */
     public static function detectUri()

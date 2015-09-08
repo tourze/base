@@ -10,7 +10,7 @@ use DateTimeZone;
  *
  * @package tourze\Base\Helper
  */
-class Date
+class Date extends HelperBase implements HelperInterface
 {
 
     // 基于秒数的各时间单位

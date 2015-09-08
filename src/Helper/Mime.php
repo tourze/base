@@ -10,7 +10,7 @@ use tourze\Base\Config;
  *
  * @package tourze\Base\Helper
  */
-class Mime
+class Mime extends HelperBase implements HelperInterface
 {
 
     /**
