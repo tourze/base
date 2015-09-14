@@ -25,7 +25,7 @@ We accept contributions via Pull Requests on [Github](https://github.com/tourze/
 ## Running Tests
 
 ``` bash
-$ composer test
+$ vendor/bin/phpunit tests
 ```
 
 
