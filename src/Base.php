@@ -149,8 +149,8 @@ class Base extends Object
         }
 
         /** @var Component $instance */
-        $instance = new $class(Arr::get($config, 'params'));
-        foreach (Arr::get($config, 'call') as $method => $args)
+        $instance = new $class(Arr::get($config, 'params', []));
+        foreach (Arr::get($config, 'call', []) as $method => $args)
         {
             call_user_func_array([$instance, $method], $args);
         }
@@ -173,7 +173,7 @@ class Base extends Object
     /**
      * 获取HTTP组件
      *
-     * @return \tourze\Base\Component\Http
+     * @return \tourze\Base\Component\HttpInterface
      * @throws \tourze\Base\Exception\ComponentNotFoundException
      */
     public static function getHttp()
@@ -184,7 +184,7 @@ class Base extends Object
     /**
      * 获取日志组件
      *
-     * @return \tourze\Base\Component\Log
+     * @return \tourze\Base\Component\LogInterface
      * @throws \tourze\Base\Exception\ComponentNotFoundException
      */
     public static function getLog()
@@ -195,7 +195,7 @@ class Base extends Object
     /**
      * 获取会话组件
      *
-     * @return \tourze\Base\Component\Session
+     * @return \tourze\Base\Component\SessionInterface
      * @throws \tourze\Base\Exception\ComponentNotFoundException
      */
     public static function getSession()
@@ -206,7 +206,7 @@ class Base extends Object
     /**
      * 获取Flash组件
      *
-     * @return \tourze\Base\Component\Flash
+     * @return \tourze\Base\Component\FlashInterface
      * @throws \tourze\Base\Exception\ComponentNotFoundException
      */
     public static function getFlash()
@@ -217,7 +217,7 @@ class Base extends Object
     /**
      * 获取缓存组件
      *
-     * @return \tourze\Base\Component\Cache
+     * @return \tourze\Base\Component\CacheInterface
      * @throws \tourze\Base\Exception\ComponentNotFoundException
      */
     public static function getCache()
@@ -226,9 +226,9 @@ class Base extends Object
     }
 
     /**
-     * 获取邮件组件
+     * 获取缓存组件
      *
-     * @return \tourze\Base\Component\Mail
+     * @return \tourze\Base\Component\MailInterface
      * @throws \tourze\Base\Exception\ComponentNotFoundException
      */
     public static function getMail()
