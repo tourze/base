@@ -10,6 +10,8 @@
 
 途者框架__不是最快的框架，也不是大而全的框架，而是能快速开发的框架__，而`Base组件`是其中的基础部分。
 
+Base组件只包含了一些基础的概念实现和助手类。如果你想要完整实现一个项目，可以看下途者框架其他模块。
+
 因为一些历史原因，Base组件目前不一定解耦很好，但是以后在大家支持下肯定会越来越好。
 
 ## 安装
@@ -39,31 +41,80 @@
 * bootstrap.php 一些通用操作放在其中
 
 途者的组件，一般都是上面的目录结构，如果没有其中一部分的话，会没对应的文件夹。
+
 例如Base组件没有cache目录，因为没有地方需要用到cache目录。
+
+> 对于不明白的内容，如果你清楚对应的类是什么，那么强烈建议你先试下读代码，先尝试去思考。
+> 因为文档不能尽然描述框架功能，而且描述也可能有偏差，如果你能亲自探索过，那么自然能更加容易理解文档。
+
+## 概念
+
+* [组件的说明和使用](doc/concept/component.md)
 
 ## 核心类
 
-* [tourze\Base\Base 核心基础类](doc/core/base.md)
+* tourze\Base\Base 核心基础类
+* tourze\Base\Config 配置加载类
 
 ## 默认组件
 
-* [tourze\Base\Component\Cache 缓存组件](doc/component/cache.md)
-* [tourze\Base\Component\Http HTTP组件](doc/component/http.md)
-* [tourze\Base\Component\Log 日志组件](doc/component/log.md)
-* [tourze\Base\Component\Session 会话组件](doc/component/session.md)
-* [tourze\Base\Component\Flash Flash组件](doc/component/flash.md)
-* [tourze\Base\Component\Mail 邮件组件](doc/component/mail.md)
+* tourze\Base\Component\Cache 缓存组件
+* tourze\Base\Component\Http HTTP组件
+* tourze\Base\Component\Log 日志组件
+* tourze\Base\Component\Session 会话组件
+* tourze\Base\Component\Flash Flash组件
+* tourze\Base\Component\Mail 邮件组件
 
 ## 助手类
 
 Base组件为其他组件提供很多助手方法，用于快速开发：
 
-* [tourze\Base\Helper\Arr 数组助手类](doc/helper/arr.md)
-* [tourze\Base\Helper\Cookie Cookie助手类](doc/helper/cookie.md)
-* [tourze\Base\Helper\Date 日期时间助手类](doc/helper/date.md)
-* [tourze\Base\Helper\File 文件助手类](doc/helper/file.md)
-* [tourze\Base\Helper\Mime MIME助手类](doc/helper/mime.md)
-* [tourze\Base\Helper\Text 文本助手类](doc/helper/text.md)
-* [tourze\Base\Helper\Url URL助手类](doc/helper/url.md)
+* tourze\Base\Helper\Arr 数组助手类
+* tourze\Base\Helper\Cookie Cookie助手类
+* tourze\Base\Helper\Date 日期时间助手类
+* tourze\Base\Helper\File 文件助手类
+* tourze\Base\Helper\Mime MIME助手类
+* tourze\Base\Helper\Text 文本助手类
+* tourze\Base\Helper\Url URL助手类
 
-## 教程
+## 在NGINX运行
+
+配置文件如下：
+
+    log_format  test.tourze.com  '$remote_addr - $remote_user [$time_local] "$request" '
+                 '$status $body_bytes_sent "$http_referer" '
+                 '"$http_user_agent" $http_x_forwarded_for';
+    server
+        {
+            listen       80;
+            server_name test.tourze.com;
+            index index.html index.htm index.php default.html default.htm default.php;
+            root  /vagrant/com.tourze.test/web;
+    
+            include other.conf;
+            location ~ .*\.(php|php5)?$
+                {
+                    try_files $uri =404;
+                    fastcgi_pass  unix:/tmp/php-cgi.sock;
+                    fastcgi_index index.php;
+                    include fcgi.conf;
+                }
+    
+            location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$
+                {
+                    expires      30d;
+                }
+    
+            location ~ .*\.(js|css)?$
+                {
+                    expires      12h;
+                }
+    
+            if (!-f $request_filename){
+                rewrite ^(.*)$ /index.php;
+            }
+    
+            access_log  /vagrant/log/test.tourze.com.log  test.tourze.com;
+        }
+
+请根据你的具体环境，对上面的配置项进行调整
