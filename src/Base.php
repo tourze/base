@@ -25,24 +25,9 @@ class Base extends Object
     const VERSION = 'beta';
 
     /**
-     * @var string 时区
-     */
-    public static $timezone = 'PRC';
-
-    /**
-     * @var string 当前地理位置
-     */
-    public static $locale = 'en_US.utf-8';
-
-    /**
      * @var string 默认输出的内容类型
      */
     public static $contentType = 'text/html';
-
-    /**
-     * @var string 输入输出编码
-     */
-    public static $charset = 'utf-8';
 
     /**
      * @var string 当前服务器名称
@@ -73,56 +58,6 @@ class Base extends Object
      * @var Component[] 组件缓存列表
      */
     public static $components = [];
-
-    /**
-     * 单次请求的初始化
-     *
-     * @throws BaseException
-     */
-    public function init()
-    {
-        if ( ! IN_SAE)
-        {
-            /**
-             * unserialization的自动加载，要注意在sae中这个是不支持的
-             *
-             * @link http://www.php.net/manual/function.spl-autoload-call
-             * @link http://www.php.net/manual/var.configuration#unserialize-callback-func
-             */
-            ini_set('unserialize_callback_func', 'spl_autoload_call');
-        }
-
-        ob_start();
-
-        /**
-         * 设置默认时区
-         */
-        date_default_timezone_set(self::$timezone);
-
-        /**
-         * 设置地区信息（地域信息）
-         */
-        setlocale(LC_ALL, self::$locale);
-
-        if (function_exists('mb_internal_encoding'))
-        {
-            mb_internal_encoding(self::$charset);
-        }
-
-        /**
-         * 当输入字符的编码是无效的，或者字符代码不存在于输出的字符编码中时，可以为其指定一个替代字符。
-         *
-         * @link http://www.php.net/manual/function.mb-substitute-character.php
-         */
-        mb_substitute_character('none');
-
-        // 确保输入的数据安全
-        $_GET = Security::sanitize($_GET);
-        $_POST = Security::sanitize($_POST);
-        $_COOKIE = Security::sanitize($_COOKIE);
-
-        self::cleanComponents();
-    }
 
     /**
      * 清理组件实例，将非持久化的，可删除的组件实例删除
@@ -299,5 +234,57 @@ class Base extends Object
     public static function getMail()
     {
         return self::get('mail');
+    }
+
+    /**
+     * @var string 时区
+     */
+    public $timezone = 'PRC';
+
+    /**
+     * @var string 当前地理位置
+     */
+    public $locale = 'en_US.utf-8';
+
+    /**
+     * @var string 输入输出编码
+     */
+    public $charset = 'utf-8';
+
+    /**
+     * 单次请求的初始化
+     *
+     * @throws BaseException
+     */
+    public function init()
+    {
+        /**
+         * 设置默认时区
+         */
+        date_default_timezone_set($this->timezone);
+
+        /**
+         * 设置地区信息（地域信息）
+         */
+        setlocale(LC_ALL, $this->locale);
+
+        if (function_exists('mb_internal_encoding'))
+        {
+            mb_internal_encoding($this->charset);
+        }
+
+        /**
+         * 当输入字符的编码是无效的，或者字符代码不存在于输出的字符编码中时，可以为其指定一个替代字符。
+         *
+         * @link http://www.php.net/manual/function.mb-substitute-character.php
+         */
+        mb_substitute_character('none');
+
+        // 确保输入的数据安全
+        $_GET = Security::sanitize($_GET);
+        $_POST = Security::sanitize($_POST);
+        $_COOKIE = Security::sanitize($_COOKIE);
+
+        self::cleanComponents();
     }
 }

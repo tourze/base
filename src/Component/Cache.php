@@ -9,10 +9,9 @@ use tourze\Base\Helper\Arr;
 /**
  * 默认缓存组件，使用内存来做缓存
  *
- * @property int expired
  * @package tourze\Base\Component
  */
-class Cache extends Component
+class Cache extends Component implements CacheInterface
 {
 
     /**
@@ -23,30 +22,10 @@ class Cache extends Component
     /**
      * @var int 默认过期时间
      */
-    protected $_expired;
+    public $expired;
 
     /**
-     * @return int
-     */
-    public function getExpired()
-    {
-        return $this->_expired;
-    }
-
-    /**
-     * @param int $expired
-     */
-    public function setExpired($expired)
-    {
-        $this->_expired = $expired;
-    }
-
-    /**
-     * 读取指定key的缓存
-     *
-     * @param string $name
-     * @param mixed  $default
-     * @return mixed
+     * {@inheritdoc}
      */
     public function get($name, $default = null)
     {
@@ -85,12 +64,7 @@ class Cache extends Component
     }
 
     /**
-     * 保存缓存
-     *
-     * @param string $name
-     * @param mixed  $value
-     * @param int    $expired
-     * @return bool
+     * {@inheritdoc}
      */
     public function set($name, $value, $expired = null)
     {
@@ -110,10 +84,7 @@ class Cache extends Component
     }
 
     /**
-     * 删除缓存
-     *
-     * @param string $name
-     * @return bool
+     * {@inheritdoc}
      */
     public function remove($name)
     {

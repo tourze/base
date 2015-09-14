@@ -346,9 +346,7 @@ class Http extends Component
     }
 
     /**
-     * 退出当前http请求
-     *
-     * @param string $msg
+     * {@inheritdoc}
      */
     public function end($msg = '')
     {
@@ -359,11 +357,9 @@ class Http extends Component
     }
 
     /**
-     * 输出指定code
-     *
-     * @param int $code
+     * {@inheritdoc}
      */
-    public function code($code = null)
+    public function code($code)
     {
         Base::getLog()->debug(__METHOD__ . ' response status code', [
             'code' => $code,
@@ -378,10 +374,7 @@ class Http extends Component
     }
 
     /**
-     * 跳转
-     *
-     * @param  string $uri  要跳转的URI
-     * @param  int    $code 跳转时使用的http状态码
+     * {@inheritdoc}
      */
     public function redirect($uri = '', $code = 302)
     {
@@ -408,16 +401,7 @@ class Http extends Component
     }
 
     /**
-     * 写cookie
-     *
-     * @param string $name
-     * @param string $value
-     * @param int    $maxAge
-     * @param string $path
-     * @param string $domain
-     * @param bool   $secure
-     * @param bool   $httpOnly
-     * @return bool
+     * {@inheritdoc}
      */
     public function setCookie($name, $value = '', $maxAge = 0, $path = '', $domain = '', $secure = false, $httpOnly = false)
     {
@@ -434,9 +418,7 @@ class Http extends Component
     }
 
     /**
-     * 开始会话
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function sessionStart()
     {
@@ -449,10 +431,7 @@ class Http extends Component
     }
 
     /**
-     * 返回会话ID
-     *
-     * @param mixed $id
-     * @return string
+     * {@inheritdoc}
      */
     public function sessionID($id = null)
     {
@@ -463,10 +442,7 @@ class Http extends Component
     }
 
     /**
-     * 重新返回一个会话ID
-     *
-     * @param bool|false $deleteOldSession
-     * @return bool
+     * {@inheritdoc}
      */
     public function sessionRegenerateID($deleteOldSession = false)
     {
@@ -475,7 +451,7 @@ class Http extends Component
     }
 
     /**
-     * 结束会话
+     * {@inheritdoc}
      */
     public function sessionWriteClose()
     {
@@ -484,11 +460,7 @@ class Http extends Component
     }
 
     /**
-     * 输出头部信息
-     *
-     * @param string    $string
-     * @param bool|true $replace
-     * @param null|int  $httpResponseCode
+     * {@inheritdoc}
      */
     public function header($string, $replace = true, $httpResponseCode = null)
     {
@@ -501,7 +473,7 @@ class Http extends Component
     }
 
     /**
-     * @param string $name
+     * {@inheritdoc}
      */
     public function headerRemove($name = null)
     {
@@ -512,7 +484,7 @@ class Http extends Component
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function headersList()
     {
@@ -521,9 +493,7 @@ class Http extends Component
     }
 
     /**
-     * @param string $file
-     * @param string $line
-     * @return bool
+     * {@inheritdoc}
      */
     public function headersSent(&$file = null, &$line = null)
     {

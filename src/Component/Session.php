@@ -11,7 +11,7 @@ use tourze\Base\Helper\Arr;
  *
  * @package tourze\Base\Component
  */
-class Session extends Component
+class Session extends Component implements SessionInterface
 {
 
     /**
@@ -29,7 +29,7 @@ class Session extends Component
     }
 
     /**
-     * 开始会话
+     * {@inheritdoc}
      */
     public function start()
     {
@@ -38,10 +38,7 @@ class Session extends Component
     }
 
     /**
-     * 返回当前会话ID
-     *
-     * @param string $id
-     * @return string
+     * {@inheritdoc}
      */
     public function id($id = null)
     {
@@ -50,11 +47,7 @@ class Session extends Component
     }
 
     /**
-     * 读取指定会话的值
-     *
-     * @param string $name
-     * @param mixed  $default
-     * @return mixed
+     * {@inheritdoc}
      */
     public function get($name, $default = null)
     {
@@ -66,10 +59,7 @@ class Session extends Component
     }
 
     /**
-     * 设置会话值
-     *
-     * @param string $name
-     * @param mixed  $value
+     * {@inheritdoc}
      */
     public function set($name, $value)
     {
@@ -81,9 +71,7 @@ class Session extends Component
     }
 
     /**
-     * 移除指定会话key
-     *
-     * @param string $name
+     * {@inheritdoc}
      */
     public function remove($name)
     {
@@ -94,9 +82,7 @@ class Session extends Component
     }
 
     /**
-     * 清空会话数据
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function destroy()
     {

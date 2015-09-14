@@ -14,7 +14,7 @@ use tourze\Base\Component;
  *
  * @package tourze\Base\Component
  */
-class Flash extends Component implements ArrayAccess, IteratorAggregate, Countable
+class Flash extends Component implements ArrayAccess, IteratorAggregate, Countable, FlashInterface
 {
 
     /**
@@ -50,10 +50,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * 设置flash数据
-     *
-     * @param string $key
-     * @param mixed  $value
+     * {@inheritdoc}
      */
     public function flash($key, $value)
     {
@@ -62,9 +59,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * 获取完整的flash数据
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function data()
     {
@@ -76,10 +71,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * 直接设置当前请求的flash数据
-     *
-     * @param  string $key
-     * @param  string $value
+     * {@inheritdoc}
      */
     public function now($key, $value)
     {
@@ -91,10 +83,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * 设置flash数据，会在下次请求时展示
-     *
-     * @param string $key
-     * @param string $value
+     * {@inheritdoc}
      */
     public function set($key, $value)
     {
@@ -106,7 +95,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * 保留住当前数据
+     * {@inheritdoc}
      */
     public function keep()
     {
@@ -118,7 +107,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * 保存Flash数据
+     * {@inheritdoc}
      */
     public function save()
     {
@@ -127,7 +116,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * 初始化和加载消息列表，默认会加载上次请求保存的消息
+     * {@inheritdoc}
      */
     public function loadMessages()
     {
@@ -139,9 +128,7 @@ class Flash extends Component implements ArrayAccess, IteratorAggregate, Countab
     }
 
     /**
-     * 返回请求的消息
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getMessages()
     {

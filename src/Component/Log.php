@@ -10,7 +10,7 @@ use tourze\Base\Component;
  *
  * @package tourze\Base\Component
  */
-class Log extends Component
+class Log extends Component implements LogInterface
 {
 
     /**
@@ -28,10 +28,7 @@ class Log extends Component
     ];
 
     /**
-     * 调试信息
-     *
-     * @param string $log
-     * @param array  $context
+     * {@inheritdoc}
      */
     public function debug($log, array $context = [])
     {
@@ -43,10 +40,7 @@ class Log extends Component
     }
 
     /**
-     * Info级别
-     *
-     * @param string $log
-     * @param array  $context
+     * {@inheritdoc}
      */
     public function info($log, array $context = [])
     {
@@ -58,10 +52,7 @@ class Log extends Component
     }
 
     /**
-     * Notice级别
-     *
-     * @param string $log
-     * @param array  $context
+     * {@inheritdoc}
      */
     public function notice($log, array $context = [])
     {
@@ -73,10 +64,7 @@ class Log extends Component
     }
 
     /**
-     * 警告信息
-     *
-     * @param string $log
-     * @param array  $context
+     * {@inheritdoc}
      */
     public function warning($log, array $context = [])
     {
@@ -88,10 +76,7 @@ class Log extends Component
     }
 
     /**
-     * 错误信息
-     *
-     * @param string $log
-     * @param array  $context
+     * {@inheritdoc}
      */
     public function error($log, array $context = [])
     {
@@ -102,10 +87,7 @@ class Log extends Component
     }
 
     /**
-     * critical级别
-     *
-     * @param string $log
-     * @param array  $context
+     * {@inheritdoc}
      */
     public function critical($log, array $context = [])
     {
@@ -117,10 +99,7 @@ class Log extends Component
     }
 
     /**
-     * alert级别
-     *
-     * @param string $log
-     * @param array  $context
+     * {@inheritdoc}
      */
     public function alert($log, array $context = [])
     {
@@ -132,10 +111,7 @@ class Log extends Component
     }
 
     /**
-     * emergency级别
-     *
-     * @param string $log
-     * @param array  $context
+     * {@inheritdoc}
      */
     public function emergency($log, array $context = [])
     {

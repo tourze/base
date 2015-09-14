@@ -14,7 +14,7 @@ use tourze\Base\Component;
  * @property string       message
  * @package tourze\Base\Component
  */
-class Mail extends Component
+class Mail extends Component implements MailInterface
 {
 
     /**
@@ -102,15 +102,9 @@ class Mail extends Component
     }
 
     /**
-     * 发送邮件
-     *
-     * @param string|array $to
-     * @param string       $subject
-     * @param string       $message
-     * @param string|null  $from
-     * @return bool
+     * {@inheritdoc}
      */
-    public function send($to = null, $subject = null, $message = null, $from = null)
+    public function send($from = null, $to = null, $subject = null, $message = null)
     {
         Base::getLog()->debug(__METHOD__ . ' call send mail method', [
             'to'      => $to,
