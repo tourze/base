@@ -13,10 +13,7 @@ use tourze\Base\Message;
 /**
  * 数组校验类
  *
- * @property string errorFileName
- * @package    Base
- * @category   Security
- * @author     YwiSax
+ * @package tourze\Base\Security
  */
 class Validation extends Object implements ArrayAccess
 {
@@ -130,7 +127,7 @@ class Validation extends Object implements ArrayAccess
      *     $copy = $array->copy($newData);
      *
      * @param  array $array 新的数组
-     * @return static
+     * @return $this
      */
     public function copy(array $array)
     {

@@ -8,9 +8,7 @@ use Respect\Validation\Validator;
 /**
  * 校验助手方法
  *
- * @package    Base
- * @category   Security
- * @author     YwiSax
+ * @package tourze\Base\Security
  */
 class Valid
 {
