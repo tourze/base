@@ -261,14 +261,20 @@ class Base extends Object
         /**
          * 设置默认时区
          */
-        date_default_timezone_set($this->timezone);
+        if ($this->timezone)
+        {
+            date_default_timezone_set($this->timezone);
+        }
 
         /**
          * 设置地区信息（地域信息）
          */
-        setlocale(LC_ALL, $this->locale);
+        if ($this->locale)
+        {
+            setlocale(LC_ALL, $this->locale);
+        }
 
-        if (function_exists('mb_internal_encoding'))
+        if ($this->charset && function_exists('mb_internal_encoding'))
         {
             mb_internal_encoding($this->charset);
         }
