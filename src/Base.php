@@ -237,6 +237,17 @@ class Base extends Object
     }
 
     /**
+     * 获取上传组件
+     *
+     * @return \tourze\Base\Component\UploadInterface
+     * @throws \tourze\Base\Exception\ComponentNotFoundException
+     */
+    public static function getUpload()
+    {
+        return self::get('upload');
+    }
+
+    /**
      * @var string 时区
      */
     public $timezone = 'PRC';

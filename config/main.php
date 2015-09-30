@@ -45,5 +45,12 @@ return [
             'call'   => [
             ],
         ],
+        'upload'    => [
+            'class'  => 'tourze\Base\Component\Upload',
+            'params' => [
+            ],
+            'call'   => [
+            ],
+        ],
     ],
 ];

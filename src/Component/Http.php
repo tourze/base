@@ -12,7 +12,7 @@ use tourze\Base\Helper\Url;
  *
  * @package tourze\Base\Component
  */
-class Http extends Component
+class Http extends Component implements HttpInterface
 {
 
     // HTTP方法列表
@@ -240,7 +240,6 @@ class Http extends Component
         // Informational 1xx
         self::CONTINUES                       => 'Continue',
         self::SWITCHING_PROTOCOLS             => 'Switching Protocols',
-
         // Success 2xx
         self::OK                              => 'OK',
         self::CREATED                         => 'Created',
@@ -249,7 +248,6 @@ class Http extends Component
         self::NO_CONTENT                      => 'No Content',
         self::RESET_CONTENT                   => 'Reset Content',
         self::PARTIAL_CONTENT                 => 'Partial Content',
-
         // Redirection 3xx
         self::MULTIPLE_CHOICES                => 'Multiple Choices',
         self::MOVED_PERMANENTLY               => 'Moved Permanently',
@@ -258,9 +256,8 @@ class Http extends Component
         self::SEE_OTHER                       => 'See Other',
         self::NOT_MODIFIED                    => 'Not Modified',
         self::USE_PROXY                       => 'Use Proxy',
-        // 306 is deprecated but reserved
+        // 306依然保留
         self::TEMPORARY_REDIRECT              => 'Temporary Redirect',
-
         // Client Error 4xx
         self::BAD_REQUEST                     => 'Bad Request',
         self::UNAUTHORIZED                    => 'Unauthorized',
@@ -280,7 +277,6 @@ class Http extends Component
         self::UNSUPPORTED_MEDIA_TYPE          => 'Unsupported Media Type',
         self::REQUESTED_RANGE_NOT_SATISFIABLE => 'Requested Range Not Satisfiable',
         self::EXPECTATION_FAILED              => 'Expectation Failed',
-
         // Server Error 5xx
         self::INTERNAL_SERVER_ERROR           => 'Internal Server Error',
         self::NOT_IMPLEMENTED                 => 'Not Implemented',
@@ -288,7 +284,7 @@ class Http extends Component
         self::SERVICE_UNAVAILABLE             => 'Service Unavailable',
         self::GATEWAY_TIMEOUT                 => 'Gateway Timeout',
         self::HTTP_VERSION_NOT_SUPPORTED      => 'HTTP Version Not Supported',
-        self::BANDWIDTH_LIMIT_EXCEEDED        => 'Bandwidth Limit Exceeded'
+        self::BANDWIDTH_LIMIT_EXCEEDED        => 'Bandwidth Limit Exceeded',
     ];
 
     /**
@@ -412,7 +408,7 @@ class Http extends Component
             'path'      => $path,
             'domain'    => $domain,
             'secure'    => $secure,
-            'http_only' => $httpOnly
+            'http_only' => $httpOnly,
         ]);
         return setcookie($name, $value, $maxAge, $path, $domain, $secure, $httpOnly);
     }
@@ -467,7 +463,7 @@ class Http extends Component
         Base::getLog()->debug(__METHOD__ . ' response header', [
             'header'  => $string,
             'replace' => $replace,
-            'code'    => $httpResponseCode
+            'code'    => $httpResponseCode,
         ]);
         header($string, $replace, $httpResponseCode);
     }
@@ -478,7 +474,7 @@ class Http extends Component
     public function headerRemove($name = null)
     {
         Base::getLog()->debug(__METHOD__ . ' remove header', [
-            'name'  => $name,
+            'name' => $name,
         ]);
         header_remove($name);
     }
